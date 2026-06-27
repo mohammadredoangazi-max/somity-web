@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সদস্য ড্যাশবোর্ড - বন্ধুত্ব সঞ্চয় সমিতি</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dashboard-body">
+
+    <div class="dashboard-container">
+        
+        <div class="dash-header">
+            <div class="user-info">
+                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=60" alt="Profile" class="user-avatar">
+                <div>
+                    <h3>স্বাগতম, রহিম আহমেদ</h3>
+                    <p>সদস্য আইডি: #005</p>
+                </div>
+            </div>
+            <button class="btn-logout" onclick="alert('লগআউট করা হচ্ছে...')">লগআউট</button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card blue">
+                <h4>আমার মোট জমা</h4>
+                <p>২,৫০০ টাকা</p>
+            </div>
+            <div class="stat-card green">
+                <h4>সমিতির মোট ফান্ড</h4>
+                <p>২৫,০০০ টাকা</p>
+            </div>
+            <div class="stat-card red">
+                <h4>আমার লোন বাকি</h4>
+                <p>০ টাকা</p>
+            </div>
+        </div>
+
+        <div class="content-box">
+            <h3>আমার মাসিক জমার বিবরণ (২০২৬)</h3>
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>মাস</th>
+                        <th>টাকার পরিমাণ</th>
+                        <th>জমা দেওয়ার তারিখ</th>
+                        <th>অবস্থা (Status)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>জানুয়ারি ২০২৬</td>
+                        <td>৫০০ টাকা</td>
+                        <td>০৫-০১-২০২৬</td>
+                        <td><span class="badge success">পরিশোধিত</span></td>
+                    </tr>
+                    <tr>
+                        <td>ফেব্রুয়ারি ২০২৬</td>
+                        <td>৫০০ টাকা</td>
+                        <td>০৪-০২-২০২৬</td>
+                        <td><span class="badge success">পরিশোধিত</span></td>
+                    </tr>
+                    <tr>
+                        <td>মার্চ ২০২৬</td>
+                        <td>৫০০ টাকা</td>
+                        <td>--</td>
+                        <td><span class="badge danger">বাকি আছে</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script>
+        // এখানে পরবর্তীতে ডেটাবেজ থেকে আসল তথ্য এনে দেখানো হবে
+    </script>
+</body>
+</html>

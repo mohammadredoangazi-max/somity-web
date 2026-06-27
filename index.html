@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>স্বাগতম - বন্ধুত্ব সঞ্চয় সমিতি</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="clock-timer" id="live-clock">লোড হচ্ছে...</div>
+
+    <div class="form-container">
+        <div class="logo-box">
+            <img id="somity-logo" src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=150&auto=format&fit=crop&q=60" alt="সমিতি লোগো" class="app-logo">
+        </div>
+
+        <h2 id="somity-name">বন্ধুত্ব সঞ্চয় সমিতি</h2>
+        
+        <div class="tab-box">
+            <button class="tab-btn active" onclick="switchTab('login-box')">লগইন</button>
+            <button class="tab-btn" onclick="switchTab('register-box')">নিবন্ধন (Register)</button>
+        </div>
+
+        <div id="login-box" class="form-box active">
+            <p class="subtitle">আপনার অ্যাকাউন্ট লগইন করুন</p>
+            <form id="login-form">
+                <div class="input-group">
+                    <label>ইউজারনেম</label>
+                    <input type="text" placeholder="আপনার ইউজারনেম দিন" required>
+                </div>
+                <div class="input-group">
+                    <label>পাসওয়ার্ড</label>
+                    <input type="password" placeholder="আপনার পাসওয়ার্ড দিন" required>
+                </div>
+                <button type="submit" class="btn-submit">لগইন করুন</button>
+            </form>
+        </div>
+
+        <div id="register-box" class="form-box">
+            <p class="subtitle">নতুন সদস্য হিসেবে নাম নিবন্ধন করুন</p>
+            <form id="register-form" onsubmit="handleRegister(event)">
+                <div class="input-group">
+                    <label>সম্পূর্ণ নাম</label>
+                    <input type="text" placeholder="আপনার পুরো নাম লিখুন" required>
+                </div>
+                <div class="input-group">
+                    <label>ইউজারনেম</label>
+                    <input type="text" placeholder="একটি ইউনিক ইউজারনেম দিন" required>
+                </div>
+                <div class="input-group">
+                    <label>হোয়াটসঅ্যাপ নম্বর</label>
+                    <input type="tel" placeholder="যেমন: 017XXXXXXXX" required>
+                </div>
+                <div class="input-group">
+                    <label>এনআইডি (NID) নম্বর</label>
+                    <input type="number" placeholder="আপনার এনআইডি নম্বর দিন" required>
+                </div>
+                <div class="input-group">
+                    <label>এক কপি ছবি আপলোড করুন</label>
+                    <input type="file" accept="image/*" required>
+                </div>
+                <div class="input-group">
+                    <label>পাসওয়ার্ড তৈরি করুন</label>
+                    <input type="password" placeholder="একটি শক্তিশালী পাসওয়ার্ড দিন" required>
+                </div>
+                <button type="submit" class="btn-submit">নিবন্ধন সম্পন্ন করুন</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // গ্লোবাল নাম কনফিগারেশন
+        const CONFIG = { 
+            somityName: "বন্ধুত্ব সঞ্চয় সমিতি",
+            logoUrl: "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=150&auto=format&fit=crop&q=60"
+        };
+        document.getElementById('somity-name').innerText = CONFIG.somityName;
+        document.getElementById('somity-logo').src = CONFIG.logoUrl;
+
+        // ট্যাব পরিবর্তন ফাংশন
+        function switchTab(tabId) {
+            document.querySelectorAll('.form-box').forEach(box => box.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // লাইভ ঘড়ি ও তারিখ আপডেট ফাংশন
+        function updateClock() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateStr = now.toLocaleDateString('bn-BD', options);
+            const timeStr = now.toLocaleTimeString('bn-BD');
+            document.getElementById('live-clock').innerText = dateStr + " | " + timeStr;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // ফর্ম সাবমিট ভ্যালিডেশন চেক
+        function handleRegister(e) {
+            e.preventDefault();
+            alert('আপনার সকল তথ্য সফলভাবে যাচাই করা হয়েছে! (পরবর্তী ধাপে এটি ডেটাবেজে জমা হবে)');
+        }
+    </script>
+</body>
+</html>
