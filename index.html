@@ -4,7 +4,158 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>স্বাগতম - বন্ধুত্ব সঞ্চয় সমিতি</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* সব ডিজাইন কোড এখানে সরাসরি যুক্ত করা হলো */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(rgba(9, 132, 227, 0.65), rgba(116, 185, 255, 0.65)), 
+                        url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1600&auto=format&fit=crop&q=80') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 20px 20px 20px;
+        }
+
+        .clock-timer {
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 25px;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 440px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .logo-box {
+            margin-bottom: 15px;
+        }
+
+        .app-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #0984e3;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            color: #2d3436;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .tab-box {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #dfe6e9;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #636e72;
+            transition: 0.3s;
+        }
+
+        .tab-btn.active {
+            color: #0984e3;
+            border-bottom: 3px solid #0984e3;
+        }
+
+        .form-box {
+            display: none;
+        }
+
+        .form-box.active {
+            display: block;
+        }
+
+        .subtitle {
+            color: #636e72;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            color: #2d3436;
+            margin-bottom: 5px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #dfe6e9;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group input[type="file"] {
+            padding: 7px;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .input-group input:focus {
+            border-color: #0984e3;
+            box-shadow: 0 0 8px rgba(9, 132, 227, 0.2);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: #0984e3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background: #024f8e;
+        }
+    </style>
 </head>
 <body>
     <div class="clock-timer" id="live-clock">লোড হচ্ছে...</div>
@@ -32,7 +183,7 @@
                     <label>পাসওয়ার্ড</label>
                     <input type="password" placeholder="আপনার পাসওয়ার্ড দিন" required>
                 </div>
-                <button type="submit" class="btn-submit">لগইন করুন</button>
+                <button type="submit" class="btn-submit">লগইন করুন</button>
             </form>
         </div>
 
@@ -56,7 +207,7 @@
                     <input type="number" placeholder="আপনার এনআইডি নম্বর দিন" required>
                 </div>
                 <div class="input-group">
-                    <label>এক কপি ছবি আপলোড করুন</label>
+                    <label>এক কবি ছবি আপলোড করুন</label>
                     <input type="file" accept="image/*" required>
                 </div>
                 <div class="input-group">
@@ -69,7 +220,6 @@
     </div>
 
     <script>
-        // গ্লোবাল নাম কনফিগারেশন
         const CONFIG = { 
             somityName: "বন্ধুত্ব সঞ্চয় সমিতি",
             logoUrl: "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=150&auto=format&fit=crop&q=60"
@@ -77,7 +227,6 @@
         document.getElementById('somity-name').innerText = CONFIG.somityName;
         document.getElementById('somity-logo').src = CONFIG.logoUrl;
 
-        // ট্যাব পরিবর্তন ফাংশন
         function switchTab(tabId) {
             document.querySelectorAll('.form-box').forEach(box => box.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -86,7 +235,6 @@
             event.target.classList.add('active');
         }
 
-        // লাইভ ঘড়ি ও তারিখ আপডেট ফাংশন
         function updateClock() {
             const now = new Date();
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -97,10 +245,9 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // ফর্ম সাবমিট ভ্যালিডেশন চেক
         function handleRegister(e) {
             e.preventDefault();
-            alert('আপনার সকল তথ্য সফলভাবে যাচাই করা হয়েছে! (পরবর্তী ধাপে এটি ডেটাবেজে জমা হবে)');
+            alert('আপনার সকল তথ্য সফলভাবে যাচাই করা হয়েছে!');
         }
     </script>
 </body>
