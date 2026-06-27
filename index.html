@@ -3,69 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>সদস্য লগইন ও নিবন্ধন - বন্ধুত্ব সঞ্চয় সমিতি</title>
+    <title>বন্ধুত্ব সঞ্চয় সমিতি</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: radial-gradient(circle, #1e3c72 0%, #2a5298 100%);
-            background-attachment: fixed;
+        /* নিখুঁত ফুল-স্ক্রিন ব্যাকগ্রাউন্ড থিম */
+        html, body {
+            height: 100%;
             margin: 0;
             padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #1f4068 0%, #162447 100%) !important;
+            background-attachment: fixed;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
         }
         .container {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 35px;
             border-radius: 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             width: 100%;
-            max-width: 430px;
+            max-width: 420px;
             box-sizing: border-box;
             color: #ffffff;
         }
         .logo-container {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
-        .logo-container img {
-            width: 80px;
-            height: 80px;
+        /* লোগো না থাকলেও এই ডিভটি একটি সুন্দর আইকন লোগো হিসেবে কাজ করবে */
+        .default-logo {
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid rgba(255, 255, 255, 0.5);
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+            margin-bottom: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
         }
-        h2 { text-align: center; margin: 10px 0; font-size: 24px; }
-        h3 { text-align: center; margin-bottom: 20px; font-size: 18px; color: #e0e0e0; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-size: 14px; }
+        h2 { text-align: center; margin: 5px 0; font-size: 26px; font-weight: 600; letter-spacing: 0.5px; }
+        h3 { text-align: center; margin-bottom: 25px; font-size: 16px; color: #cbd5e1; font-weight: 400; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; margin-bottom: 6px; font-size: 14px; color: #e2e8f0; }
         .form-group input {
-            width: 100%; padding: 10px; background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px;
-            color: #ffffff; font-size: 14px; box-sizing: border-box;
+            width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px;
+            color: #ffffff; font-size: 14px; box-sizing: border-box; transition: 0.3s;
         }
-        .form-group input::placeholder { color: #dddddd; }
-        .form-group input:focus { outline: none; background: rgba(255, 255, 255, 0.3); }
+        .form-group input::placeholder { color: #94a3b8; }
+        .form-group input:focus { outline: none; background: rgba(255, 255, 255, 0.15); border-color: #38bdf8; }
         .btn {
-            width: 100%; padding: 12px; background: #ffffff; color: #1e3c72;
-            border: none; border-radius: 8px; font-size: 16px; font-weight: bold;
-            cursor: pointer; transition: 0.3s; margin-top: 10px;
+            width: 100%; padding: 12px; background: #38bdf8; color: #ffffff;
+            border: none; border-radius: 10px; font-size: 16px; font-weight: bold;
+            cursor: pointer; transition: 0.3s; margin-top: 10px; box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
         }
-        .btn:hover { background: #f0f0f0; }
-        .toggle-link { text-align: center; margin-top: 15px; font-size: 14px; }
-        .toggle-link a { color: #ffffff; font-weight: bold; text-decoration: none; border-bottom: 1px dashed white; }
+        .btn:hover { background: #0ea5e9; transform: translateY(-1px); }
+        .toggle-link { text-align: center; margin-top: 20px; font-size: 14px; color: #94a3b8; }
+        .toggle-link a { color: #38bdf8; font-weight: bold; text-decoration: none; }
+        .toggle-link a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <div class="logo-container">
-            <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
+            <div class="default-logo">👥</div>
             <h2>বন্ধুত্ব সঞ্চয় সমিতি</h2>
         </div>
         
@@ -98,11 +109,11 @@
                 </div>
                 <div class="form-group">
                     <label>হোয়াটসঅ্যাপ নম্বর</label>
-                    <input type="text" id="reg_whatsapp" required placeholder="যেমন: 01748273661">
+                    <input type="text" id="reg_whatsapp" required placeholder="আপনার নম্বর দিন">
                 </div>
                 <div class="form-group">
                     <label>এনআইডি (NID) নম্বর</label>
-                    <input type="text" id="reg_nid" required placeholder="আপনার এনআইডি নম্বর লিখুন">
+                    <input type="text" id="reg_nid" required placeholder="আপনার এনআইডি নম্বর">
                 </div>
                 <div class="form-group">
                     <label>পাসওয়ার্ড তৈরি করুন</label>
@@ -125,7 +136,6 @@
             }
         }
 
-        // নিবন্ধন সাবমিট
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('reg_name').value;
@@ -144,11 +154,10 @@
                 alert(data.message);
                 if (data.success) toggleSections('login');
             } catch (error) {
-                alert('সার্ভারে যোগাযোগ করা যাচ্ছে না। ক্লাউডফ্লেয়ার বিল্ড শেষ হওয়া পর্যন্ত ৩০ সেকেন্ড অপেক্ষা করুন।');
+                alert('সার্ভার আপডেট হচ্ছে, কিছুক্ষণ পর আবার চেষ্টা করুন।');
             }
         });
 
-        // লগইন সাবমিট
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('login_username').value.toLowerCase().trim();
