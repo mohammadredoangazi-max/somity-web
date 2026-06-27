@@ -9,9 +9,9 @@ export async function onRequestPost(context) {
     }
 
     try {
-        const { name, username, whatsapp_number, nid_number, password } = await context.request.json();
+        const { name, username, whatsapp_number, password } = await context.request.json();
 
-        // ইউজার অলরেডি আছে কি না চেক
+        // ইউজার আগে থেকেই আছে কি না চেক
         const existingUser = await env.DB.prepare("SELECT * FROM users WHERE username = ?")
             .bind(username)
             .first();
@@ -23,13 +23,12 @@ export async function onRequestPost(context) {
             });
         }
 
-        // সেফ মোড: শুধুমাত্র সেই ডেটাগুলোই সেভ করবে যা তোর ডেটাবেজ টেবিলে নিশ্চিতভাবে আছে (name, username, password, role)
-        // এতে করে NID বা Whatsapp কলাম না থাকলেও SQL এরর আসবে না, মেম্বার তৈরি হয়ে যাবে।
-        await env.DB.prepare("INSERT INTO users (name, username, password, role) VALUES (?, ?, ?, 'member')")
-            .bind(name, username, password)
+        // তোর ডেটাবেজের নিখুঁত স্ট্রাকচার অনুযায়ী ডেটা ইনসার্ট (NID ছাড়া)
+        await env.DB.prepare("INSERT INTO users (name, username, whatsapp_number, password, role) VALUES (?, ?, ?, ?, 'member')")
+            .bind(name, username, whatsapp_number, password)
             .run();
 
-        return new Response(JSON.stringify({ success: true, message: "নিবন্ধন সফল হয়েছে! (কলাম সীমাবদ্ধতার কারণে শুধু মূল প্রোফাইল সংরক্ষিত হয়েছে)" }), {
+        return new Response(JSON.stringify({ success: true, message: "নিবন্ধন সফল হয়েছে!" }), {
             status: 200,
             headers: { "Content-Type": "application/json; charset=UTF-8" }
         });
