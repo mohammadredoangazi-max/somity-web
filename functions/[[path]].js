@@ -6,9 +6,10 @@ export async function onRequest(context) {
   if (url.pathname === "/api/register" && request.method === "POST") {
     try {
       const data = await request.json();
-      const { name, username, password, whatsapp_number } = data;
+      // এখানে nid এবং photo_name-কেও ব্যাকএন্ডে রিসিভ করা হচ্ছে
+      const { name, username, password, whatsapp_number, nid, photo_name } = data;
 
-      // ডেটাবেজে মেম্বার যোগ করার SQL
+      // ডেটাবেজে মেম্বার যোগ করার SQL (ভবিষ্যতের জন্য NID ও ফটো সেভ করার জায়গা রাখা হলো)
       await env.DB.prepare(
         "INSERT INTO Users (name, username, password, whatsapp_number, role) VALUES (?, ?, ?, ?, 'member')"
       )
@@ -19,7 +20,7 @@ export async function onRequest(context) {
         headers: { "Content-Type": "application/json" }
       });
     } catch (err) {
-      return new Response(JSON.stringify({ success: false, message: "ইউজারনেমটি ইতিমধ্যে ব্যবহৃত হয়েছে বা ভুল হয়েছে।" }), {
+      return new Response(JSON.stringify({ success: false, message: "ইউজারনেমটি ইতিমধ্যে ব্যবহৃত হয়েছে।" }), {
         status: 400,
         headers: { "Content-Type": "application/json" }
       });
@@ -57,6 +58,6 @@ export async function onRequest(context) {
     }
   }
 
-  // যদি API রিকোয়েস্ট না হয়, তবে আমাদের মেইন সাইটের পেজগুলো দেখাবে (Static Assets)
+  // যদি API রিকোয়েস্ট না হয়, তবে স্ট্যাটিক ফাইলগুলো দেখাবে
   return env.ASSETS.fetch(request);
 }
