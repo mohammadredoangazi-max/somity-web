@@ -4,76 +4,185 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>সদস্য ড্যাশবোর্ড - বন্ধুত্ব সঞ্চয় সমিতি</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body class="dashboard-body">
-
-    <div class="dashboard-container">
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .header-card {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            background: #1e3c72;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .profile-info h3 {
+            margin: 0;
+            font-size: 20px;
+            color: #333;
+        }
+        .profile-info p {
+            margin: 5px 0 0 0;
+            color: #666;
+            font-size: 14px;
+        }
+        .logout-btn {
+            background: #ff5e5e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .logout-btn:hover { background: #e04f4f; }
         
-        <div class="dash-header">
-            <div class="user-info">
-                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=60" alt="Profile" class="user-avatar">
-                <div>
-                    <h3>স্বাগতম, রহিম আহমেদ</h3>
-                    <p>সদস্য আইডি: #005</p>
-                </div>
-            </div>
-            <button class="btn-logout" onclick="alert('লগআউট করা হচ্ছে...')">লগআউট</button>
-        </div>
+        /* ড্যাশবোর্ড গ্রিড */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 5px solid #1e3c72;
+        }
+        .card.blue { border-left-color: #2196F3; }
+        .card.green { border-left-color: #4CAF50; }
+        .card.red { border-left-color: #F44336; }
+        
+        .card h4 { margin: 0 0 10px 0; color: #666; font-size: 16px; }
+        .card p { margin: 0; font-size: 28px; font-weight: bold; color: #222; }
+        
+        /* টেবিল স্টাইল */
+        .table-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .table-section h3 { margin-top: 0; color: #333; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th { background-color: #f8f9fa; color: #555; }
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status.paid { background: #e8f5e9; color: #2e7d32; }
+        .status.due { background: #ffebee; color: #c62828; }
+    </style>
+</head>
+<body>
 
-        <div class="stats-grid">
-            <div class="stat-card blue">
-                <h4>আমার মোট জমা</h4>
-                <p>২,৫০০ টাকা</p>
-            </div>
-            <div class="stat-card green">
-                <h4>সমিতির মোট ফান্ড</h4>
-                <p>২৫,০০০ টাকা</p>
-            </div>
-            <div class="stat-card red">
-                <h4>আমার লোন বাকি</h4>
-                <p>০ টাকা</p>
+    <div class="header-card">
+        <div class="profile-section">
+            <div class="profile-avatar" id="user-initial">👤</div>
+            <div class="profile-info">
+                <h3 id="dashboard-user-name">লোড হচ্ছে...</h3>
+                <p>সদস্য আইডি: <span id="user-id-text">#সদস্য</span></p>
             </div>
         </div>
+        <button class="logout-btn" onclick="logout()">লগআউট</button>
+    </div>
 
-        <div class="content-box">
-            <h3>আমার মাসিক জমার বিবরণ (২০২৬)</h3>
-            <table class="report-table">
-                <thead>
-                    <tr>
-                        <th>মাস</th>
-                        <th>টাকার পরিমাণ</th>
-                        <th>জমা দেওয়ার তারিখ</th>
-                        <th>অবস্থা (Status)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>জানুয়ারি ২০২৬</td>
-                        <td>৫০০ টাকা</td>
-                        <td>০৫-০১-২০২৬</td>
-                        <td><span class="badge success">পরিশোধিত</span></td>
-                    </tr>
-                    <tr>
-                        <td>ফেব্রুয়ারি ২০২৬</td>
-                        <td>৫০০ টাকা</td>
-                        <td>০৪-০২-২০২৬</td>
-                        <td><span class="badge success">পরিশোধিত</span></td>
-                    </tr>
-                    <tr>
-                        <td>মার্চ ২০২৬</td>
-                        <td>৫০০ টাকা</td>
-                        <td>--</td>
-                        <td><span class="badge danger">বাকি আছে</span></td>
-                    </tr>
-                </tbody>
-            </table>
+    <div class="grid">
+        <div class="card blue">
+            <h4>আমার মোট জমা</h4>
+            <p>০ টাকা</p>
         </div>
+        <div class="card green">
+            <h4>সমিতির মোট ফান্ড</h4>
+            <p>২৫,০০০ টাকা</p>
+        </div>
+        <div class="card red">
+            <h4>আমার লোন বাকি</h4>
+            <p>০ টাকা</p>
+        </div>
+    </div>
 
+    <div class="table-section">
+        <h3>আমার মাসিক জমার বিবরণ (২০২৬)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>মাস</th>
+                    <th>টাকার পরিমাণ</th>
+                    <th>জমা দেওয়ার তারিখ</th>
+                    <th>অবস্থা (Status)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>জানুয়ারি ২০২৬</td>
+                    <td>০ টাকা</td>
+                    <td>--</td>
+                    <td><span class="status due">বাকি আছে</span></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <script>
-        // এখানে পরবর্তীতে ডেটাবেজ থেকে আসল তথ্য এনে দেখানো হবে
+        // পেজ লোড হওয়ার সাথে সাথে ইউজারের নাম সেট করা
+        document.addEventListener("DOMContentLoaded", () => {
+            const storedName = localStorage.getItem('username');
+            
+            if (storedName) {
+                // ইউজারনেম বড় হাতের অক্ষরে কনভার্ট করে দেখানো
+                const displayName = storedName.toUpperCase();
+                document.getElementById('dashboard-user-name').innerText = "স্বাগতম, " + displayName;
+                
+                // নামের প্রথম অক্ষর আইকনে বসানো
+                document.getElementById('user-initial').innerText = displayName.charAt(0);
+                document.getElementById('user-id-text').innerText = "@" + storedName.toLowerCase();
+            } else {
+                // যদি লগইন না করে কেউ সরাসরি আসে, তবে লগইন পেজে ফেরত পাঠানো
+                window.location.href = 'index.html';
+            }
+        });
+
+        // লগআউট ফাংশন
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
     </script>
 </body>
 </html>
