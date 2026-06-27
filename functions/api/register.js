@@ -9,7 +9,20 @@ export async function onRequestPost(context) {
     }
 
     try {
-        const { name, username, whatsapp_number, password } = await context.request.json();
+        const body = await context.request.json();
+        
+        // ফ্রন্টএন্ড থেকে পাঠানো ডেটা আলাদা করা
+        const name = body.name;
+        const username = body.username ? body.username.toLowerCase().trim() : "";
+        const whatsapp_number = body.whatsapp_number; // এই ভ্যালুটা অবশ্যই লাগবে
+        const password = body.password;
+
+        if (!username || !password || !whatsapp_number) {
+            return new Response(JSON.stringify({ success: false, message: "সবগুলো ঘর সঠিকভাবে পূরণ করুন।" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json; charset=UTF-8" }
+            });
+        }
 
         // ইউজার আগে থেকেই আছে কি না চেক
         const existingUser = await env.DB.prepare("SELECT * FROM users WHERE username = ?")
@@ -23,12 +36,12 @@ export async function onRequestPost(context) {
             });
         }
 
-        // তোর ডেটাবেজের নিখুঁত স্ট্রাকচার অনুযায়ী ডেটা ইনসার্ট (NID ছাড়া)
+        // তোর ডেটাবেজের 'whatsapp_number' কলামে সরাসরি ভ্যালু পাস করা হচ্ছে
         await env.DB.prepare("INSERT INTO users (name, username, whatsapp_number, password, role) VALUES (?, ?, ?, ?, 'member')")
             .bind(name, username, whatsapp_number, password)
             .run();
 
-        return new Response(JSON.stringify({ success: true, message: "নিবন্ধন সফল হয়েছে!" }), {
+        return new Response(JSON.stringify({ success: true, message: "নিবন্ধন সফল হয়েছে! এখন লগইন করুন।" }), {
             status: 200,
             headers: { "Content-Type": "application/json; charset=UTF-8" }
         });
