@@ -3,216 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>স্বাগতম - বন্ধুত্ব সঞ্চয় সমিতি</title>
-    <style>
-        /* সব ডিজাইন কোড এখানে সরাসরি যুক্ত করা হলো */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(rgba(9, 132, 227, 0.65), rgba(116, 185, 255, 0.65)), 
-                        url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1600&auto=format&fit=crop&q=80') no-repeat center center fixed;
-            background-size: cover;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 60px 20px 20px 20px;
-        }
-
-        .clock-timer {
-            background: rgba(0, 0, 0, 0.7);
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .form-container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px 25px;
-            border-radius: 16px;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 440px;
-            text-align: center;
-            backdrop-filter: blur(5px);
-        }
-
-        .logo-box {
-            margin-bottom: 15px;
-        }
-
-        .app-logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #0984e3;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-        }
-
-        h2 {
-            color: #2d3436;
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-
-        .tab-box {
-            display: flex;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #dfe6e9;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 10px;
-            background: none;
-            border: none;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            color: #636e72;
-            transition: 0.3s;
-        }
-
-        .tab-btn.active {
-            color: #0984e3;
-            border-bottom: 3px solid #0984e3;
-        }
-
-        .form-box {
-            display: none;
-        }
-
-        .form-box.active {
-            display: block;
-        }
-
-        .subtitle {
-            color: #636e72;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-
-        .input-group {
-            text-align: left;
-            margin-bottom: 15px;
-        }
-
-        .input-group label {
-            display: block;
-            color: #2d3436;
-            margin-bottom: 5px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #dfe6e9;
-            border-radius: 6px;
-            font-size: 14px;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        .input-group input[type="file"] {
-            padding: 7px;
-            background: #fff;
-            cursor: pointer;
-        }
-
-        .input-group input:focus {
-            border-color: #0984e3;
-            box-shadow: 0 0 8px rgba(9, 132, 227, 0.2);
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 12px;
-            background: #0984e3;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
-        }
-
-        .btn-submit:hover {
-            background: #024f8e;
-        }
-    </style>
+    <title>বন্ধুত্ব সঞ্চয় সমিতি</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="clock-timer" id="live-clock">লোড হচ্ছে...</div>
-
-    <div class="form-container">
-        <div class="logo-box">
-            <img id="somity-logo" src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=150&auto=format&fit=crop&q=60" alt="সমিতি লোগো" class="app-logo">
-        </div>
-
-        <h2 id="somity-name">বন্ধুত্ব সঞ্চয় সমিতি</h2>
+    <div class="container">
+        <h2>বন্ধুত্ব সঞ্চয় সমিতি</h2>
         
-        <div class="tab-box">
-            <button class="tab-btn active" onclick="switchTab('login-box')">লগইন</button>
-            <button class="tab-btn" onclick="switchTab('register-box')">নিবন্ধন (Register)</button>
+        <div class="tabs">
+            <button id="loginTabBtn" class="active" onclick="switchTab('login')">লগইন</button>
+            <button id="registerTabBtn" onclick="switchTab('register')">নিবন্ধন (Register)</button>
         </div>
 
-        <div id="login-box" class="form-box active">
-            <p class="subtitle">আপনার অ্যাকাউন্ট লগইন করুন</p>
-            <form id="login-form">
+        <div id="loginSection" class="form-section">
+            <p class="section-title">সদস্য হিসেবে লগইন করুন</p>
+            <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="input-group">
-                    <label>ইউজারনেম</label>
-                    <input type="text" placeholder="আপনার ইউজারনেম দিন" required>
+                    <label for="loginUsername">ইউজারনেম</label>
+                    <input type="text" id="loginUsername" required placeholder="আপনার ইউজারনেম লিখুন">
                 </div>
                 <div class="input-group">
-                    <label>পাসওয়ার্ড</label>
-                    <input type="password" placeholder="আপনার পাসওয়ার্ড দিন" required>
+                    <label for="loginPassword">পাসওয়ার্ড</label>
+                    <input type="password" id="loginPassword" required placeholder="আপনার পাসওয়ার্ড লিখুন">
                 </div>
                 <button type="submit" class="btn-submit">লগইন করুন</button>
             </form>
         </div>
 
-        <div id="register-box" class="form-box">
-            <p class="subtitle">নতুন সদস্য হিসেবে নাম নিবন্ধন করুন</p>
-            <form id="register-form" onsubmit="handleRegister(event)">
+        <div id="registerSection" class="form-section hidden">
+            <p class="section-title">নতুন সদস্য হিসেবে নাম নিবন্ধন করুন</p>
+            <form id="registerForm" onsubmit="handleRegister(event)">
                 <div class="input-group">
-                    <label>সম্পূর্ণ নাম</label>
-                    <input type="text" placeholder="আপনার পুরো নাম লিখুন" required>
+                    <label for="regName">সম্পূর্ণ নাম</label>
+                    <input type="text" id="regName" required placeholder="যেমন: MD REDOAN">
                 </div>
                 <div class="input-group">
-                    <label>ইউজারনেম</label>
-                    <input type="text" placeholder="একটি ইউনিক ইউজারনেম দিন" required>
+                    <label for="regUsername">ইউজারনেম</label>
+                    <input type="text" id="regUsername" required placeholder="ইংরেজি ছোট অক্ষরে (যেমন: redoan)">
                 </div>
                 <div class="input-group">
-                    <label>হোয়াটসঅ্যাপ নম্বর</label>
-                    <input type="tel" placeholder="যেমন: 017XXXXXXXX" required>
+                    <label for="regWhatsapp">হোয়াটসঅ্যাপ নম্বর</label>
+                    <input type="tel" id="regWhatsapp" required placeholder="যেমন: 01748723661">
                 </div>
                 <div class="input-group">
-                    <label>এনআইডি (NID) নম্বর</label>
-                    <input type="number" placeholder="আপনার এনআইডি নম্বর দিন" required>
+                    <label for="regNid">এনআইডি (NID) নম্বর</label>
+                    <input type="text" id="regNid" required placeholder="আপনার এনআইডি নম্বর">
                 </div>
                 <div class="input-group">
-                    <label>এক কবি ছবি আপলোড করুন</label>
-                    <input type="file" accept="image/*" required>
+                    <label for="regPhoto">এক কপি ছবি আপলোড করুন</label>
+                    <input type="file" id="regPhoto" accept="image/*">
                 </div>
                 <div class="input-group">
-                    <label>পাসওয়ার্ড তৈরি করুন</label>
-                    <input type="password" placeholder="একটি শক্তিশালী পাসওয়ার্ড দিন" required>
+                    <label for="regPassword">পাসওয়ার্ড তৈরি করুন</label>
+                    <input type="password" id="regPassword" required placeholder="পাসওয়ার্ড দিন">
                 </div>
                 <button type="submit" class="btn-submit">নিবন্ধন সম্পন্ন করুন</button>
             </form>
@@ -220,34 +63,97 @@
     </div>
 
     <script>
-        const CONFIG = { 
-            somityName: "বন্ধুত্ব সঞ্চয় সমিতি",
-            logoUrl: "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=150&auto=format&fit=crop&q=60"
-        };
-        document.getElementById('somity-name').innerText = CONFIG.somityName;
-        document.getElementById('somity-logo').src = CONFIG.logoUrl;
+        // ট্যাব পরিবর্তন করার লজিক (Login <-> Register)
+        function switchTab(tab) {
+            const loginSection = document.getElementById('loginSection');
+            const registerSection = document.getElementById('registerSection');
+            const loginBtn = document.getElementById('loginTabBtn');
+            const registerBtn = document.getElementById('registerTabBtn');
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.form-box').forEach(box => box.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            if (tab === 'login') {
+                loginSection.classList.remove('hidden');
+                registerSection.classList.add('hidden');
+                loginBtn.classList.add('active');
+                registerBtn.classList.remove('active');
+            } else {
+                loginSection.classList.add('hidden');
+                registerSection.classList.remove('hidden');
+                loginBtn.classList.remove('active');
+                registerBtn.classList.add('active');
+            }
+        }
+
+        // রেজিস্ট্রেশন সাবমিট হ্যান্ডলার
+        async function handleRegister(event) {
+            event.preventDefault();
             
-            document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
+            const name = document.getElementById('regName').value;
+            const username = document.getElementById('regUsername').value.toLowerCase().trim();
+            const whatsapp_number = document.getElementById('regWhatsapp').value;
+            const nid = document.getElementById('regNid').value;
+            const password = document.getElementById('regPassword').value;
+            const photoFile = document.getElementById('regPhoto').files[0];
+            const photo_name = photoFile ? photoFile.name : 'no-photo.jpg';
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, username, password, whatsapp_number, nid, photo_name })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    alert('আপনার সকল তথ্য সফলভাবে যাচাই ও নিবন্ধন করা হয়েছে!');
+                    document.getElementById('registerForm').reset();
+                    switchTab('login'); // নিবন্ধন শেষে লগইন ট্যাবে নিয়ে যাবে
+                } else {
+                    alert(data.message || 'নিবন্ধন ব্যর্থ হয়েছে। আবার চেষ্টা করুন।');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('সার্ভার সংযোগে সমস্যা হচ্ছে!');
+            }
         }
 
-        function updateClock() {
-            const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const dateStr = now.toLocaleDateString('bn-BD', options);
-            const timeStr = now.toLocaleTimeString('bn-BD');
-            document.getElementById('live-clock').innerText = dateStr + " | " + timeStr;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
+        // লগইন সাবমিট হ্যান্ডলার
+        async function handleLogin(event) {
+            event.preventDefault();
 
-        function handleRegister(e) {
-            e.preventDefault();
-            alert('আপনার সকল তথ্য সফলভাবে যাচাই করা হয়েছে!');
+            const username = document.getElementById('loginUsername').value.toLowerCase().trim();
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    alert('লগইন সফল হয়েছে! ড্যাশবোর্ডে আপনাকে স্বাগতম।');
+                    
+                    // সেশন বা লোকাল স্টোরেজে তথ্য সেভ রাখা (ভবিষ্যতের জন্য)
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('role', data.role);
+                    localStorage.setItem('name', data.name);
+
+                    // অ্যাডমিন নাকি সাধারণ মেম্বার তা যাচাই করে সঠিক পেজে পাঠানো
+                    if (data.role === 'admin') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'member.html';
+                    }
+                } else {
+                    alert(data.message || 'ইউজারনেম বা পাসওয়ার্ড ভুল হয়েছে!');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('সার্ভারের সাথে যোগাযোগ করা যাচ্ছে না!');
+            }
         }
     </script>
 </body>
