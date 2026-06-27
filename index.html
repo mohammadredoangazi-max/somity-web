@@ -4,7 +4,93 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>সদস্য লগইন ও নিবন্ধন - বন্ধুত্ব সঞ্চয় সমিতি</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* সম্পূর্ণ রেডিমেড প্রফেশনাল ডিজাইন - কোনো আলাদা CSS ফাইল লাগবে না */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #74b9ff, #a29bfe);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 420px;
+            box-sizing: border-box;
+        }
+        h2 {
+            text-align: center;
+            color: #2d3436;
+            margin-bottom: 5px;
+            font-size: 24px;
+        }
+        h3 {
+            text-align: center;
+            color: #6c5ce7;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #2d3436;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dfe6e9;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+        .form-group input:focus {
+            border-color: #6c5ce7;
+            outline: none;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background: #5b4cc4;
+        }
+        .toggle-link {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #636e72;
+        }
+        .toggle-link a {
+            color: #6c5ce7;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .toggle-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
 
@@ -53,7 +139,6 @@
     </div>
 
     <script>
-        // লগইন ও নিবন্ধন ফর্মের মধ্যে পরিবর্তন করার ফাংশন
         function toggleSections(target) {
             if (target === 'register') {
                 document.getElementById('login-section').style.display = 'none';
@@ -64,7 +149,7 @@
             }
         }
 
-        // নিবন্ধন ফর্ম সাবমিট হ্যান্ডলার
+        // নিবন্ধন হ্যান্ডলার
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('reg_name').value;
@@ -86,11 +171,11 @@
                     alert(data.message || 'নিবন্ধন ব্যর্থ হয়েছে!');
                 }
             } catch (error) {
-                alert('সার্ভারের সাথে যোগাযোগ করা যাচ্ছে না!');
+                alert('সার্ভারের সাথে যোগাযোগ করা যাচ্ছে না! ক্লাউডফ্লেয়ারে আপনার D1 ডেটাবেজ বাইন্ডিংটি চেক করুন।');
             }
         });
 
-        // লগইন ফর্ম সাবমিট হ্যান্ডলার
+        // লগইন হ্যান্ডলার
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('login_username').value;
@@ -107,13 +192,7 @@
                     alert('লগইন সফল হয়েছে! ড্যাশবোর্ডে আপনাকে স্বাগতম।');
                     localStorage.setItem('username', username);
                     localStorage.setItem('role', data.role);
-                    localStorage.setItem('name', data.name);
-
-                    if (data.role === 'admin') {
-                        window.location.href = 'admin.html';
-                    } else {
-                        window.location.href = 'member.html';
-                    }
+                    window.location.href = data.role === 'admin' ? 'admin.html' : 'member.html';
                 } else {
                     alert(data.message || 'ইউজারনেম বা পাসওয়ার্ড ভুল!');
                 }
