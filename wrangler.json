@@ -1,0 +1,15 @@
+{
+  "name": "somity-web",
+  "main": "index.html",
+  "compatibility_date": "2026-06-27",
+  "assets": {
+    "directory": "."
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "somity-db",
+      "database_id": "f77e3526-4757-40b1-8295-ed9cf0a1c807"
+    }
+  ]
+]
