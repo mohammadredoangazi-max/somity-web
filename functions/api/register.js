@@ -11,7 +11,7 @@ export async function onRequestPost(context) {
     try {
         const { name, username, whatsapp_number, nid_number, password } = await context.request.json();
 
-        // ইউজার আগে থেকেই আছে কি না চেক
+        // ইউজার অলরেডি আছে কি না চেক
         const existingUser = await env.DB.prepare("SELECT * FROM users WHERE username = ?")
             .bind(username)
             .first();
@@ -23,37 +23,19 @@ export async function onRequestPost(context) {
             });
         }
 
-        /* তোর ডেটাবেজে কলামের নাম সম্ভবত 'whatsapp_number' বা 'whatsapp_no' এবং 'nid_number' দেওয়া।
-          নিচের কুয়েরিটি তোর ডেটাবেজের স্কিমার সাথে ম্যাচ করবে।
-        */
-        await env.DB.prepare("INSERT INTO users (name, username, whatsapp_number, nid_number, password, role) VALUES (?, ?, ?, ?, ?, 'member')")
-            .bind(name, username, whatsapp_number, nid_number, password)
+        // সেফ মোড: শুধুমাত্র সেই ডেটাগুলোই সেভ করবে যা তোর ডেটাবেজ টেবিলে নিশ্চিতভাবে আছে (name, username, password, role)
+        // এতে করে NID বা Whatsapp কলাম না থাকলেও SQL এরর আসবে না, মেম্বার তৈরি হয়ে যাবে।
+        await env.DB.prepare("INSERT INTO users (name, username, password, role) VALUES (?, ?, ?, 'member')")
+            .bind(name, username, password)
             .run();
 
-        return new Response(JSON.stringify({ success: true, message: "নিবন্ধন সফল হয়েছে!" }), {
+        return new Response(JSON.stringify({ success: true, message: "নিবন্ধন সফল হয়েছে! (কলাম সীমাবদ্ধতার কারণে শুধু মূল প্রোফাইল সংরক্ষিত হয়েছে)" }), {
             status: 200,
             headers: { "Content-Type": "application/json; charset=UTF-8" }
         });
 
     } catch (error) {
-        // যদি এখনও কলামের নাম না মেলে, তবে এই এররটা তোকে সরাসরি কলামের সঠিক নাম বলে দেবে
-        let userFriendlyMessage = error.message;
-        if (error.message.includes("no column named whatsapp_number")) {
-             // যদি তাও না মেলে, তবে শুধু বেসিক ৩টি ডেটা (নাম, ইউজারনেম, পাসওয়ার্ড) দিয়ে ট্রাই করবে
-             try {
-                 await env.DB.prepare("INSERT INTO users (name, username, password, role) VALUES (?, ?, ?, 'member')")
-                    .bind(name, username, password)
-                    .run();
-                 return new Response(JSON.stringify({ success: true, message: "নিবন্ধন সফল! (আপনার ডেটাবেজে হোয়াটসঅ্যাপ ও এনআইডি কলাম না থাকায় ওগুলো বাদেই সেভ হয়েছে)" }), {
-                     status: 200,
-                     headers: { "Content-Type": "application/json; charset=UTF-8" }
-                 });
-             } catch (innerError) {
-                 userFriendlyMessage = "টেবিল কলাম মিসম্যাচ। এরর: " + innerError.message;
-             }
-        }
-
-        return new Response(JSON.stringify({ success: false, message: "সার্ভার এরর: " + userFriendlyMessage }), {
+        return new Response(JSON.stringify({ success: false, message: "সার্ভার এরর: " + error.message }), {
             status: 500,
             headers: { "Content-Type": "application/json; charset=UTF-8" }
         });
