@@ -4,22 +4,104 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>বন্ধুত্ব সঞ্চয় সমিতি</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* রেডিমেড ইনলাইন সুন্দর ডিজাইন */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 25px;
+        }
+        .tab-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        .tab-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: #666;
+            transition: 0.3s;
+        }
+        .tab-buttons button.active {
+            color: #007bff;
+            border-bottom: 3px solid #007bff;
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+    </style>
 </head>
 <body>
 
     <div class="container">
         <h1>বন্ধুত্ব সঞ্চয় সমিতি</h1>
 
-        <!-- ট্যাব বোতামসমূহ -->
         <div class="tab-buttons">
             <button onclick="switchTab('login-tab')" id="login-btn" class="active">লগইন</button>
             <button onclick="switchTab('register-tab')" id="register-btn">নিবন্ধন (Register)</button>
         </div>
 
-        <!-- সদস্য লগইন সেকশন -->
+        <!-- লগইন ফর্ম -->
         <div id="login-tab" class="tab-content active">
-            <h2>সদস্য হিসেবে লগইন করুন</h2>
             <form id="loginForm">
                 <div class="form-group">
                     <label>ইউজারনেম</label>
@@ -33,9 +115,8 @@
             </form>
         </div>
 
-        <!-- সদস্য নিবন্ধন সেকশন -->
+        <!-- নিবন্ধন ফর্ম -->
         <div id="register-tab" class="tab-content">
-            <h2>নতুন সদস্য হিসেবে নাম নিবন্ধন করুন</h2>
             <form id="registerForm">
                 <div class="form-group">
                     <label>সম্পূর্ণ নাম</label>
@@ -43,19 +124,11 @@
                 </div>
                 <div class="form-group">
                     <label>ইউজারনেম</label>
-                    <input type="text" id="reg_username" placeholder="ইংরেজি ছোট অক্ষরে (যেমন: redoan12)" required>
+                    <input type="text" id="reg_username" placeholder="ইংরেজি ছোট অক্ষরে লিখুন" required>
                 </div>
                 <div class="form-group">
                     <label>হোয়াটসঅ্যাপ নম্বর</label>
                     <input type="text" id="reg_whatsapp" placeholder="যেমন: 01748723661" required>
-                </div>
-                <div class="form-group">
-                    <label>এনআইডি (NID) নম্বর</label>
-                    <input type="text" id="reg_nid" placeholder="আপনার এনআইডি নম্বর">
-                </div>
-                <div class="form-group">
-                    <label>এক কপি ছবি আপলোড করুন</label>
-                    <input type="file" id="reg_photo">
                 </div>
                 <div class="form-group">
                     <label>পাসওয়ার্ড তৈরি করুন</label>
@@ -67,11 +140,9 @@
     </div>
 
     <script>
-        // ট্যাব পরিবর্তন করার ফাংশন
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-buttons button').forEach(btn => btn.classList.remove('active'));
-            
             document.getElementById(tabId).classList.add('active');
             if(tabId === 'login-tab') {
                 document.getElementById('login-btn').classList.add('active');
@@ -80,7 +151,6 @@
             }
         }
 
-        // রেজিস্ট্রেশন সাবমিট হ্যান্ডলার
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('reg_name').value;
@@ -102,11 +172,10 @@
                     alert(data.message || 'নিবন্ধন ব্যর্থ হয়েছে!');
                 }
             } catch (error) {
-                alert('সার্ভারের সাথে যোগাযোগ করা যাচ্ছে না!');
+                alert('সার্ভারের সাথে যোগাযোগ করা যাচ্ছে না! দয়া করে ক্লাউডফ্লেয়ারে Functions বাইন্ডিং চেক করুন।');
             }
         });
 
-        // লগইন সাবমিট হ্যান্ডলার
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('login_username').value;
@@ -120,16 +189,10 @@
                 });
                 const data = await response.json();
                 if (response.ok && data.success) {
-                    alert('লগইন সফল হয়েছে! ড্যাশবোর্ডে আপনাকে স্বাগতম।');
+                    alert('লগইন সফল হয়েছে!');
                     localStorage.setItem('username', username);
                     localStorage.setItem('role', data.role);
-                    localStorage.setItem('name', data.name);
-
-                    if (data.role === 'admin') {
-                        window.location.href = 'admin.html';
-                    } else {
-                        window.location.href = 'member.html';
-                    }
+                    window.location.href = data.role === 'admin' ? 'admin.html' : 'member.html';
                 } else {
                     alert(data.message || 'ইউজারনেম বা পাসওয়ার্ড ভুল!');
                 }
