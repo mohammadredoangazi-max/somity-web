@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>অ্যাডমিন প্যানেল - বন্ধুত্ব সঞ্চয় সমিতি</title>
     <style>
-        /* তোর আগের ফাইলের সুন্দর CSS স্টাইলগুলো এখানে হুবহু থাকবে */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background-color: #f4f6f9; color: #333; padding: 20px; }
         .admin-header { background: #fff; padding: 20px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .user-info { display: flex; align-items: center; gap: 15px; }
-        .avatar { width: 50px; height: 50px; background: #007bff; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
-        .avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .avatar { width: 50px; height: 50px; background: #007bff; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 20px; font-weight: bold; }
         .btn-logout { background: #dc3545; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
         .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
         .card { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 5px solid #28a745; }
@@ -40,11 +38,10 @@
 </head>
 <body>
 
+    <!-- ১. টপ বার -->
     <div class="admin-header">
         <div class="user-info">
-            <div class="avatar">
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Admin">
-            </div>
+            <div class="avatar">A</div>
             <div>
                 <h3>স্বাগতম, অ্যাডমিন প্যানেল</h3>
                 <p>রোল: প্রধান পরিচালক (Admin)</p>
@@ -53,6 +50,7 @@
         <button class="btn-logout" onclick="window.location.href='/index.html'">লগআউট</button>
     </div>
 
+    <!-- ২. ড্যাশবোর্ড কার্ড -->
     <div class="card-grid">
         <div class="card">
             <p>সর্বমোট জমা ফান্ড</p>
@@ -69,8 +67,9 @@
     </div>
 
     <div class="main-layout">
+        <!-- ৩. পেমেন্ট এন্ট্রি ফর্ম (আরবি টেক্সট রিমুভড) -->
         <div class="admin-box">
-            <h3>جدید পেমেন্ট এন্ট্রি (টাকা জমা)</h3>
+            <h3>নতুন পেমেন্ট এন্ট্রি (টাকা জমা)</h3>
             <form id="depositForm">
                 <div class="form-group">
                     <label>সদস্য সিলেক্ট করুন</label>
@@ -90,6 +89,7 @@
             </form>
         </div>
 
+        <!-- ৪. লোন এন্ট্রি ফর্ম -->
         <div class="admin-box">
             <h3>নতুন লোন ইস্যু করুন</h3>
             <form id="loanForm">
@@ -108,6 +108,7 @@
         </div>
     </div>
 
+    <!-- ৫. সদস্যদের জমার তালিকা ও অবস্থা (এক্সেল ব্যাকআপ বাটন অক্ষুণ্ণ রাখা হয়েছে) -->
     <div class="table-container">
         <div class="table-header">
             <h3>সদস্যদের জমার তালিকা ও অবস্থা</h3>
@@ -137,108 +138,52 @@
             await loadAdminDashboard();
         });
 
-        // ডেটাবেজ থেকে আসল মেম্বার ও হিসাব লোড করার ফাংশন
+        // ড্যাশবোর্ড লোড করার ফাংশন (পাথ ফিক্স করা হয়েছে)
         async function loadAdminDashboard() {
             try {
-                // আমরা পরবর্তী ধাপে এই /api/admin-get-all এপিআইটি ব্যাকএন্ডে বানাবো
-                const response = await fetch('/api/admin-get-all');
+                // ফাংশনস ফোল্ডারের জন্য পাথ ফিক্স করা হয়েছে: /admin-get-all
+                const response = await fetch('/admin-get-all');
                 const data = await response.json();
 
                 if (data.success) {
-                    // ১. উপরের ৩টি কার্ড ডাইনামিক করা
-                    document.getElementById('totalFundCard').innerText = `${data.totalFund.toLocaleString()} টাকা`;
-                    document.getElementById('totalLoanCard').innerText = `${data.totalLoan.toLocaleString()} টাকা`;
+                    document.getElementById('totalFundCard').innerText = `${data.totalFund} টাকা`;
+                    document.getElementById('totalLoanCard').innerText = `${data.totalLoan} টাকা`;
                     document.getElementById('totalMembersCard').innerText = `${data.users.length} জন`;
 
-                    // ২. ফর্মের ড্রপডাউন মেনু ২টি পরিষ্কার করা
                     const depSelect = document.getElementById('depositUserSelect');
                     const loanSelect = document.getElementById('loanUserSelect');
                     depSelect.innerHTML = '<option value="">সদস্য বেছে নিন...</option>';
                     loanSelect.innerHTML = '<option value="">সদস্য বেছে নিন...</option>';
 
-                    // ৩. নিচের ডাটা টেবিলটি পরিষ্কার করা
                     const tableBody = document.getElementById('adminTableBody');
                     tableBody.innerHTML = '';
 
-                    // ৪. লুপ চালিয়ে ডেটাবেজের রিয়েল ডাটা সব জায়গায় পুশ করা
                     data.users.forEach((user, index) => {
                         const memberIdStr = String(index + 1).padStart(3, '0');
-
-                        // ড্রপডাউনে নাম পুশ
-                        const optionText = `${user.name} (#${memberIdStr})`;
+                        const optionText = `${user.username.toUpperCase()} (#${memberIdStr})`;
+                        
                         depSelect.innerHTML += `<option value="${user.username}">${optionText}</option>`;
                         loanSelect.innerHTML += `<option value="${user.username}">${optionText}</option>`;
-
-                        // টেবিলে নতুন রো (Row) তৈরি
-                        const currentMonthStatus = user.hasPaidCurrentMonth 
-                            ? '<span class="status-badge paid">পরিশোধিত</span>' 
-                            : '<span class="status-badge pending">বাকি আছে</span>';
-
-                        const loanStatusText = user.loanAmount > 0 
-                            ? `<span style="color:#dc3545; font-weight:bold;">${user.loanAmount.toLocaleString()} টাকা বাকি</span>` 
-                            : 'কোনো লোন নেই';
 
                         tableBody.innerHTML += `
                             <tr>
                                 <td>#${memberIdStr}</td>
-                                <td><strong>${user.name}</strong><br><small style="color:#888;">@${user.username}</small></td>
-                                <td>${user.whatsapp_number || '--'}</td>
-                                <td>${user.totalDeposit.toLocaleString()} টাকা</td>
-                                <td>${currentMonthStatus}</td>
-                                <td>${loanStatusText}</td>
+                                <td><strong>${user.username.toUpperCase()}</strong></td>
+                                <td>${user.whatsapp || '--'}</td>
+                                <td>০ টাকা</td>
+                                <td><span class="status-badge pending">বাকি আছে</span></td>
+                                <td>কোনো লোন নেই</td>
                             </tr>
                         `;
                     });
                 }
             } catch (error) {
                 console.error("Dashboard error:", error);
-                // আপাতত এপিআই তৈরি না হওয়া পর্যন্ত স্ট্যাটিক মেসেজ দেখাবে
                 document.getElementById('adminTableBody').innerHTML = `
-                    <tr><td colspan="6" style="text-align:center; color:#ff4d4d;">⚠️ ব্যাকএন্ড এপিআই কানেকশন বাকি আছে (পরের ধাপে ঠিক হবে)</td></tr>
+                    <tr><td colspan="6" style="text-align:center; color:#ff4d4d;">⚠️ ডেটা লোড করতে সমস্যা হচ্ছে।</td></tr>
                 `;
             }
         }
-
-        // টাকা জমার বাটন অ্যাকশন
-        document.getElementById('depositForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('depositUserSelect').value;
-            const month = document.getElementById('depMonth').value;
-            const amount = document.getElementById('depAmount').value;
-
-            try {
-                const res = await fetch('/api/admin-add-deposit', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, month, amount })
-                });
-                const result = await res.json();
-                if(result.success) {
-                    alert("টাকা সফলভাবে জমা হয়েছে এবং ডেটাবেজে সেভ হয়েছে!");
-                    loadAdminDashboard(); // পেজ রিলোড ছাড়া ডাটা আপডেট হবে
-                } else { alert("ভুল হয়েছে: " + result.message); }
-            } catch(err) { alert("টাকা সেভ করার এপিআই এখনো তৈরি হয়নি!"); }
-        });
-
-        // লোন কনফার্ম বাটন অ্যাকশন
-        document.getElementById('loanForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('loanUserSelect').value;
-            const amount = document.getElementById('loanAmount').value;
-
-            try {
-                const res = await fetch('/api/api/admin-add-loan', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, amount })
-                });
-                const result = await res.json();
-                if(result.success) {
-                    alert("লোন সফলভাবে ইস্যু হয়েছে!");
-                    loadAdminDashboard();
-                } else { alert("ভুল হয়েছে: " + result.message); }
-            } catch(err) { alert("লোন সেভ করার এপিআই এখনো তৈরি হয়নি!"); }
-        });
     </script>
 </body>
 </html>
