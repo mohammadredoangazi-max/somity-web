@@ -22,12 +22,13 @@
         .admin-box h3 { margin-bottom: 20px; color: #222; }
         .form-group { margin-bottom: 15px; }
         label { display: block; color: #444; margin-bottom: 5px; font-size: 14px; font-weight: 600; }
-        input, select { width: 100%; padding: 11px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; outline: none; }
+        input, select { width: 100%; padding: 11px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; outline: none; background-color: #fff; }
         .btn-submit { width: 100%; padding: 12px; background: #007bff; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; }
         .btn-submit.btn-loan { background: #ffc107; color: #000; }
         .table-container { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .btn-backup { background: #28a745; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .btn-backup { background: #28a745; color: #fff; border: none; padding: 10px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .btn-backup:hover { background: #218838; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
         th, td { padding: 12px 15px; border-bottom: 1px solid #eee; font-size: 14px; }
         th { background-color: #f8f9fa; color: #555; }
@@ -38,7 +39,6 @@
 </head>
 <body>
 
-    <!-- ১. টপ বার -->
     <div class="admin-header">
         <div class="user-info">
             <div class="avatar">A</div>
@@ -50,7 +50,6 @@
         <button class="btn-logout" onclick="window.location.href='/index.html'">লগআউট</button>
     </div>
 
-    <!-- ২. ড্যাশবোর্ড কার্ড -->
     <div class="card-grid">
         <div class="card">
             <p>সর্বমোট জমা ফান্ড</p>
@@ -67,7 +66,6 @@
     </div>
 
     <div class="main-layout">
-        <!-- ৩. পেমেন্ট এন্ট্রি ফর্ম (আরবি টেক্সট রিমুভড) -->
         <div class="admin-box">
             <h3>নতুন পেমেন্ট এন্ট্রি (টাকা জমা)</h3>
             <form id="depositForm">
@@ -79,7 +77,21 @@
                 </div>
                 <div class="form-group">
                     <label>মাসের নাম</label>
-                    <input type="text" id="depMonth" placeholder="যেমন: মার্চ ২০২৬" required>
+                    <select id="depMonth" required>
+                        <option value="">মাস বেছে নিন...</option>
+                        <option value="জানুয়ারি ২০২৬">জানুয়ারি ২০২৬</option>
+                        <option value="ফেব্রুয়ারি ২০২৬">ফেব্রুয়ারি ২০২৬</option>
+                        <option value="মার্চ ২০২৬" selected>মার্চ ২০২৬</option>
+                        <option value="এপ্রিল ২০২৬">এপ্রিল ২০২৬</option>
+                        <option value="মে ২০২৬">মে ২০২৬</option>
+                        <option value="জুন ২০২৬">জুন ২০২৬</option>
+                        <option value="জুলাই ২০২৬">জুলাই ২০২৬</option>
+                        <option value="অগাস্ট ২০২৬">অগাস্ট ২০২৬</option>
+                        <option value="সেপ্টেম্বর ২০২৬">সেপ্টেম্বর ২০২৬</option>
+                        <option value="অক্টোবর ২০২৬">অক্টোবর ২০২৬</option>
+                        <option value="নভেম্বর ২০২৬">নভেম্বর ২০২৬</option>
+                        <option value="ডিসেম্বর ২০২৬">ডিসেম্বর ২০২৬</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>টাকার পরিমাণ</label>
@@ -89,7 +101,6 @@
             </form>
         </div>
 
-        <!-- ৪. লোন এন্ট্রি ফর্ম -->
         <div class="admin-box">
             <h3>নতুন লোন ইস্যু করুন</h3>
             <form id="loanForm">
@@ -108,11 +119,10 @@
         </div>
     </div>
 
-    <!-- ৫. সদস্যদের জমার তালিকা ও অবস্থা (এক্সেল ব্যাকআপ বাটন অক্ষুণ্ণ রাখা হয়েছে) -->
     <div class="table-container">
         <div class="table-header">
             <h3>সদস্যদের জমার তালিকা ও অবস্থা</h3>
-            <button class="btn-backup">📥 এক্সেল/CSV ব্যাকআপ ডাউনলোড করুন</button>
+            <button class="btn-backup" id="downloadBackupBtn">📥 এক্সেল/CSV ব্যাকআপ ডাউনলোড করুন</button>
         </div>
         <table>
             <thead>
@@ -134,18 +144,24 @@
     </div>
 
     <script>
+        let globalUsersData = []; // ব্যাকআপ ফাইল তৈরির জন্য ডেটা রাখার গ্লোবাল ভেরিয়েবল
+
         document.addEventListener("DOMContentLoaded", async () => {
             await loadAdminDashboard();
+
+            // ব্যাকআপ বোতামের ক্লিকের কাজ অ্যাক্টিভেট করা হলো
+            document.getElementById('downloadBackupBtn').addEventListener('click', downloadCSVBackup);
         });
 
-        // ড্যাশবোর্ড লোড করার ফাংশন (পাথ ফিক্স করা হয়েছে)
+        // ড্যাশবোর্ড লোড করার ফাংশন
         async function loadAdminDashboard() {
             try {
-                // ফাংশনস ফোল্ডারের জন্য পাথ ফিক্স করা হয়েছে: /admin-get-all
                 const response = await fetch('/admin-get-all');
                 const data = await response.json();
 
                 if (data.success) {
+                    globalUsersData = data.users; // ডাউনলোড করার জন্য ডেটা সেভ করে রাখলাম
+
                     document.getElementById('totalFundCard').innerText = `${data.totalFund} টাকা`;
                     document.getElementById('totalLoanCard').innerText = `${data.totalLoan} টাকা`;
                     document.getElementById('totalMembersCard').innerText = `${data.users.length} জন`;
@@ -183,6 +199,40 @@
                     <tr><td colspan="6" style="text-align:center; color:#ff4d4d;">⚠️ ডেটা লোড করতে সমস্যা হচ্ছে।</td></tr>
                 `;
             }
+        }
+
+        // এক্সেল/CSV ব্যাকআপ ডাউনলোড করার অটোমেটিক ফাংশন
+        function downloadCSVBackup() {
+            if (globalUsersData.length === 0) {
+                alert("ডাউনলোড করার মতো কোনো সদস্যের তথ্য খুঁজে পাওয়া যায়নি!");
+                return;
+            }
+
+            // এক্সেল ফাইলের হেডার এবং বাংলা ফন্ট ঠিক রাখার বম (BOM) সেটআপ
+            let csvContent = "\uFEFF"; 
+            csvContent += "সদস্য আইডি,নাম,হোয়াটসঅ্যাপ নম্বর,মোট জমা,চলতি মাসের অবস্থা,লোন স্ট্যাটাস\n";
+
+            globalUsersData.forEach((user, index) => {
+                const id = `#${String(index + 1).padStart(3, '0')}`;
+                const name = user.username.toUpperCase();
+                const whatsapp = user.whatsapp || '--';
+                const totalDeposit = "০ টাকা";
+                const status = "বাকি আছে";
+                const loanStatus = "কোনো লোন নেই";
+
+                csvContent += `"${id}","${name}","${whatsapp}","${totalDeposit}","${status}","${loanStatus}"\n`;
+            });
+
+            // ব্রাউজারে অটো ফাইল ডাউনলোড ট্রিগার করা
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Somity_Backup_${new Date().toISOString().slice(0,10)}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     </script>
 </body>
