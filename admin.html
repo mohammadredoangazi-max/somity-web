@@ -6,120 +6,145 @@
     <title>সমিতি - অ্যাডমিন প্যানেল</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f4f6f9; display: none; }
+        body { background-color: #f4f6f9; font-family: Arial, sans-serif; }
         .card { border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .stat-card { border-left: 5px solid; }
+        /* লগইন স্ক্রিনের স্টাইল */
+        #login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #212529; display: flex; align-items: center;
+            justify-content: center; z-index: 9999;
+        }
+        .login-box { width: 100%; max-width: 400px; padding: 30px; background: white; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-dark bg-dark px-3 mb-4">
-        <span class="navbar-brand mb-0 h1">👋 স্বাগতম, অ্যাডমিন প্যানেল (প্রধান পরিচালক)</span>
-        <button class="btn btn-danger btn-sm" onclick="location.reload()">লগআউট</button>
-    </nav>
-
-    <div class="container-fluid px-4">
-        <div class="row g-3 mb-4">
-            <div class="col-md-4">
-                <div class="card p-3 stat-card" style="border-left-color: #28a745;">
-                    <small class="text-muted fw-bold">সর্বমোট জমা ফান্ড</small>
-                    <h3 id="total-fund">০ টাকা</h3>
-                </div>
+    <div id="login-overlay">
+        <div class="login-box card text-center">
+            <h4 class="fw-bold mb-3 text-dark">अ্যাডমিন লগইন</h4>
+            <p class="text-muted small">প্যানেলে প্রবেশ করতে তথ্য দিন</p>
+            <div class="mb-3 text-start">
+                <label class="form-label text-dark">ইউজারনেম</label>
+                <input type="text" id="admin-username" class="form-control" placeholder="যেমন: admin">
             </div>
-            <div class="col-md-4">
-                <div class="card p-3 stat-card" style="border-left-color: #007bff;">
-                    <small class="text-muted fw-bold">মোট লোন দেওয়া হয়েছে</small>
-                    <h3 id="total-loan">০ টাকা</h3>
-                </div>
+            <div class="mb-3 text-start">
+                <label class="form-label text-dark">পাসওয়ার্ড</label>
+                <input type="password" id="admin-password" class="form-control" placeholder="••••••••">
             </div>
-            <div class="col-md-4">
-                <div class="card p-3 stat-card" style="border-left-color: #dc3545;">
-                    <small class="text-muted fw-bold">মোট সদস্য সংখ্যা</small>
-                    <h3 id="total-members">০ জন</h3>
-                </div>
-            </div>
+            <button onclick="checkAdminLogin()" class="btn btn-primary w-100 fw-bold">লগইন করুন</button>
         </div>
+    </div>
 
-        <div class="row g-4 mb-4">
-            <div class="col-md-6">
-                <div class="card p-4">
-                    <h5 class="mb-3 fw-bold">নতুন পেমেন্ট এন্ট্রি (টাকা জমা)</h5>
-                    <form id="deposit-form">
-                        <div class="mb-3">
-                            <label class="form-label">সদস্য সিলেক্ট করুন</label>
-                            <select class="form-select user-dropdown" required>
-                                <option value="">সদস্য বেছে নিন...</option>
-                            </select>
-                        </div>
-                        <div class="row g-2 mb-3">
-                            <div class="col">
-                                <label class="form-label">মাস</label>
-                                <select class="form-select" id="dep-month">
-                                    <option>জানুয়ারি</option><option>ফেব্রুয়ারি</option><option selected>মার্চ</option>
-                                    <option>এপ্রিল</option><option>মে</option><option>জুন</option>
-                                    <option>জুলাই</option><option>আগস্ট</option><option>সেপ্টেম্বর</option>
-                                    <option>অক্টোবর</option><option>নভেম্বর</option><option>ডিসেম্বর</option>
+    <div id="dashboard-content" style="display: none;">
+        <nav class="navbar navbar-dark bg-dark px-3 mb-4">
+            <span class="navbar-brand mb-0 h1">👋 স্বাগতম, অ্যাডমিন প্যানেল</span>
+            <button class="btn btn-danger btn-sm" onclick="adminLogout()">লগআউট</button>
+        </nav>
+
+        <div class="container-fluid px-4">
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="card p-3 stat-card" style="border-left-color: #28a745;">
+                        <small class="text-muted fw-bold">সর্বমোট জমা ফান্ড</small>
+                        <h3 id="total-fund">০ টাকা</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-3 stat-card" style="border-left-color: #007bff;">
+                        <small class="text-muted fw-bold">মোট লোন দেওয়া হয়েছে</small>
+                        <h3 id="total-loan">০ টাকা</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-3 stat-card" style="border-left-color: #dc3545;">
+                        <small class="text-muted fw-bold">মোট সদস্য সংখ্যা</small>
+                        <h3 id="total-members">০ জন</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <div class="card p-4">
+                        <h5 class="mb-3 fw-bold">নতুন পেমেন্ট এন্ট্রি (টাকা জমা)</h5>
+                        <form id="deposit-form">
+                            <div class="mb-3">
+                                <label class="form-label">সদস্য সিলেক্ট করুন</label>
+                                <select class="form-select user-dropdown" required>
+                                    <option value="">সদস্য বেছে নিন...</option>
                                 </select>
                             </div>
-                            <div class="col">
-                                <label class="form-label">বছর</label>
-                                <select class="form-select" id="dep-year">
-                                    <option>২০২৬</option>
+                            <div class="row g-2 mb-3">
+                                <div class="col">
+                                    <label class="form-label">মাস</label>
+                                    <select class="form-select" id="dep-month">
+                                        <option>জানুয়ারি</option><option>ফেব্রুয়ারি</option><option selected>মার্চ</option>
+                                        <option>এপ্রিল</option><option>মে</option><option>জুন</option>
+                                        <option>জুলাই</option><option>আগস্ট</option><option>সেপ্টেম্বর</option>
+                                        <option>অক্টোবর</option><option>নভেম্বর</option><option>ডিসেম্বর</option>
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <label class="form-label">বছর</label>
+                                    <select class="form-select" id="dep-year">
+                                        <option>২০২৬</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">টাকার পরিমাণ</label>
+                                <input type="number" class="form-control" id="dep-amount" placeholder="যেমন: ৫০০" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 fw-bold">জমা করুন ও মেসেজ পাঠান</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card p-4">
+                        <h5 class="mb-3 fw-bold">নতুন লোন ইস্যু করুন</h5>
+                        <form id="loan-form">
+                            <div class="mb-3">
+                                <label class="form-label">সদস্য সিলেক্ট করুন</label>
+                                <select class="form-select user-dropdown" required>
+                                    <option value="">সদস্য বেছে নিন...</option>
                                 </select>
                             </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">টাকার পরিমাণ</label>
-                            <input type="number" class="form-control" id="dep-amount" placeholder="যেমন: ৫০০" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100 fw-bold">জমা করুন ও মেসেজ পাঠান</button>
-                    </form>
+                            <div class="mb-3">
+                                <label class="form-label">লোনের পরিমাণ</label>
+                                <input type="number" class="form-control" id="loan-amount" placeholder="যেমন: ৫০০০" required>
+                            </div>
+                            <button type="submit" class="btn btn-warning w-100 fw-bold">লোন কনফার্ম করুন</button>
+                        </form>
+                    </div>
                 </div>
             </div>
 
-            <div class="col-md-6">
-                <div class="card p-4">
-                    <h5 class="mb-3 fw-bold">নতুন লোন ইস্যু করুন</h5>
-                    <form id="loan-form">
-                        <div class="mb-3">
-                            <label class="form-label">সদস্য সিলেক্ট করুন</label>
-                            <select class="form-select user-dropdown" required>
-                                <option value="">সদস্য বেছে নিন...</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">লোনের পরিমাণ</label>
-                            <input type="number" class="form-control" id="loan-amount" placeholder="যেমন: ৫০০০" required>
-                        </div>
-                        <button type="submit" class="btn btn-warning w-100 fw-bold">লোন কনফার্ম করুন</button>
-                    </form>
+            <div class="card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold m-0">সদস্যদের জমার তালিকা ও অবস্থা</h5>
+                    <button class="btn btn-success btn-sm fw-bold" onclick="downloadCSV()">📥 এক্সেল/CSV ব্যাকআপ ডাউনলোড করুন</button>
                 </div>
-            </div>
-        </div>
-
-        <div class="card p-4 mb-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-bold m-0">সদস্যদের জমার তালিকা ও অবস্থা</h5>
-                <button class="btn btn-success btn-sm fw-bold" onclick="downloadCSV()">📥 এক্সেল/CSV ব্যাকআপ ডাউনলোড করুন</button>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped text-center align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>আইডি</th>
-                            <th>নাম</th>
-                            <th>হোয়াটসঅ্যাপ নম্বর</th>
-                            <th>মোট জমা</th>
-                            <th>চলতি মাসের অবস্থা</th>
-                            <th>লোন স্ট্যাটাস</th>
-                        </tr>
-                    </thead>
-                    <tbody id="member-table-body">
-                        <tr>
-                            <td colspan="6" class="text-muted">সদস্যদের তালিকা লোড হচ্ছে...</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped text-center align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>আইডি</th>
+                                <th>নাম</th>
+                                <th>হোয়াটসঅ্যাপ নম্বর</th>
+                                <th>মোট জমা</th>
+                                <th>চলতি মাসের অবস্থা</th>
+                                <th>লোন স্ট্যাটাস</th>
+                            </tr>
+                        </thead>
+                        <tbody id="member-table-body">
+                            <tr>
+                                <td colspan="6" class="text-muted">সদস্যদের তালিকা লোড হচ্ছে...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -127,20 +152,25 @@
     <script>
         let allUserData = [];
 
-        // ১. সিকিউরিটি লগইন লক
-        document.addEventListener("DOMContentLoaded", function() {
-            const password = prompt("অ্যাডমিন প্যানেলে প্রবেশ করতে পাসওয়ার্ড দিন:");
+        // লগইন চেক ফাংশন
+        function checkAdminLogin() {
+            const u = document.getElementById('admin-username').value;
+            const p = document.getElementById('admin-password').value;
             
-            if (password === "admin123") { 
-                document.body.style.display = 'block'; 
-                loadAdminData(); 
+            if(u === "admin" && p === "admin123") {
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('dashboard-content').style.display = 'block';
+                loadAdminData();
             } else {
-                alert("ভুল পাসওয়ার্ড! আপনি অ্যাডমিন নন।");
-                window.location.href = "index.html"; 
+                alert("ভুল ইউজারনেম বা পাসওয়ার্ড!");
             }
-        });
+        }
 
-        // ২. ডাটাবেজ থেকে লাইভ ডাটা লোড করার ফাংশন
+        function adminLogout() {
+            location.reload();
+        }
+
+        // ডাটাবেজ থেকে ডাটা লোড
         function loadAdminData() {
             fetch('/admin-get-all') 
             .then(res => res.json())
@@ -148,12 +178,10 @@
                 if(data.success) {
                     allUserData = data.results || [];
                     
-                    // কার্ডের ডাটা আপডেট
-                    document.getElementById('total-fund').innerText = data.totalFund + " টাকা";
-                    document.getElementById('total-loan').innerText = data.totalLoan + " টাকা";
+                    document.getElementById('total-fund').innerText = (data.totalFund || 0) + " টাকা";
+                    document.getElementById('total-loan').innerText = (data.totalLoan || 0) + " টাকা";
                     document.getElementById('total-members').innerText = allUserData.length + " জন";
 
-                    // টেবিল ও ড্রপডাউন রিসেট
                     const tableBody = document.getElementById('member-table-body');
                     const dropdowns = document.querySelectorAll('.user-dropdown');
                     
@@ -161,23 +189,21 @@
                     dropdowns.forEach(d => d.innerHTML = '<option value="">সদস্য বেছে নিন...</option>');
 
                     if(allUserData.length === 0) {
-                        tableBody.innerHTML = '<tr><td colspan="6" class="text-muted">কোনো সদস্য এখনো রেজিস্ট্রেশন করেনি।</td></tr>';
+                        tableBody.innerHTML = '<tr><td colspan="6" class="text-muted">কোনো সদস্য ডাটা পাওয়া যায়নি।</td></tr>';
                         return;
                     }
 
-                    // লাইভ লুপ চালিয়ে টেবিল ও ড্রপডাউন পূরণ
                     allUserData.forEach((user, index) => {
                         tableBody.innerHTML += `
                             <tr>
                                 <td>${index + 1}</td>
                                 <td><strong>${user.username}</strong></td>
-                                <td>${user.whatsapp}</td>
-                                <td class="text-success fw-bold">${user.totalDeposit} টাকা</td>
-                                <td><span class="badge ${user.currentMonthStatus === 'পরিশোধিত' ? 'bg-success' : 'bg-danger'}">${user.currentMonthStatus}</span></td>
-                                <td class="text-danger fw-bold">${user.loanStatus}</td>
+                                <td>${user.whatsapp || '--'}</td>
+                                <td class="text-success fw-bold">${user.totalDeposit || 0} টাকা</td>
+                                <td><span class="badge ${user.currentMonthStatus === 'পরিশোধিত' ? 'bg-success' : 'bg-danger'}">${user.currentMonthStatus || 'বাকি'}</span></td>
+                                <td class="text-danger fw-bold">${user.loanStatus || 'কোনো লোন নেই'}</td>
                             </tr>
                         `;
-
                         dropdowns.forEach(d => {
                             d.innerHTML += `<option value="${user.username}">${user.username}</option>`;
                         });
@@ -192,20 +218,16 @@
             });
         }
 
-        // ৩. এক্সেল/CSV ডাউনলোড ফাংশন
         function downloadCSV() {
-            if(allUserData.length === 0) {
-                alert("ডাউনলোড করার মতো কোনো মেম্বার ডাটা নেই!");
-                return;
-            }
+            if(allUserData.length === 0) { alert("ডাউনলোড করার মতো তথ্য নেই!"); return; }
             let csvContent = "data:text/csv;charset=utf-8,\uFEFFID,Name,WhatsApp,Total Deposit,Month Status,Loan Status\n";
             allUserData.forEach((user, index) => {
-                csvContent += `${index + 1},${user.username},${user.whatsapp},${user.totalDeposit},${user.currentMonthStatus},${user.loanStatus}\n`;
+                csvContent += `${index + 1},${user.username},${user.whatsapp || ''},${user.totalDeposit || 0},${user.currentMonthStatus || ''},${user.loanStatus || ''}\n`;
             });
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "Somity_Members_Report.csv");
+            link.setAttribute("download", "Somity_Report.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
