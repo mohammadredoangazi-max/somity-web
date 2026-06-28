@@ -5,58 +5,179 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>সদস্য ড্যাশবোর্ড - বন্ধুত্ব সঞ্চয় সমিতি</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; }
-        .header-card { background: #ffffff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .profile-section { display: flex; align-items: center; gap: 15px; }
-        .profile-avatar { width: 60px; height: 60px; background: #1e3c72; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: bold; }
-        .profile-info h3 { margin: 0; font-size: 20px; color: #333; }
-        .profile-info p { margin: 5px 0 0 0; color: #666; font-size: 14px; }
-        .logout-btn { background: #ff5e5e; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-left: 5px solid #1e3c72; }
-        .card.blue { border-left-color: #2196F3; }
-        .card.green { border-left-color: #4CAF50; }
-        .card.red { border-left-color: #F44336; }
-        .card h4 { margin: 0 0 10px 0; color: #666; font-size: 16px; }
-        .card p { margin: 0; font-size: 28px; font-weight: bold; color: #222; }
-        .table-section { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #f8f9fa; color: #555; }
-        .status { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-        .status.due { background: #ffebee; color: #c62828; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            padding: 20px;
+        }
+
+        .header-bar {
+            background: #fff;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            background: #007bff;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .user-text h3 {
+            font-size: 18px;
+            color: #222;
+        }
+
+        .user-text p {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .btn-logout {
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: #bd2130;
+        }
+
+        /* কার্ড গ্রিড */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 5px solid #007bff;
+        }
+
+        .card.total-fund { border-left-color: #28a745; }
+        .card.total-loan { border-left-color: #dc3545; }
+
+        .card p {
+            font-size: 14px;
+            color: #666;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .card h2 {
+            font-size: 28px;
+            color: #222;
+        }
+
+        /* টেবিল স্টাইল */
+        .table-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            overflow-x: auto;
+        }
+
+        .table-container h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+            color: #222;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-badge.paid { background: #d4edda; color: #155724; }
+        .status-badge.pending { background: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
 
-    <div class="header-card">
-        <div class="profile-section">
-            <div class="profile-avatar" id="user-initial">👤</div>
-            <div class="profile-info">
-                <h3 id="dashboard-user-name">স্বাগতম...</h3>
-                <p>সদস্য আইডি: <span id="user-id-text">#--</span></p>
+    <div class="header-bar">
+        <div class="user-info">
+            <div class="avatar" id="userAvatar">U</div>
+            <div class="user-text">
+                <h3 id="welcomeName">স্বাগতম, সদস্য</h3>
+                <p id="memberIdDisplay">সদস্য আইডি: লোড হচ্ছে...</p>
             </div>
         </div>
-        <button class="logout-btn" onclick="logout()">লগআউট</button>
+        <button class="btn-logout" id="logoutBtn">লগআউট</button>
     </div>
 
-    <div class="grid">
-        <div class="card blue">
-            <h4>আমার মোট জমা</h4>
-            <p id="my-deposit">০ টাকা</p>
+    <div class="card-grid">
+        <div class="card">
+            <p>আমার মোট জমা</p>
+            <h2 id="myDepositVal">০ টাকা</h2>
         </div>
-        <div class="card green">
-            <h4>সমিতির মোট ফান্ড</h4>
-            <p id="total-fund">০ টাকা</p> 
+        <div class="card total-fund">
+            <p>সমিতির মোট ফান্ড</p>
+            <h2 id="totalFundVal">০ টাকা</h2>
         </div>
-        <div class="card red">
-            <h4>আমার লোন বাকি</h4>
-            <p id="my-loan">০ টাকা</p>
+        <div class="card total-loan">
+            <p>আমার লোন বাকি</p>
+            <h2 id="myLoanVal">০ টাকা</h2>
         </div>
     </div>
 
-    <div class="table-section">
-        <h3>আমার মাসিক জমার বিবরণ (২০২৬)</h3>
+    <div class="table-container">
+        <h3 id="tableTitle">আমার মাসিক জমার বিবরণ (২০২৬)</h3>
         <table>
             <thead>
                 <tr>
@@ -66,50 +187,60 @@
                     <th>অবস্থা (Status)</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="paymentTableBody">
                 <tr>
                     <td>জানুয়ারি ২০২৬</td>
                     <td>০ টাকা</td>
                     <td>--</td>
-                    <td><span class="status due">বাকি আছে</span></td>
+                    <td><span class="status-badge pending">বাকি আছে</span></td>
                 </tr>
             </tbody>
         </table>
     </div>
 
     <script>
+        // পেজ লোড হওয়ার সাথে সাথে ডেটা নিয়ে আসার লজিক
         document.addEventListener("DOMContentLoaded", async () => {
-            const storedUsername = localStorage.getItem('username');
-            
-            if (!storedUsername) {
-                window.location.href = 'index.html';
+            const username = localStorage.getItem('username');
+
+            // যদি কেউ লগইন না করে সরাসরি লিঙ্কে ঢুকে পড়ে, তাকে লগইন পেজে ব্যাক করাবে
+            if (!username) {
+                alert("দয়া করে আগে লগইন করুন!");
+                window.location.href = '/index.html';
                 return;
             }
 
-            const displayName = storedUsername.toUpperCase();
-            document.getElementById('dashboard-user-name').innerText = "স্বাগতম, " + displayName;
-            document.getElementById('user-initial').innerText = displayName.charAt(0);
-
-            // এপিআই থেকে ডেটা আনা
             try {
-                const response = await fetch(`/api/get-member-info?username=${encodeURIComponent(storedUsername)}`);
+                // ব্যাকএন্ড get-member-info.js থেকে ডাটা আনা হচ্ছে
+                const response = await fetch(`/get-member-info?username=${username}`);
                 const data = await response.json();
+
                 if (data.success) {
-                    document.getElementById('user-id-text').innerText = "#" + data.memberId;
-                    document.getElementById('total-fund').innerText = data.totalFund + " টাকা";
-                    document.getElementById('my-deposit').innerText = data.myDeposit + " টাকা";
+                    // ডাইনামিক ডাটা স্ক্রিনে বসানো
+                    document.getElementById('welcomeName').innerText = `স্বাগতম, ${username.toUpperCase()}`;
+                    document.getElementById('userAvatar').innerText = username.charAt(0).toUpperCase();
+                    document.getElementById('memberIdDisplay').innerText = `সদস্য আইডি: #${data.memberId}`;
+                    
+                    // টাকার পরিমাণ ডাইনামিক করা (আপাতত ব্যাকএন্ড থেকে আসা ০ বসবে)
+                    document.getElementById('myDepositVal').innerText = `${data.myDeposit} টাকা`;
+                    document.getElementById('totalFundVal').innerText = `${data.totalFund} টাকা`;
+                    
                 } else {
-                    document.getElementById('user-id-text').innerText = "@" + storedUsername;
+                    alert("সদস্য তথ্য লোড করা যায়নি।");
                 }
-            } catch (e) {
-                document.getElementById('user-id-text').innerText = "@" + storedUsername;
+            } catch (error) {
+                console.error("Error fetching member info:", error);
+                alert("সার্ভার থেকে তথ্য আনতে সমস্যা হচ্ছে।");
             }
         });
 
-        function logout() {
-            localStorage.clear();
-            window.location.href = 'index.html';
-        }
+        // লগআউট বাটন লজিক
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            localStorage.removeItem('username'); // স্টোরেজ থেকে ডিলিট
+            alert("সফলভাবে লগআউট করা হয়েছে।");
+            window.location.href = '/index.html'; // মেইন পেজে ব্যাক
+        });
     </script>
+
 </body>
 </html>
