@@ -4,243 +4,171 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>সদস্য ড্যাশবোর্ড - বন্ধুত্ব সঞ্চয় সমিতি</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        body { background-color: #f4f6f9; font-family: Arial, sans-serif; }
+        .card { border: none; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .stat-card { border-left: 5px solid; }
+        .navbar { box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        /* লগইন বক্সের স্টাইল */
+        #login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?q=80&w=2070') no-repeat center center/cover;
+            display: flex; align-items: center; justify-content: center; z-index: 9999;
         }
-
-        body {
-            background-color: #f4f6f9;
-            color: #333;
-            padding: 20px;
+        .login-box { 
+            width: 100%; max-width: 400px; padding: 30px; 
+            background: rgba(255, 255, 255, 0.95); border-radius: 15px; 
+            backdrop-filter: blur(5px); box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
-
-        .header-bar {
-            background: #fff;
-            padding: 15px 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .avatar {
-            width: 50px;
-            height: 50px;
-            background: #007bff;
-            color: #fff;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .user-text h3 {
-            font-size: 18px;
-            color: #222;
-        }
-
-        .user-text p {
-            font-size: 13px;
-            color: #666;
-        }
-
-        .btn-logout {
-            background: #dc3545;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-logout:hover {
-            background: #bd2130;
-        }
-
-        /* কার্ড গ্রিড */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .card {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border-left: 5px solid #007bff;
-        }
-
-        .card.total-fund { border-left-color: #28a745; }
-        .card.total-loan { border-left-color: #dc3545; }
-
-        .card p {
-            font-size: 14px;
-            color: #666;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .card h2 {
-            font-size: 28px;
-            color: #222;
-        }
-
-        /* টেবিল স্টাইল */
-        .table-container {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            overflow-x: auto;
-        }
-
-        .table-container h3 {
-            margin-bottom: 15px;
-            font-size: 18px;
-            color: #222;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        th, td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #eee;
-            font-size: 14px;
-        }
-
-        th {
-            background-color: #f8f9fa;
-            color: #555;
-            font-weight: 600;
-        }
-
-        .status-badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .status-badge.paid { background: #d4edda; color: #155724; }
-        .status-badge.pending { background: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
 
-    <div class="header-bar">
-        <div class="user-info">
-            <div class="avatar" id="userAvatar">U</div>
-            <div class="user-text">
-                <h3 id="welcomeName">স্বাগতম, সদস্য</h3>
-                <p id="memberIdDisplay">সদস্য আইডি: লোড হচ্ছে...</p>
+    <div id="login-overlay">
+        <div class="login-box card text-center">
+            <h4 class="fw-bold mb-2 text-dark">সদস্য লগইন</h4>
+            <p class="text-muted small mb-4">আপনার সদস্য আইডি (ইংরেজি সংখ্যায়) দিয়ে ড্যাশবোর্ডে প্রবেশ করুন</p>
+            <div class="mb-4 text-start">
+                <label class="form-label text-dark fw-bold small">সদস্য আইডি (User ID)</label>
+                <input type="number" id="member-id-input" class="form-control" placeholder="যেমন: 1">
+            </div>
+            <button onclick="handleMemberLogin()" class="btn btn-primary w-100 fw-bold py-2">লগইন করুন</button>
+        </div>
+    </div>
+
+    <div id="dashboard-content" style="display: none;">
+        <nav class="navbar navbar-light bg-white px-4 py-3 mb-4 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold me-3" style="width: 45px; height: 45px; font-size: 20px;">R</div>
+                <div>
+                    <h5 class="m-0 fw-bold text-dark" id="welcome-name">স্বাগতম, সদস্য</h5>
+                    <small class="text-muted">সদস্য আইডি: #<span id="display-user-id">00</span></small>
+                </div>
+            </div>
+            <button class="btn btn-danger btn-sm fw-bold px-3" onclick="location.reload()">লগআউট</button>
+        </nav>
+
+        <div class="container-fluid px-4">
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="card p-3 stat-card" style="border-left-color: #0d6efd;">
+                        <small class="text-muted fw-bold">আমার মোট জমা</small>
+                        <h3 class="fw-bold mt-1 text-dark" id="my-total-deposit">০ টাকা</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-3 stat-card" style="border-left-color: #198754;">
+                        <small class="text-muted fw-bold">সমিতির মোট ফান্ড</small>
+                        <h3 class="fw-bold mt-1 text-dark" id="somity-total-fund">০ টাকা</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-3 stat-card" style="border-left-color: #dc3545;">
+                        <small class="text-muted fw-bold">আমার লোন বাকি</small>
+                        <h3 class="fw-bold mt-1 text-dark" id="my-loan-balance">০ টাকা</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card p-4 mb-4">
+                <h5 class="fw-bold mb-3 text-dark">আমার মাসিক জমার বিবরণ (২০২৬)</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle text-center m-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>মাস</th>
+                                <th>টাকার পরিমাণ</th>
+                                <th>জমা দেওয়ার তারিখ</th>
+                                <th>অবস্থা (Status)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="monthly-table-body">
+                            <tr>
+                                <td colspan="4" class="text-muted">ডাটা লোড হচ্ছে...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-        <button class="btn-logout" id="logoutBtn">লগআউট</button>
-    </div>
-
-    <div class="card-grid">
-        <div class="card">
-            <p>আমার মোট জমা</p>
-            <h2 id="myDepositVal">০ টাকা</h2>
-        </div>
-        <div class="card total-fund">
-            <p>সমিতির মোট ফান্ড</p>
-            <h2 id="totalFundVal">০ টাকা</h2>
-        </div>
-        <div class="card total-loan">
-            <p>আমার লোন বাকি</p>
-            <h2 id="myLoanVal">০ টাকা</h2>
-        </div>
-    </div>
-
-    <div class="table-container">
-        <h3 id="tableTitle">আমার মাসিক জমার বিবরণ (২০২৬)</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>মাস</th>
-                    <th>টাকার পরিমাণ</th>
-                    <th>জমা দেওয়ার তারিখ</th>
-                    <th>অবস্থা (Status)</th>
-                </tr>
-            </thead>
-            <tbody id="paymentTableBody">
-                <tr>
-                    <td>জানুয়ারি ২০২৬</td>
-                    <td>০ টাকা</td>
-                    <td>--</td>
-                    <td><span class="status-badge pending">বাকি আছে</span></td>
-                </tr>
-            </tbody>
-        </table>
     </div>
 
     <script>
-        // পেজ লোড হওয়ার সাথে সাথে ডেটা নিয়ে আসার লজিক
-        document.addEventListener("DOMContentLoaded", async () => {
-            const username = localStorage.getItem('username');
-
-            // যদি কেউ লগইন না করে সরাসরি লিঙ্কে ঢুকে পড়ে, তাকে লগইন পেজে ব্যাক করাবে
-            if (!username) {
-                alert("দয়া করে আগে লগইন করুন!");
-                window.location.href = '/index.html';
+        // লগইন বাটন হ্যান্ডলার
+        function handleMemberLogin() {
+            const userId = document.getElementById('member-id-input').value;
+            if(!userId) {
+                alert("অনুগ্রহ করে একটি সঠিক সদস্য আইডি দিন!");
                 return;
             }
+            // লগইন স্ক্রিন লুকিয়ে মেইন ড্যাশবোর্ড দেখানো
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('dashboard-content').style.display = 'block';
+            
+            // লাইভ ডাটা লোড করা
+            loadMemberData(userId);
+        }
 
-            try {
-                // ব্যাকএন্ড get-member-info.js থেকে ডাটা আনা হচ্ছে
-                const response = await fetch(`/get-member-info?username=${username}`);
-                const data = await response.json();
-
+        // ডাটাবেজ থেকে নির্দিষ্ট সদস্যের লাইভ ডাটা লোড করার আসল ফাংশন
+        function loadMemberData(userId) {
+            // পূর্বের তৈরি করা এপিআই (admin-get-all) বা কাস্টম গেট ডাটা ব্যবহার করে ডাটা আনা
+            fetch('/admin-get-all')
+            .then(res => res.json())
+            .then(data => {
                 if (data.success) {
-                    // ডাইনামিক ডাটা স্ক্রিনে বসানো
-                    document.getElementById('welcomeName').innerText = `স্বাগতম, ${username.toUpperCase()}`;
-                    document.getElementById('userAvatar').innerText = username.charAt(0).toUpperCase();
-                    document.getElementById('memberIdDisplay').innerText = `সদস্য আইডি: #${data.memberId}`;
+                    const allMembers = data.results || [];
                     
-                    // টাকার পরিমাণ ডাইনামিক করা (আপাতত ব্যাকএন্ড থেকে আসা ০ বসবে)
-                    document.getElementById('myDepositVal').innerText = `${data.myDeposit} টাকা`;
-                    document.getElementById('totalFundVal').innerText = `${data.totalFund} টাকা`;
+                    // ১. আইডি মিলিয়ে এই নির্দিষ্ট মেম্বারকে খুঁজে বের করা
+                    const loggedInUser = allMembers.find(user => user.id == userId);
+
+                    if (!loggedInUser) {
+                        alert("ভুল আইডি! ডাটাবেজে এই আইডির কোনো সদস্য পাওয়া যায়নি।");
+                        location.reload();
+                        return;
+                    }
+
+                    // ২. মেম্বারের নাম ও আইডি স্ক্রিনে বসানো
+                    document.getElementById('welcome-name').innerText = `স্বাগতম, ${loggedInUser.name || loggedInUser.username}`;
+                    document.getElementById('display-user-id').innerText = userId;
+
+                    // 📊 ৩. কার্ডের মোট টাকার লাইভ তথ্য আপডেট
+                    document.getElementById('my-total-deposit').innerText = (loggedInUser.totalDeposit || 0) + " টাকা";
+                    document.getElementById('somity-total-fund').innerText = (data.totalFund || 0) + " টাকা";
                     
+                    const loan = loggedInUser.loanStatus;
+                    document.getElementById('my-loan-balance').innerText = (loan && loan !== 'কোনো লোন নেই' ? loan : "০ টাকা");
+
+                    // 🗓️ ৪. মাসিক জমার বিবরণী টেবিল ডাইনামিক করা
+                    const tableBody = document.getElementById('monthly-table-body');
+                    
+                    // চলতি মাসের অবস্থা এবং বাটন ব্যাজ সেট করা
+                    const isPaid = loggedInUser.currentMonthStatus === 'পরিশোধিত';
+                    const statusBadge = isPaid 
+                        ? `<span class="badge bg-success py-2 px-3">পরিশোধিত</span>` 
+                        : `<span class="badge bg-danger py-2 px-3">বাকি আছে</span>`;
+                    
+                    const depositAmount = isPaid ? (loggedInUser.totalDeposit || 500) + " টাকা" : "০ টাকা";
+                    const depositDate = isPaid ? "আজ" : "--";
+
+                    // টেবিলে লাইভ ডাটা পুশ করা
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td><strong>মার্চ ২০২৬</strong></td>
+                            <td class="${isPaid ? 'text-success fw-bold' : 'text-danger'}">${depositAmount}</td>
+                            <td>${depositDate}</td>
+                            <td>${statusBadge}</td>
+                        </tr>
+                    `;
                 } else {
-                    alert("সদস্য তথ্য লোড করা যায়নি।");
+                    alert("ডাটাবেজ থেকে মেম্বার ডাটা লোড করতে ব্যর্থ!");
                 }
-            } catch (error) {
-                console.error("Error fetching member info:", error);
-                alert("সার্ভার থেকে তথ্য আনতে সমস্যা হচ্ছে।");
-            }
-        });
-
-        // লগআউট বাটন লজিক
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            localStorage.removeItem('username'); // স্টোরেজ থেকে ডিলিট
-            alert("সফলভাবে লগআউট করা হয়েছে।");
-            window.location.href = '/index.html'; // মেইন পেজে ব্যাক
-        });
+            })
+            .catch(err => {
+                console.error("সার্ভার কানেকশন এরর:", err);
+                document.getElementById('monthly-table-body').innerHTML = `<tr><td colspan="4" class="text-danger">কানেকশন এরর! ডাটাবেজ লাইভ নেই।</td></tr>`;
+            });
+        }
     </script>
-
 </body>
 </html>
