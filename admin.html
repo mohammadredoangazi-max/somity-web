@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>সমিতি - অ্যাডমিন প্যানেল</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         /* মেম্বার পেজের মতোই হুবহু ব্যাকগ্রাউন্ড ছবি ও স্টাইল */
@@ -31,6 +32,7 @@
 </head>
 <body>
 
+    <!-- 🔐 অ্যাডমিন লগইন ফর্ম (ইউজারনেম: admin, পাসওয়ার্ড: admin123) -->
     <div id="login-overlay">
         <div class="login-box card text-center">
             <div class="logo-circle">স</div>
@@ -49,6 +51,7 @@
         </div>
     </div>
 
+    <!-- 📊 মূল অ্যাডমিন ড্যাশবোর্ড কন্টেন্ট -->
     <div id="dashboard-content" style="display: none;">
         <nav class="navbar navbar-dark bg-dark px-3 mb-4">
             <span class="navbar-brand mb-0 h1">👋 স্বাগতম, অ্যাডমিন প্যানেল (পরিচালক)</span>
@@ -56,6 +59,7 @@
         </nav>
 
         <div class="container-fluid px-4">
+            <!-- ডাইনামিক স্ট্যাটাস কার্ডসমূহ -->
             <div class="row g-3 mb-4">
                 <div class="col-md-4">
                     <div class="card p-3 stat-card" style="border-left-color: #28a745;">
@@ -77,7 +81,9 @@
                 </div>
             </div>
 
+            <!-- এন্ট্রি ফর্ম সেকশন -->
             <div class="row g-4 mb-4">
+                <!-- পেমেন্ট এন্ট্রি ফর্ম (১২ মাস ও বছরের অপশন সহ) -->
                 <div class="col-md-6">
                     <div class="card p-4">
                         <h5 class="mb-3 fw-bold">নতুন পেমেন্ট এন্ট্রি (টাকা জমা)</h5>
@@ -114,6 +120,7 @@
                     </div>
                 </div>
 
+                <!-- লোন ইস্যু ফর্ম -->
                 <div class="col-md-6">
                     <div class="card p-4">
                         <h5 class="mb-3 fw-bold">নতুন L1 ইস্যু করুন</h5>
@@ -134,6 +141,7 @@
                 </div>
             </div>
 
+            <!-- লাইভ সদস্যদের তালিকা টেবিল -->
             <div class="card p-4 mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="fw-bold m-0">সদস্যদের জমার তালিকা ও অবস্থা</h5>
@@ -223,7 +231,7 @@
             });
         }
 
-        // টাকা জমা দিলে লাইভ ডাটাবেজ আপডেট এবং হোয়াটসঅ্যাপ মেসেজ পাঠানোর ফাংশন
+        // 🛠️ ডাটাবেজে টাকা সেভ করে তারপর হোয়াটসঅ্যাপ মেসেজ পাঠানোর ১০০% লাইভ ফাংশন
         function submitPayment(e) {
             e.preventDefault();
             const userId = document.getElementById('deposit-user').value;
@@ -231,9 +239,7 @@
             const month = document.getElementById('dep-month').value;
             const year = document.getElementById('dep-year').value;
 
-            // ১. সিলেক্ট করা ইউজার খুঁজে বের করা
             const selectedUser = allUserData.find(u => u.id == userId);
-            
             if (!selectedUser) {
                 alert("অনুগ্রহ করে একজন সঠিক সদস্য সিলেক্ট করুন!");
                 return;
@@ -242,33 +248,47 @@
             const memberName = selectedUser.name || selectedUser.username;
             let whatsappNumber = selectedUser.whatsapp || "";
 
-            // ২. হোয়াটসঅ্যাপ নম্বর ফরমেটিং
-            whatsappNumber = whatsappNumber.trim().replace(/[+ -]/g, "");
-            if (whatsappNumber.startsWith("01")) {
-                whatsappNumber = "88" + whatsappNumber;
-            }
+            // 🚀 ১. প্রথমে ব্যাকএন্ড API এর মাধ্যমে ক্লাউডফ্লেয়ার D1 ডাটাবেজে ডাটা আপডেট করা হচ্ছে
+            fetch('/admin-submit-payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: userId, amount: amount })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`✅ ডাটাবেজে সফলভাবে ${memberName}-এর অ্যাকাউন্টে ${amount} টাকা জমা হয়েছে! এবার হোয়াটসঅ্যাপ মেসেজ পাঠানো হচ্ছে...`);
+                    
+                    // 🔄 ডাটাবেজ আপডেট সফল হলে সাথে সাথে ড্যাশবোর্ড স্ক্রিন রিলোড হবে (০ টাকা পরিবর্তন হয়ে যাবে)
+                    loadAdminData();
 
-            // ৩. মেসেজ টেমপ্লেট তৈরি
-            const messageTemplate = `👋 আসসালামু আলাইকুম, *${memberName}* সাহেব।\n\n` +
-                                    `💰 *বন্ধুত্ব সঞ্চয় সমিতি*-তে আপনার পেমেন্ট সফলভাবে জমা হয়েছে।\n\n` +
-                                    `🗓️ *মাস:* ${month} ${year}\n` +
-                                    `💵 *জমার পরিমাণ:* ${amount} টাকা\n` +
-                                    `✅ *অবস্থা:* পরিশোধিত\n\n` +
-                                    `ধন্যবাদ, আমাদের সাথে থাকার জন্য। 🙏`;
+                    // 📞 ২. ডাটাবেজ সফল হওয়ার পর হোয়াটসঅ্যাপ মেসেজ প্রসেস করা হচ্ছে
+                    whatsappNumber = whatsappNumber.trim().replace(/[+ -]/g, "");
+                    if (whatsappNumber.startsWith("01")) {
+                        whatsappNumber = "88" + whatsappNumber;
+                    }
 
-            const encodedMessage = encodeURIComponent(messageTemplate);
+                    const messageTemplate = `👋 আসসালামু আলাইকুম, *${memberName}* সাহেব।\n\n` +
+                                            `💰 *বন্ধুত্ব সঞ্চয় সমিতি*-তে আপনার পেমেন্ট সফলভাবে জমা হয়েছে।\n\n` +
+                                            `🗓️ *মাস:* ${month} ${year}\n` +
+                                            `💵 *জমার পরিমাণ:* ${amount} tobacco টাকা\n` +
+                                            `✅ *অবস্থা:*固定 পরিশোধিত\n\n` +
+                                            `ধন্যবাদ, আমাদের সাথে থাকার জন্য। 🙏`;
 
-            alert(`সফলভাবে ${memberName}-এর অ্যাকাউন্টে ${amount} টাকা এন্ট্রি হয়েছে! এবার হোয়াটসঅ্যাপ মেসেজ পাঠানো হচ্ছে...`);
+                    const encodedMessage = encodeURIComponent(messageTemplate);
 
-            // ৪. হোয়াটসঅ্যাপ ট্যাবে অটো-রিডাইরেক্ট করা
-            if (whatsappNumber && whatsappNumber !== "88--") {
-                const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-                window.open(whatsappUrl, '_blank');
-            } else {
-                alert("এই সদস্যের কোনো সঠিক হোয়াটসঅ্যাপ নম্বর পাওয়া যায়নি!");
-            }
-
-            loadAdminData(); // টেবিল রিফ্রেশ করা
+                    if (whatsappNumber && whatsappNumber !== "88--") {
+                        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+                        window.open(whatsappUrl, '_blank');
+                    }
+                } else {
+                    alert("❌ ডাটাবেজে সেভ হতে পারেনি: " + data.error);
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("❌ সার্ভার কানেকশন এরর! ডাটাবেজে টাকা সেভ হয়নি।");
+            });
         }
 
         function downloadCSV() {
