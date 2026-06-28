@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>অ্যাডমিন প্যানেল - বন্ধুত্ব সঞ্চয় সমিতি</title>
+    <title>অ্যাডমিন প্যানেল - বন্ধুত্ব সঞ্চয় সমিতি</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background-color: #f4f6f9; color: #333; padding: 20px; }
@@ -58,7 +58,7 @@
             <h2 id="totalFundCard">০ টাকা</h2>
         </div>
         <div class="card loan">
-            <p>মোট লোন দেওয়া হয়েছে</p>
+            <p>মোট লোন দেওয়া হয়েছে</p>
             <h2 id="totalLoanCard">০ টাকা</h2>
         </div>
         <div class="card members">
@@ -83,8 +83,8 @@
                         <label>মাস</label>
                         <select id="depMonth" required>
                             <option value="">মাস...</option>
-                            <option value="জানুয়ারি">জানুয়ারি</option>
-                            <option value="ফেব্রুয়ারি">ফেব্রুয়ারি</option>
+                            <option value="জানুয়ারি">জানুয়ারি</option>
+                            <option value="ফেব্রুয়ারি">ফেব্রুয়ারি</option>
                             <option value="মার্চ" selected>মার্চ</option>
                             <option value="এপ্রিল">এপ্রিল</option>
                             <option value="মে">মে</option>
@@ -103,19 +103,7 @@
                             <option value="">বছর...</option>
                             <option value="২০২৬" selected>২০২৬</option>
                             <option value="২০২৭">২০২৭</option>
-                            <option value="২০২৮">২০২৮</option>
-                            <option value="২০২৯">২০২৯</option>
-                            <option value="২০৩০">২০৩০</option>
-                            <option value="২০৩১">২০৩১</option>
-                            <option value="২০৩২">২০৩২</option>
-                            <option value="২০৩৩">২০৩৩</option>
-                            <option value="২০৩৪">২০৩৪</option>
-                            <option value="২০৩৫">২০৩৫</option>
-                            <option value="২০৩৬">২০৩৬</option>
-                            <option value="২০৩৭">২০৩৭</option>
-                            <option value="২০৩৮">২০৩৮</option>
-                            <option value="২০十九章">২০৩৯</option>
-                            <option value="২০৪০">২০৪০</option>
+                            <option value="২০extra">২০extra</option>
                         </select>
                     </div>
                 </div>
@@ -156,7 +144,7 @@
                 <tr>
                     <th>আইডি</th>
                     <th>নাম</th>
-                    <th>হোয়াটসঅ্যাপ নম্বর</th>
+                    <th>হোয়াটসঅ্যাপ নম্বর</th>
                     <th>মোট জমা</th>
                     <th>চলতি মাসের অবস্থা</th>
                     <th>লোন স্ট্যাটাস</th>
@@ -171,6 +159,9 @@
     </div>
 
     <script>
+        // ক্লাউডফ্লেয়ার ওয়ার্কারের মূল বেস ইউআরএল লিংক
+        const BASE_API_URL = 'https://somity-web.mohammadredoangazi-max.workers.dev';
+
         let globalUsersData = [];
 
         document.addEventListener("DOMContentLoaded", async () => {
@@ -178,14 +169,17 @@
             document.getElementById('downloadBackupBtn').addEventListener('click', downloadCSVBackup);
         });
 
+        // ১. ডেটাবেজ থেকে রিয়েল-টাইমে সব তথ্য লোড করা
         async function loadAdminDashboard() {
             try {
-                const response = await fetch('/admin-get-all');
+                // ফুল ওয়ার্কার্স ইউআরএল লিঙ্ক ব্যবহার করে কল করা হচ্ছে
+                const response = await fetch(`${BASE_API_URL}/functions/admin-get-all`);
                 const data = await response.json();
 
                 if (data.success) {
                     globalUsersData = data.results || data.users || [];
 
+                    // কার্ডের ডেটা আপডেট
                     document.getElementById('totalFundCard').innerText = `${data.totalFund || 0} টাকা`;
                     document.getElementById('totalLoanCard').innerText = `${data.totalLoan || 0} টাকা`;
                     document.getElementById('totalMembersCard').innerText = `${globalUsersData.length} জন`;
@@ -197,113 +191,15 @@
 
                     const tableBody = document.getElementById('adminTableBody');
                     if (globalUsersData.length === 0) {
-                        tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#888;">কোনো সদস্য পাওয়া যায়নি।</td></tr>`;
+                        tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#888;">কোনো সদস্য পাওয়া যায়নি।</td></tr>`;
                         return;
                     }
 
                     tableBody.innerHTML = '';
 
+                    // টেবিল ও ড্রপডাউনে ডাটা সাজানো
                     globalUsersData.forEach((user, index) => {
                         const memberIdStr = String(index + 1).padStart(3, '0');
                         const optionText = `${user.username.toUpperCase()} (#${memberIdStr})`;
                         
-                        depSelect.innerHTML += `<option value="${user.username}">${optionText}</option>`;
-                        loanSelect.innerHTML += `<option value="${user.username}">${optionText}</option>`;
-
-                        tableBody.innerHTML += `
-                            <tr>
-                                <td>#${memberIdStr}</td>
-                                <td><strong>${user.username.toUpperCase()}</strong></td>
-                                <td>${user.whatsapp || '--'}</td>
-                                <td>০ টাকা</td>
-                                <td><span class="status-badge pending">বাকি আছে</span></td>
-                                <td>কোনো লোন নেই</td>
-                            </tr>
-                        `;
-                    });
-                } else {
-                    document.getElementById('adminTableBody').innerHTML = `<tr><td colspan="6" style="text-align:center; color:#ff4d4d;">⚠️ ডেটা লোড ব্যর্থ হয়েছে।</td></tr>`;
-                }
-            } catch (error) {
-                console.error("Dashboard error:", error);
-                document.getElementById('adminTableBody').innerHTML = `
-                    <tr><td colspan="6" style="text-align:center; color:#ff4d4d;">⚠️ নেটওয়ার্ক বা সার্ভার সমস্যা।</td></tr>
-                `;
-            }
-        }
-
-        // পেমেন্ট সাবমিট লজিক
-        document.getElementById('depositForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('depositUserSelect').value;
-            const month = document.getElementById('depMonth').value;
-            const year = document.getElementById('depYear').value;
-            const amount = document.getElementById('depAmount').value;
-            const fullMonthName = `${month} ${year}`;
-
-            try {
-                const res = await fetch('/admin-add-deposit', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, month: fullMonthName, amount })
-                });
-                const result = await res.json();
-                if(result.success) {
-                    alert("টাকা সফলভাবে জমা হয়েছে!");
-                    await loadAdminDashboard();
-                } else { alert("ভুল হয়েছে: " + result.message); }
-            } catch(err) { 
-                alert("পেমেন্ট সেভ করার ব্যাকএন্ড ফাইলটি আমরা পরের ধাপে বানাবো!"); 
-            }
-        });
-
-        // লোন সাবমিট লজিক
-        document.getElementById('loanForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('loanUserSelect').value;
-            const amount = document.getElementById('loanAmount').value;
-
-            try {
-                const res = await fetch('/admin-add-loan', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, amount })
-                });
-                const result = await res.json();
-                if(result.success) {
-                    alert("লোন সফলভাবে ইস্যু হয়েছে!");
-                    await loadAdminDashboard();
-                } else { alert("ভুল হয়েছে: " + result.message); }
-            } catch(err) { 
-                alert("লোন সেভ করার ব্যাকএন্ড ফাইলটি আমরা পরের ধাপে বানাবো!"); 
-            }
-        });
-
-        function downloadCSVBackup() {
-            if (!globalUsersData || globalUsersData.length === 0) {
-                alert("ডাউনলোড করার মতো কোনো তথ্য নেই!");
-                return;
-            }
-            let csvContent = "\uFEFF"; 
-            csvContent += "সদস্য আইডি,নাম,হোয়াটসঅ্যাপ নম্বর,মোট জমা,চলতি মাসের অবস্থা,লোন স্ট্যাটাস\n";
-
-            globalUsersData.forEach((user, index) => {
-                const id = `#${String(index + 1).padStart(3, '0')}`;
-                const name = user.username ? user.username.toUpperCase() : '--';
-                const whatsapp = user.whatsapp || '--';
-                csvContent += `"${id}","${name}","${whatsapp}","০ টাকা","বাকি আছে","কোনো লোন নেই"\n`;
-            });
-
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", `Somity_Backup_${new Date().toISOString().slice(0,10)}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-    </script>
-</body>
-</html>
+                        depSelect.innerHTML += `<option
