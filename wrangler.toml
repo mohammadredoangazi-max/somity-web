@@ -2,6 +2,9 @@ name = "somity-web"
 compatibility_date = "2026-06-27"
 compatibility_flags = [ "nodejs_compat" ]
 
+[build]
+command = ""
+
 [[d1_databases]]
 binding = "DB"
 database_name = "somity-db"
