@@ -1,64 +1,48 @@
-export async function onRequestPost(context) {
-    const { env } = context;
+export async function onRequest(context) {
+  const { request, env } = context;
+
+  if (request.method !== "POST") {
+    return new Response("Method not allowed", { status: 405 });
+  }
+
+  try {
+    const body = await request.json();
     
-    // ডেটাবেজ কানেকশন চেক
-    if (!env.DB) {
-        return new Response(JSON.stringify({ success: false, message: "ডেটাবেজ কানেকশন পাওয়া যায়নি।" }), {
-            status: 500,
-            headers: { "Content-Type": "application/json; charset=UTF-8" }
-        });
+    // ফ্রন্টএন্ড ফর্ম থেকে আসা তথ্যগুলো রিসিভ করা হচ্ছে
+    const name = body.name;
+    const username = body.username?.toLowerCase().trim();
+    const password = body.password;
+    
+    // যদি ফ্রন্টএন্ড থেকে whatsapp_number নামে ডাটা আসে, সেটাকে রিসিভ করা
+    const whatsapp = body.whatsapp || body.whatsapp_number || ""; 
+
+    if (!name || !username || !password) {
+      return new Response(JSON.stringify({ success: false, error: "সবগুলো ঘর সঠিকভাবে পূরণ করুন!" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
     }
 
-    try {
-        const body = await context.request.json();
-        const name = body.name || "";
-        const username = body.username ? body.username.toLowerCase().trim() : "";
-        const whatsapp_number = body.whatsapp_number || "";
-        const password = body.password || "";
+    // 🔐 ডাটাবেজে সঠিক কলামের (name, username, whatsapp, password) নাম ব্যবহার করে ডাটা সেভ করা
+    await env.DB.prepare(
+      "INSERT INTO users (name, username, whatsapp, password) VALUES (?, ?, ?, ?)"
+    )
+    .bind(name, username, whatsapp, password)
+    .run();
 
-        // জরুরি ইনপুট ভ্যালিডেশন
-        if (!username || !password || !name) {
-            return new Response(JSON.stringify({ success: false, message: "নাম, ইউজারনেম এবং পাসওয়ার্ড অবশ্যই দিতে হবে।" }), {
-                status: 400,
-                headers: { "Content-Type": "application/json; charset=UTF-8" }
-            });
-        }
+    return new Response(JSON.stringify({ success: true, message: "নিবন্ধন সফল হয়েছে!" }), {
+      headers: { "Content-Type": "application/json" }
+    });
 
-        // ইউজার আগে থেকেই নিবন্ধিত কি না চেক করা
-        const existingUser = await env.DB.prepare("SELECT * FROM users WHERE username = ?")
-            .bind(username)
-            .first();
-
-        if (existingUser) {
-            return new Response(JSON.stringify({ success: false, message: "এই ইউজারনেমটি ইতিমধ্যে নিবন্ধিত!" }), {
-                status: 400,
-                headers: { "Content-Type": "application/json; charset=UTF-8" }
-            });
-        }
-
-        // মোট কতজন ইউজার আছে তা গুনে সিরিয়াল আইডি বের করা (১ম জন হলে ০১, ২য় জন হলে ০২)
-        const countResult = await env.DB.prepare("SELECT COUNT(*) as total FROM users").first();
-        const nextIdNumber = (countResult.total + 1);
-        const formattedId = nextIdNumber < 10 ? "0" + nextIdNumber : "" + nextIdNumber;
-
-        // ডেটাবেজে মেম্বার হিসেবে ডেটা ইনসার্ট করা
-        // (তোর ডেটাবেজে হোয়াটস্যাপ কলামের নাম 'whatsapp_number' ধরে সেভ করা হচ্ছে)
-        await env.DB.prepare("INSERT INTO users (name, username, whatsapp_number, password, role) VALUES (?, ?, ?, ?, 'member')")
-            .bind(name, username, whatsapp_number, password)
-            .run();
-
-        return new Response(JSON.stringify({ 
-            success: true, 
-            message: `নিবন্ধন সফল হয়েছে! আপনার সদস্য আইডি নম্বর: #${formattedId}` 
-        }), {
-            status: 200,
-            headers: { "Content-Type": "application/json; charset=UTF-8" }
-        });
-
-    } catch (error) {
-        return new Response(JSON.stringify({ success: false, message: "সার্ভার এরর: " + error.message }), {
-            status: 500,
-            headers: { "Content-Type": "application/json; charset=UTF-8" }
-        });
+  } catch (error) {
+    let errorMsg = error.message;
+    if (errorMsg.includes("UNIQUE constraint failed")) {
+      errorMsg = "এই ইউজারনেমটি ইতিমধ্যে ব্যবহার করা হয়েছে। অন্য একটি দিন।";
     }
+    
+    return new Response(JSON.stringify({ success: false, error: "সার্ভার এরর: " + errorMsg }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
 }
