@@ -1,67 +1,66 @@
-export default {
-  async fetch(request, env, ctx) {
-    // CORS হ্যান্ডেল করার জন্য হেডার
-    const corsHeaders = {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, HEAD, POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    };
-
-    // যদি প্রি-ফ্লাইট রিকোয়েস্ট আসে
-    if (request.method === "OPTIONS") {
-      return new Response(null, { headers: corsHeaders });
-    }
-
-    if (!env.DB) {
-      return new Response(
-        JSON.stringify({ success: false, message: "Database binding missing (DB not found)." }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
-      );
-    }
-
+export async function onRequest(context) {
+    const { env } = context;
+    
     try {
-      // ১. ইউজার টেবিল থেকে ডাটা আনা
-      const usersResult = await env.DB.prepare("SELECT username, whatsapp FROM users").all();
-      const users = usersResult.results || [];
+        // ১. ডাটাবেজ থেকে সব ইউজার বা মেম্বারদের নিয়ে আসা (যারা সাইন-আপ করেছে)
+        const usersResult = await env.DB.prepare(
+            "SELECT username, whatsapp FROM users"
+        ).all();
+        
+        const users = usersResult.results || [];
 
-      // ২. মোট জমার হিসাব
-      let totalFund = 0;
-      try {
-        const res = await env.DB.prepare("SELECT SUM(amount) as total FROM deposits").first();
-        totalFund = res ? (res.total || 0) : 0;
-      } catch(e) {}
+        // ২. ডাটাবেজ থেকে সব জমার মোট হিসাব আনা
+        const totalFundResult = await env.DB.prepare(
+            "SELECT SUM(amount) as total FROM deposits"
+        ).first();
+        const totalFund = totalFundResult ? (totalFundResult.total || 0) : 0;
 
-      // ৩. মোট লোনের হিসাব
-      let totalLoan = 0;
-      try {
-        const res = await env.DB.prepare("SELECT SUM(amount) as total FROM loans").first();
-        totalLoan = res ? (res.total || 0) : 0;
-      } catch(e) {}
+        // ৩. ডাটাবেজ থেকে মোট কত লোন দেওয়া হয়েছে তা আনা
+        const totalLoanResult = await env.DB.prepare(
+            "SELECT SUM(amount) as total FROM loans"
+        ).first();
+        const totalLoan = totalLoanResult ? (totalLoanResult.total || 0) : 0;
 
-      // ৪. মেম্বারদের লিস্ট রেডি করা
-      const finalizedUsers = users.map(user => ({
-        username: user.username,
-        whatsapp: user.whatsapp || '--',
-        totalDeposit: 0,
-        currentMonthStatus: 'বাকি আছে',
-        loanStatus: 'কোনো লোন নেই'
-      }));
+        // ৪. প্রতিটি মেম্বারের আলাদা আলাদা মোট জমা ও লোন স্ট্যাটাস প্রসেস করা
+        const finalizedUsers = await Promise.all(users.map(async (user) => {
+            // মেম্বারের মোট জমা হিসাব
+            const userDep = await env.DB.prepare(
+                "SELECT SUM(amount) as total FROM deposits WHERE username = ?"
+            ).bind(user.username).first();
+            
+            // মেম্বারের লোন আছে কিনা বা কত লোন হিসাব
+            const userLoan = await env.DB.prepare(
+                "SELECT SUM(amount) as total FROM loans WHERE username = ?"
+            ).bind(user.username).first();
 
-      return new Response(
-        JSON.stringify({
-          success: true,
-          totalFund: totalFund,
-          totalLoan: totalLoan,
-          results: finalizedUsers
-        }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+            return {
+                username: user.username,
+                whatsapp: user.whatsapp || '--',
+                totalDeposit: userDep ? (userDep.total || 0) : 0,
+                currentMonthStatus: userDep && userDep.total > 0 ? 'পরিশোধিত' : 'বাকি আছে',
+                loanStatus: userLoan && userLoan.total > 0 ? `${userLoan.total} টাকা লোন` : 'কোনো লোন নেই'
+            };
+        }));
+
+        return new Response(JSON.stringify({
+            success: true,
+            totalFund: totalFund,
+            totalLoan: totalLoan,
+            results: finalizedUsers
+        }), {
+            headers: { 
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*" // CORS এরর এড়ানোর জন্য
+            }
+        });
 
     } catch (error) {
-      return new Response(
-        JSON.stringify({ success: false, message: error.message }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
-      );
+        return new Response(JSON.stringify({
+            success: false,
+            message: error.message
+        }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
     }
-  }
-};
+}
