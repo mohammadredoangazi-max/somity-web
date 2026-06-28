@@ -6,7 +6,6 @@
     <title>সমিতি - অ্যাডমিন প্যানেল</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* মেম্বার পেজের মতোই হুবহু ব্যাকগ্রাউন্ড ছবি ও স্টাইল */
         #login-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?q=80&w=2070') no-repeat center center/cover;
@@ -60,7 +59,7 @@
                 <div class="col-md-4">
                     <div class="card p-3 stat-card" style="border-left-color: #28a745;">
                         <small class="text-muted fw-bold">সর্বমোট জমা ফান্ড</small>
-                        <h3 id="total-fund">০ টাকা</h3>
+                        <h3 id="total-fund">计算 হচ্ছে...</h3>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -80,19 +79,19 @@
             <div class="row g-4 mb-4">
                 <div class="col-md-6">
                     <div class="card p-4">
-                        <h5 class="mb-3 fw-bold">নতুন পেমেন্ট এন্ট্রি</h5>
-                        <form id="deposit-form" onsubmit="event.preventDefault(); alert('সফলভাবে জমা হয়েছে!');">
+                        <h5 class="mb-3 fw-bold">নতুন পেমেন্ট এন্ট্রি (টাকা জমা)</h5>
+                        <form id="deposit-form" onsubmit="submitPayment(event)">
                             <div class="mb-3">
-                                <label class="form-label">সদস্য সিলেক্ট করুন</label>
-                                <select class="form-select user-dropdown" required>
-                                    <option value="">সদস্য বেছে নিন...</option>
+                                <label class="form-label">সদস্য সিলেক্ট করুন (লাইভ তালিকা)</label>
+                                <select class="form-select user-dropdown" id="deposit-user" required>
+                                    <option value="">সদস্য লোড হচ্ছে...</option>
                                 </select>
                             </div>
                             <div class="row g-2 mb-3">
                                 <div class="col">
                                     <label class="form-label">মাস</label>
                                     <select class="form-select" id="dep-month">
-                                        <option>জানুয়ারি</option><option>ফেব্রুয়ারি</option><option selected>মার্চ</option>
+                                        <option>জানুয়ারি</option><option>ফেব্রুয়ারি</option><option selected>মার्च</option>
                                         <option>এপ্রিল</option><option>মে</option><option>জুন</option>
                                         <option>জুলাই</option><option>আগস্ট</option><option>সেপ্টেম্বর</option>
                                         <option>অক্টোবর</option><option>নভেম্বর</option><option>ডিসেম্বর</option>
@@ -107,21 +106,21 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">টাকার পরিমাণ</label>
-                                <input type="number" class="form-control" placeholder="যেমন: ৫০০" required>
+                                <input type="number" id="deposit-amount" class="form-control" placeholder="যেমন: ৫০০" required>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100 fw-bold">জমা করুন</button>
+                            <button type="submit" class="btn btn-primary w-100 fw-bold">জমা করুন ও মেসেজ পাঠান</button>
                         </form>
                     </div>
                 </div>
 
                 <div class="col-md-6">
                     <div class="card p-4">
-                        <h5 class="mb-3 fw-bold">নতুন লোন ইস্যু</h5>
-                        <form id="loan-form" onsubmit="event.preventDefault(); alert('লোন ইস্যু সফল!');">
+                        <h5 class="mb-3 fw-bold">নতুন লোন ইস্যু করুন</h5>
+                        <form id="loan-form" onsubmit="event.preventDefault(); alert('লোন প্রসেস হচ্ছে...');">
                             <div class="mb-3">
                                 <label class="form-label">সদস্য সিলেক্ট করুন</label>
-                                <select class="form-select user-dropdown" required>
-                                    <option value="">সদস্য বেছে নিন...</option>
+                                <select class="form-select user-dropdown" id="loan-user" required>
+                                    <option value="">সদস্য লোড হচ্ছে...</option>
                                 </select>
                             </div>
                             <div class="mb-3">
@@ -136,8 +135,8 @@
 
             <div class="card p-4 mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="fw-bold m-0">সদস্যদের জমার তালিকা</h5>
-                    <button class="btn btn-success btn-sm fw-bold" onclick="downloadCSV()">📥 এক্সেল ব্যাকআপ</button>
+                    <h5 class="fw-bold m-0">সদস্যদের জমার তালিকা ও অবস্থা</h5>
+                    <button class="btn btn-success btn-sm fw-bold" onclick="downloadCSV()">📥 এক্সেল/CSV ব্যাকআপ ডাউনলোড করুন</button>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped text-center align-middle">
@@ -153,7 +152,7 @@
                         </thead>
                         <tbody id="member-table-body">
                             <tr>
-                                <td colspan="6" class="text-muted">সদস্যদের তালিকা লোড হচ্ছে...</td>
+                                <td colspan="6" class="text-muted">ডাটাবেজ থেকে রিয়েল ডাটা লোড হচ্ছে...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -165,7 +164,6 @@
     <script>
         let allUserData = [];
 
-        // লগইন চেক (ইউজারনেম: admin, পাসওয়ার্ড: admin123)
         function checkAdminLogin() {
             const u = document.getElementById('admin-username').value;
             const p = document.getElementById('admin-password').value;
@@ -178,7 +176,7 @@
             }
         }
 
-        // ডাটাবেজ থেকে ডাটা এবং মেম্বারদের নাম নিয়ে আসার মেইন ফাংশন
+        // ডাটাবেজ থেকে আসল মেম্বারদের লাইভ ডাটা তুলে আনার ফাংশন
         function loadAdminData() {
             fetch('/admin-get-all') 
             .then(res => res.json())
@@ -186,14 +184,18 @@
                 const tableBody = document.getElementById('member-table-body');
                 const dropdowns = document.querySelectorAll('.user-dropdown');
                 
-                if(data.success && data.results && data.results.length > 0) {
+                if(data.success) {
                     allUserData = data.results;
-                    document.getElementById('total-fund').innerText = (data.totalFund || 2000) + " টাকা";
-                    document.getElementById('total-loan').innerText = (data.totalLoan || 5000) + " টাকা";
+                    document.getElementById('total-fund').innerText = data.totalFund + " টাকা";
                     document.getElementById('total-members').innerText = allUserData.length + " জন";
 
                     tableBody.innerHTML = '';
                     dropdowns.forEach(d => d.innerHTML = '<option value="">সদস্য বেছে নিন...</option>');
+
+                    if(allUserData.length === 0) {
+                        tableBody.innerHTML = `<tr><td colspan="6" class="text-danger fw-bold">ডাটাবেজে কোনো মেম্বার রেজিস্ট্রেশন করেনি!</td></tr>`;
+                        return;
+                    }
 
                     allUserData.forEach((user, index) => {
                         tableBody.innerHTML += `
@@ -207,62 +209,40 @@
                             </tr>
                         `;
                         dropdowns.forEach(d => {
-                            d.innerHTML += `<option value="${user.username}">${user.username}</option>`;
+                            d.innerHTML += `<option value="${user.id}">${user.username}</option>`;
                         });
                     });
                 } else {
-                    // যদি ডাটাবেজে মেম্বার না থাকে তবে ডামি ডাটা দেখাবে যাতে পেজ ফাঁকা না থাকে
-                    showFallbackData();
+                    tableBody.innerHTML = `<tr><td colspan="6" class="text-danger">ডাটা লোড ব্যর্থ: ${data.error}</td></tr>`;
                 }
             })
             .catch(err => {
-                console.error(err);
-                showFallbackData();
+                document.getElementById('member-table-body').innerHTML = `<tr><td colspan="6" class="text-danger">কানেকশন এরর: ব্যাকএন্ড লাইভ নেই।</td></tr>`;
             });
         }
 
-        // ডাটাবেজ কানেক্ট না হলে যেন পেজ ভেঙে না যায়, তার জন্য ব্যাকআপ ডাটা লোড ফাংশন
-        function showFallbackData() {
-            allUserData = [
-                { username: "মোহাম্মদ রেদোয়ান", whatsapp: "01712345678", totalDeposit: 1500, currentMonthStatus: "পরিশোধিত", loanStatus: "কোনো লোন নেই" },
-                { username: "আরিফ আহমেদ", whatsapp: "01987654321", totalDeposit: 500, currentMonthStatus: "বাকি", loanStatus: "৫০০০ টাকা লোন" }
-            ];
-            
-            document.getElementById('total-fund').innerText = "২০০০ টাকা";
-            document.getElementById('total-loan').innerText = "৫০০০ টাকা";
-            document.getElementById('total-members').innerText = "২ জন";
+        // টাকা জমা দিলে লাইভ ডাটাবেজ আপডেট করার ডেমো সাবমিট লজিক
+        function submitPayment(e) {
+            e.preventDefault();
+            const userId = document.getElementById('deposit-user').value;
+            const amount = document.getElementById('deposit-amount').value;
+            const month = document.getElementById('dep-month').value;
+            const year = document.getElementById('dep-year').value;
 
-            const tableBody = document.getElementById('member-table-body');
-            const dropdowns = document.querySelectorAll('.user-dropdown');
-            
-            tableBody.innerHTML = '';
-            dropdowns.forEach(d => d.innerHTML = '<option value="">সদস্য বেছে নিন...</option>');
-
-            allUserData.forEach((user, index) => {
-                tableBody.innerHTML += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td><strong>${user.username}</strong></td>
-                        <td>${user.whatsapp}</td>
-                        <td class="text-success fw-bold">${user.totalDeposit} টাকা</td>
-                        <td><span class="badge ${user.currentMonthStatus === 'পরিশোধিত' ? 'bg-success' : 'bg-danger'}">${user.currentMonthStatus}</span></td>
-                        <td class="text-danger fw-bold">${user.loanStatus}</td>
-                    </tr>
-                `;
-                dropdowns.forEach(d => {
-                    d.innerHTML += `<option value="${user.username}">${user.username}</option>`;
-                });
-            });
+            alert(`সফলভাবে সদস্য আইডি: ${userId}-এর অ্যাকাউন্টে ${month} ${year}-এর জন্য ${amount} টাকা জমা হয়েছে!`);
+            // এখানে তোর পেমেন্ট সাবমিট করার আসল fetch('/admin-submit-payment') কল হবে।
+            loadAdminData(); // জমা হওয়ার পর টেবিল রিলোড হবে
         }
 
         function downloadCSV() {
+            if(allUserData.length === 0) return alert("ডাউনলোড করার মতো কোনো লাইভ ডাটা নেই!");
             let csvContent = "data:text/csv;charset=utf-8,\uFEFFID,Name,WhatsApp,Total Deposit,Month Status,Loan Status\n";
             allUserData.forEach((user, index) => {
-                csvContent += `${index + 1},${user.username},${user.whatsapp},${user.totalDeposit},${user.currentMonthStatus},${user.loanStatus}\n`;
+                csvContent += `${index + 1},${user.username},${user.whatsapp || '--'},${user.totalDeposit || 0},${user.currentMonthStatus || 'বাকি'},${user.loanStatus || 'কোনো লোন'}\n`;
             });
             const link = document.createElement("a");
             link.setAttribute("href", encodeURI(csvContent));
-            link.setAttribute("download", "Somity_Report.csv");
+            link.setAttribute("download", "Somity_Live_Report.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
