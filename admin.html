@@ -21,7 +21,7 @@
         .admin-box { background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .admin-box h3 { margin-bottom: 20px; color: #222; }
         .form-group { margin-bottom: 15px; }
-        .date-row { display: flex; gap: 10px; } /* মাস ও বছর পাশাপাশি রাখার জন্য */
+        .date-row { display: flex; gap: 10px; }
         .date-row .form-group { flex: 1; margin-bottom: 0; }
         label { display: block; color: #444; margin-bottom: 5px; font-size: 14px; font-weight: 600; }
         input, select { width: 100%; padding: 11px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; outline: none; background-color: #fff; }
@@ -114,7 +114,7 @@
                             <option value="২০৩৬">২০৩৬</option>
                             <option value="২০৩৭">২০৩৭</option>
                             <option value="২০৩৮">২০৩৮</option>
-                            <option value="২০৩৯">২০৩৯</option>
+                            <option value="২০十九章">২০৩৯</option>
                             <option value="২০৪০">২০৪০</option>
                         </select>
                     </div>
@@ -184,11 +184,11 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    globalUsersData = data.users;
+                    globalUsersData = data.results || data.users || [];
 
-                    document.getElementById('totalFundCard').innerText = `${data.totalFund} টাকা`;
-                    document.getElementById('totalLoanCard').innerText = `${data.totalLoan} টাকা`;
-                    document.getElementById('totalMembersCard').innerText = `${data.users.length} জন`;
+                    document.getElementById('totalFundCard').innerText = `${data.totalFund || 0} টাকা`;
+                    document.getElementById('totalLoanCard').innerText = `${data.totalLoan || 0} টাকা`;
+                    document.getElementById('totalMembersCard').innerText = `${globalUsersData.length} জন`;
 
                     const depSelect = document.getElementById('depositUserSelect');
                     const loanSelect = document.getElementById('loanUserSelect');
@@ -196,9 +196,14 @@
                     loanSelect.innerHTML = '<option value="">সদস্য বেছে নিন...</option>';
 
                     const tableBody = document.getElementById('adminTableBody');
+                    if (globalUsersData.length === 0) {
+                        tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#888;">কোনো সদস্য পাওয়া যায়নি।</td></tr>`;
+                        return;
+                    }
+
                     tableBody.innerHTML = '';
 
-                    data.users.forEach((user, index) => {
+                    globalUsersData.forEach((user, index) => {
                         const memberIdStr = String(index + 1).padStart(3, '0');
                         const optionText = `${user.username.toUpperCase()} (#${memberIdStr})`;
                         
@@ -216,24 +221,25 @@
                             </tr>
                         `;
                     });
+                } else {
+                    document.getElementById('adminTableBody').innerHTML = `<tr><td colspan="6" style="text-align:center; color:#ff4d4d;">⚠️ ডেটা লোড ব্যর্থ হয়েছে।</td></tr>`;
                 }
             } catch (error) {
                 console.error("Dashboard error:", error);
                 document.getElementById('adminTableBody').innerHTML = `
-                    <tr><td colspan="6" style="text-align:center; color:#ff4d4d;">⚠️ ডেটা লোড করতে সমস্যা হচ্ছে।</td></tr>
+                    <tr><td colspan="6" style="text-align:center; color:#ff4d4d;">⚠️ নেটওয়ার্ক বা সার্ভার সমস্যা।</td></tr>
                 `;
             }
         }
 
-        // পেমেন্ট সাবমিট লজিক (মাস ও বছর জোড়া লাগিয়ে পাঠানো হবে)
+        // পেমেন্ট সাবমিট লজিক
         document.getElementById('depositForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('depositUserSelect').value;
             const month = document.getElementById('depMonth').value;
             const year = document.getElementById('depYear').value;
             const amount = document.getElementById('depAmount').value;
-
-            const fullMonthName = `${month} ${year}`; // উদাহরণ: "মার্চ ২০২৬"
+            const fullMonthName = `${month} ${year}`;
 
             try {
                 const res = await fetch('/admin-add-deposit', {
@@ -244,9 +250,11 @@
                 const result = await res.json();
                 if(result.success) {
                     alert("টাকা সফলভাবে জমা হয়েছে!");
-                    loadAdminDashboard();
+                    await loadAdminDashboard();
                 } else { alert("ভুল হয়েছে: " + result.message); }
-            } catch(err) { alert("টাকা সেভ করার ব্যাকএন্ড ফাইলটি আমরা পরের ধাপে বানাবো!"); }
+            } catch(err) { 
+                alert("পেমেন্ট সেভ করার ব্যাকএন্ড ফাইলটি আমরা পরের ধাপে বানাবো!"); 
+            }
         });
 
         // লোন সাবমিট লজিক
@@ -264,10 +272,38 @@
                 const result = await res.json();
                 if(result.success) {
                     alert("লোন সফলভাবে ইস্যু হয়েছে!");
-                    loadAdminDashboard();
+                    await loadAdminDashboard();
                 } else { alert("ভুল হয়েছে: " + result.message); }
-            } catch(err) { alert("লোন সেভ করার ব্যাকএন্ড ফাইলটি আমরা পরের ধাপে বানাবো!"); }
+            } catch(err) { 
+                alert("লোন সেভ করার ব্যাকএন্ড ফাইলটি আমরা পরের ধাপে বানাবো!"); 
+            }
         });
 
         function downloadCSVBackup() {
-            if (globalUsersData
+            if (!globalUsersData || globalUsersData.length === 0) {
+                alert("ডাউনলোড করার মতো কোনো তথ্য নেই!");
+                return;
+            }
+            let csvContent = "\uFEFF"; 
+            csvContent += "সদস্য আইডি,নাম,হোয়াটসঅ্যাপ নম্বর,মোট জমা,চলতি মাসের অবস্থা,লোন স্ট্যাটাস\n";
+
+            globalUsersData.forEach((user, index) => {
+                const id = `#${String(index + 1).padStart(3, '0')}`;
+                const name = user.username ? user.username.toUpperCase() : '--';
+                const whatsapp = user.whatsapp || '--';
+                csvContent += `"${id}","${name}","${whatsapp}","০ টাকা","বাকি আছে","কোনো লোন নেই"\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Somity_Backup_${new Date().toISOString().slice(0,10)}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
