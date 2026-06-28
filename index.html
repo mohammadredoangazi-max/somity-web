@@ -3,188 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>বন্ধুত্ব সঞ্চয় সমিতি - নিবন্ধন</title>
+    <title>বন্ধুত্ব সঞ্চয় সমিতি</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body {
             background: linear-gradient(rgba(0, 123, 255, 0.6), rgba(0, 123, 255, 0.6)), url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1920&q=80');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            background-size: cover; background-position: center; background-attachment: fixed;
+            min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px;
         }
-
-        .container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            width: 100%;
-            max-width: 450px;
-            text-align: center;
-        }
-
-        .logo-area img {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 10px;
-        }
-
-        h2 {
-            color: #333;
-            margin-bottom: 5px;
-            font-size: 24px;
-        }
-
-        .subtitle {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 25px;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-            text-align: left;
-        }
-
-        label {
-            display: block;
-            color: #444;
-            margin-bottom: 6px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        input[type="text"],
-        input[type="password"],
-        input[type="file"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        input:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 14px;
-            background: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
-        }
-
-        .btn-submit:hover {
-            background: #0056b3;
-        }
-
-        .footer-link {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #555;
-        }
-
-        .footer-link a {
-            color: #007bff;
-            text-decoration: none;
-            font-weight: bold;
-        }
+        .container { background: rgba(255, 255, 255, 0.95); padding: 35px 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); width: 100%; max-width: 420px; text-align: center; }
+        .logo-area img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; }
+        h2 { color: #333; font-size: 24px; margin-bottom: 5px; }
+        .subtitle { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .tab-box { display: flex; margin-bottom: 20px; border-bottom: 2px solid #ddd; }
+        .tab-btn { flex: 1; padding: 10px; background: none; border: none; font-size: 16px; font-weight: bold; cursor: pointer; color: #666; }
+        .tab-btn.active { color: #007bff; border-bottom: 3px solid #007bff; }
+        .form-panel { display: none; }
+        .form-panel.active { display: block; }
+        .form-group { margin-bottom: 15px; text-align: left; }
+        label { display: block; color: #444; margin-bottom: 5px; font-size: 14px; font-weight: 600; }
+        input { width: 100%; padding: 11px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; outline: none; }
+        input:focus { border-color: #007bff; }
+        .btn-submit { width: 100%; padding: 12px; background: #007bff; color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-submit:hover { background: #0056b3; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <div class="logo-area">
-            <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=150&q=80" alt="সমিতি লোগো">
+            <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=150&q=80" alt="লোগো">
+        </div>
+        <h2>বন্ধুত্ব সঞ্চয় সমিতি</h2>
+        <div id="pageSubtitle" class="subtitle">সদস্য হিসেবে লগইন করুন</div>
+
+        <!-- লগইন ও রেজিস্ট্রেশন পরিবর্তনের ট্যাব -->
+        <div class="tab-box">
+            <button class="tab-btn active" onclick="switchTab('login')">লগইন</button>
+            <button class="tab-btn" onclick="switchTab('register')">নিবন্ধন (Register)</button>
         </div>
 
-        <h2>বন্ধুত্ব সঞ্চয় সমিতি</h2>
-        <div class="subtitle">নতুন সদস্য হিসেবে নাম নিবন্ধন করুন</div>
+        <!-- ১. লগইন ফর্ম -->
+        <div id="loginPanel" class="form-panel active">
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>ইউজারনেম</label>
+                    <input type="text" id="loginUser" placeholder="ইউজারনেম দিন" required>
+                </div>
+                <div class="form-group">
+                    <label>পাসওয়ার্ড</label>
+                    <input type="password" id="loginPass" placeholder="পাসওয়ার্ড দিন" required>
+                </div>
+                <button type="submit" class="btn-submit">লগইন করুন</button>
+            </form>
+        </div>
 
-        <form id="registerForm">
-            <div class="form-group">
-                <label>সম্পূর্ণ নাম</label>
-                <input type="text" id="name" placeholder="আপনার পুরো নাম লিখুন" required>
-            </div>
-
-            <div class="form-group">
-                <label>ইউজারনেম (ইংরেজিতে ছোট অক্ষরে)</label>
-                <input type="text" id="username" placeholder="একটি ইউনিক ইউজারনেম দিন" required>
-            </div>
-
-            <div class="form-group">
-                <label>হোয়াটসঅ্যাপ নম্বর</label>
-                <input type="text" id="whatsapp_number" placeholder="যেমন: 017XXXXXXXX" required>
-            </div>
-
-            <div class="form-group">
-                <label>পাসওয়ার্ড তৈরি করুন</label>
-                <input type="password" id="password" placeholder="একটি শক্তিশালী পাসওয়ার্ড দিন" required>
-            </div>
-
-            <button type="submit" class="btn-submit">নিবন্ধন সম্পন্ন করুন</button>
-        </form>
-
-        <div class="footer-link">
-            ইতিমধ্যে অ্যাকাউন্ট আছে? <a href="/login.html">এখানে লগইন করুন</a>
+        <!-- ২. রেজিস্ট্রেশন ফর্ম -->
+        <div id="registerPanel" class="form-panel">
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>সম্পূর্ণ নাম</label>
+                    <input type="text" id="regName" placeholder="আপনার পুরো নাম লিখুন" required>
+                </div>
+                <div class="form-group">
+                    <label>ইউজারনেম (ইংরেজিতে ছোট অক্ষরে)</label>
+                    <input type="text" id="regUser" placeholder="একটি ইউনিক ইউজারনেম দিন" required>
+                </div>
+                <div class="form-group">
+                    <label>হোয়াটসঅ্যাপ নম্বর</label>
+                    <input type="text" id="regWhap" placeholder="যেমন: 017XXXXXXXX" required>
+                </div>
+                <div class="form-group">
+                    <label>পাসওয়ার্ড তৈরি করুন</label>
+                    <input type="password" id="regPass" placeholder="একটি শক্তিশালী পাসওয়ার্ড দিন" required>
+                </div>
+                <button type="submit" class="btn-submit">নিবন্ধন সম্পন্ন করুন</button>
+            </form>
         </div>
     </div>
 
     <script>
+        // ট্যাব বদলানোর ফাংশন
+        function switchTab(type) {
+            const tabs = document.querySelectorAll('.tab-btn');
+            const panels = document.querySelectorAll('.form-panel');
+            const subtitle = document.getElementById('pageSubtitle');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            panels.forEach(p => p.classList.remove('active'));
+
+            if(type === 'login') {
+                tabs[0].classList.add('active');
+                document.getElementById('loginPanel').classList.add('active');
+                subtitle.innerText = "সদস্য হিসেবে লগইন করুন";
+            } else {
+                tabs[1].classList.add('active');
+                document.getElementById('registerPanel').classList.add('active');
+                subtitle.innerText = "নতুন সদস্য হিসেবে নাম নিবন্ধন করুন";
+            }
+        }
+
+        // লগইন সাবমিট
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('loginUser').value;
+            const password = document.getElementById('loginPass').value;
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    localStorage.setItem('username', data.username);
+                    alert("লগইন সফল হয়েছে!");
+                    window.location.href = '/member.html';
+                } else { alert(data.message || "ভুল ইউজারনেম বা পাসওয়ার্ড!"); }
+            } catch (error) { alert("সার্ভার রেসপন্স করছে না। কিছুক্ষণ পর চেষ্টা করুন।"); }
+        });
+
+        // রেজিস্ট্রেশন সাবমিট
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-
-            const name = document.getElementById('name').value;
-            const username = document.getElementById('username').value;
-            const whatsapp_number = document.getElementById('whatsapp_number').value;
-            const password = document.getElementById('password').value;
-
+            const name = document.getElementById('regName').value;
+            const username = document.getElementById('regUser').value;
+            const whatsapp_number = document.getElementById('regWhap').value;
+            const password = document.getElementById('regPass').value;
             try {
-                // সরাসরি নতুন functions/register.js ফাইলে হিট করবে (কোনো /api/ নেই)
                 const response = await fetch('/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, username, whatsapp_number, password })
                 });
-
                 const data = await response.json();
-
                 if (data.success) {
                     alert(data.message);
-                    window.location.href = '/login.html'; // সফল হলে লগইন পেজে নিয়ে যাবে
-                } else {
-                    alert(data.message || "নিবন্ধন ব্যর্থ হয়েছে।");
-                }
-            } catch (error) {
-                console.error("Error:", error);
-                alert("সার্ভার রেসপন্স করছে না বা আপডেট হচ্ছে। কিছুক্ষণ পর আবার চেষ্টা করুন।");
-            }
+                    switchTab('login'); // সফল হলে লগইন ট্যাবে নিয়ে যাবে
+                } else { alert(data.message || "নিবন্ধন ব্যর্থ হয়েছে।"); }
+            } catch (error) { alert("সার্ভার রেসপন্স করছে না। কিছুক্ষণ পর চেষ্টা করুন।"); }
         });
     </script>
-
 </body>
 </html>
