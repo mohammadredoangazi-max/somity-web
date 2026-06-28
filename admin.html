@@ -21,6 +21,8 @@
         .admin-box { background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .admin-box h3 { margin-bottom: 20px; color: #222; }
         .form-group { margin-bottom: 15px; }
+        .date-row { display: flex; gap: 10px; } /* মাস ও বছর পাশাপাশি রাখার জন্য */
+        .date-row .form-group { flex: 1; margin-bottom: 0; }
         label { display: block; color: #444; margin-bottom: 5px; font-size: 14px; font-weight: 600; }
         input, select { width: 100%; padding: 11px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; outline: none; background-color: #fff; }
         .btn-submit { width: 100%; padding: 12px; background: #007bff; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; }
@@ -75,24 +77,49 @@
                         <option value="">সদস্য বেছে নিন...</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>মাসের নাম</label>
-                    <select id="depMonth" required>
-                        <option value="">মাস বেছে নিন...</option>
-                        <option value="জানুয়ারি ২০২৬">জানুয়ারি ২০২৬</option>
-                        <option value="ফেব্রুয়ারি ২০২৬">ফেব্রুয়ারি ২০২৬</option>
-                        <option value="মার্চ ২০২৬" selected>মার্চ ২০২৬</option>
-                        <option value="এপ্রিল ২০২৬">এপ্রিল ২০২৬</option>
-                        <option value="মে ২০২৬">মে ২০২৬</option>
-                        <option value="জুন ২০২৬">জুন ২০২৬</option>
-                        <option value="জুলাই ২০২৬">জুলাই ২০২৬</option>
-                        <option value="অগাস্ট ২০২৬">অগাস্ট ২০২৬</option>
-                        <option value="সেপ্টেম্বর ২০২৬">সেপ্টেম্বর ২০২৬</option>
-                        <option value="অক্টোবর ২০২৬">অক্টোবর ২০২৬</option>
-                        <option value="নভেম্বর ২০২৬">নভেম্বর ২০২৬</option>
-                        <option value="ডিসেম্বর ২০২৬">ডিসেম্বর ২০২৬</option>
-                    </select>
+                
+                <div class="date-row" style="margin-bottom: 15px;">
+                    <div class="form-group">
+                        <label>মাস</label>
+                        <select id="depMonth" required>
+                            <option value="">মাস...</option>
+                            <option value="জানুয়ারি">জানুয়ারি</option>
+                            <option value="ফেব্রুয়ারি">ফেব্রুয়ারি</option>
+                            <option value="মার্চ" selected>মার্চ</option>
+                            <option value="এপ্রিল">এপ্রিল</option>
+                            <option value="মে">মে</option>
+                            <option value="জুন">জুন</option>
+                            <option value="জুলাই">জুলাই</option>
+                            <option value="অগাস্ট">অগাস্ট</option>
+                            <option value="সেপ্টেম্বর">সেপ্টেম্বর</option>
+                            <option value="অক্টোবর">অক্টোবর</option>
+                            <option value="নভেম্বর">নভেম্বর</option>
+                            <option value="ডিসেম্বর">ডিসেম্বর</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>বছর</label>
+                        <select id="depYear" required>
+                            <option value="">বছর...</option>
+                            <option value="২০২৬" selected>২০২৬</option>
+                            <option value="২০২৭">২০২৭</option>
+                            <option value="২০২৮">২০২৮</option>
+                            <option value="২০২৯">২০২৯</option>
+                            <option value="২০৩০">২০৩০</option>
+                            <option value="২০৩১">২০৩১</option>
+                            <option value="২০৩২">২০৩২</option>
+                            <option value="২০৩৩">২০৩৩</option>
+                            <option value="২০৩৪">২০৩৪</option>
+                            <option value="২০৩৫">২০৩৫</option>
+                            <option value="২০৩৬">২০৩৬</option>
+                            <option value="২০৩৭">২০৩৭</option>
+                            <option value="২০৩৮">২০৩৮</option>
+                            <option value="২০৩৯">২০৩৯</option>
+                            <option value="২০৪০">২০৪০</option>
+                        </select>
+                    </div>
                 </div>
+
                 <div class="form-group">
                     <label>টাকার পরিমাণ</label>
                     <input type="number" id="depAmount" placeholder="যেমন: ৫০০" required>
@@ -131,7 +158,7 @@
                     <th>নাম</th>
                     <th>হোয়াটসঅ্যাপ নম্বর</th>
                     <th>মোট জমা</th>
-                    <th>চলতি মাস (মার্চ)</th>
+                    <th>চলতি মাসের অবস্থা</th>
                     <th>লোন স্ট্যাটাস</th>
                 </tr>
             </thead>
@@ -144,23 +171,20 @@
     </div>
 
     <script>
-        let globalUsersData = []; // ব্যাকআপ ফাইল তৈরির জন্য ডেটা রাখার গ্লোবাল ভেরিয়েবল
+        let globalUsersData = [];
 
         document.addEventListener("DOMContentLoaded", async () => {
             await loadAdminDashboard();
-
-            // ব্যাকআপ বোতামের ক্লিকের কাজ অ্যাক্টিভেট করা হলো
             document.getElementById('downloadBackupBtn').addEventListener('click', downloadCSVBackup);
         });
 
-        // ড্যাশবোর্ড লোড করার ফাংশন
         async function loadAdminDashboard() {
             try {
                 const response = await fetch('/admin-get-all');
                 const data = await response.json();
 
                 if (data.success) {
-                    globalUsersData = data.users; // ডাউনলোড করার জন্য ডেটা সেভ করে রাখলাম
+                    globalUsersData = data.users;
 
                     document.getElementById('totalFundCard').innerText = `${data.totalFund} টাকা`;
                     document.getElementById('totalLoanCard').innerText = `${data.totalLoan} টাকা`;
@@ -201,39 +225,49 @@
             }
         }
 
-        // এক্সেল/CSV ব্যাকআপ ডাউনলোড করার অটোমেটিক ফাংশন
+        // পেমেন্ট সাবমিট লজিক (মাস ও বছর জোড়া লাগিয়ে পাঠানো হবে)
+        document.getElementById('depositForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('depositUserSelect').value;
+            const month = document.getElementById('depMonth').value;
+            const year = document.getElementById('depYear').value;
+            const amount = document.getElementById('depAmount').value;
+
+            const fullMonthName = `${month} ${year}`; // উদাহরণ: "মার্চ ২০২৬"
+
+            try {
+                const res = await fetch('/admin-add-deposit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, month: fullMonthName, amount })
+                });
+                const result = await res.json();
+                if(result.success) {
+                    alert("টাকা সফলভাবে জমা হয়েছে!");
+                    loadAdminDashboard();
+                } else { alert("ভুল হয়েছে: " + result.message); }
+            } catch(err) { alert("টাকা সেভ করার ব্যাকএন্ড ফাইলটি আমরা পরের ধাপে বানাবো!"); }
+        });
+
+        // লোন সাবমিট লজিক
+        document.getElementById('loanForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('loanUserSelect').value;
+            const amount = document.getElementById('loanAmount').value;
+
+            try {
+                const res = await fetch('/admin-add-loan', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, amount })
+                });
+                const result = await res.json();
+                if(result.success) {
+                    alert("লোন সফলভাবে ইস্যু হয়েছে!");
+                    loadAdminDashboard();
+                } else { alert("ভুল হয়েছে: " + result.message); }
+            } catch(err) { alert("লোন সেভ করার ব্যাকএন্ড ফাইলটি আমরা পরের ধাপে বানাবো!"); }
+        });
+
         function downloadCSVBackup() {
-            if (globalUsersData.length === 0) {
-                alert("ডাউনলোড করার মতো কোনো সদস্যের তথ্য খুঁজে পাওয়া যায়নি!");
-                return;
-            }
-
-            // এক্সেল ফাইলের হেডার এবং বাংলা ফন্ট ঠিক রাখার বম (BOM) সেটআপ
-            let csvContent = "\uFEFF"; 
-            csvContent += "সদস্য আইডি,নাম,হোয়াটসঅ্যাপ নম্বর,মোট জমা,চলতি মাসের অবস্থা,লোন স্ট্যাটাস\n";
-
-            globalUsersData.forEach((user, index) => {
-                const id = `#${String(index + 1).padStart(3, '0')}`;
-                const name = user.username.toUpperCase();
-                const whatsapp = user.whatsapp || '--';
-                const totalDeposit = "০ টাকা";
-                const status = "বাকি আছে";
-                const loanStatus = "কোনো লোন নেই";
-
-                csvContent += `"${id}","${name}","${whatsapp}","${totalDeposit}","${status}","${loanStatus}"\n`;
-            });
-
-            // ব্রাউজারে অটো ফাইল ডাউনলোড ট্রিগার করা
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", `Somity_Backup_${new Date().toISOString().slice(0,10)}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-    </script>
-</body>
-</html>
+            if (globalUsersData
