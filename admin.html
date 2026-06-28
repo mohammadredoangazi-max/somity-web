@@ -6,6 +6,7 @@
     <title>সমিতি - অ্যাডমিন প্যানেল</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        /* মেম্বার পেজের মতোই হুবহু ব্যাকগ্রাউন্ড ছবি ও স্টাইল */
         #login-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?q=80&w=2070') no-repeat center center/cover;
@@ -59,7 +60,7 @@
                 <div class="col-md-4">
                     <div class="card p-3 stat-card" style="border-left-color: #28a745;">
                         <small class="text-muted fw-bold">সর্বমোট জমা ফান্ড</small>
-                        <h3 id="total-fund">计算 হচ্ছে...</h3>
+                        <h3 id="total-fund">০ টাকা</h3>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -82,7 +83,7 @@
                         <h5 class="mb-3 fw-bold">নতুন পেমেন্ট এন্ট্রি (টাকা জমা)</h5>
                         <form id="deposit-form" onsubmit="submitPayment(event)">
                             <div class="mb-3">
-                                <label class="form-label">সদস্য সিলেক্ট করুন (লাইভ তালিকা)</label>
+                                <label class="form-label">সদস্য সিলেক্ট করুন</label>
                                 <select class="form-select user-dropdown" id="deposit-user" required>
                                     <option value="">সদস্য লোড হচ্ছে...</option>
                                 </select>
@@ -115,7 +116,7 @@
 
                 <div class="col-md-6">
                     <div class="card p-4">
-                        <h5 class="mb-3 fw-bold">নতুন লোন ইস্যু করুন</h5>
+                        <h5 class="mb-3 fw-bold">নতুন L1 ইস্যু করুন</h5>
                         <form id="loan-form" onsubmit="event.preventDefault(); alert('লোন প্রসেস হচ্ছে...');">
                             <div class="mb-3">
                                 <label class="form-label">সদস্য সিলেক্ট করুন</label>
@@ -185,8 +186,8 @@
                 const dropdowns = document.querySelectorAll('.user-dropdown');
                 
                 if(data.success) {
-                    allUserData = data.results;
-                    document.getElementById('total-fund').innerText = data.totalFund + " টাকা";
+                    allUserData = data.results || [];
+                    document.getElementById('total-fund').innerText = (data.totalFund || 0) + " টাকা";
                     document.getElementById('total-members').innerText = allUserData.length + " জন";
 
                     tableBody.innerHTML = '';
@@ -201,7 +202,7 @@
                         tableBody.innerHTML += `
                             <tr>
                                 <td>${index + 1}</td>
-                                <td><strong>${user.username}</strong></td>
+                                <td><strong>${user.name || user.username}</strong></td>
                                 <td>${user.whatsapp || '--'}</td>
                                 <td class="text-success fw-bold">${user.totalDeposit || 0} টাকা</td>
                                 <td><span class="badge ${user.currentMonthStatus === 'পরিশোধিত' ? 'bg-success' : 'bg-danger'}">${user.currentMonthStatus || 'বাকি'}</span></td>
@@ -209,7 +210,7 @@
                             </tr>
                         `;
                         dropdowns.forEach(d => {
-                            d.innerHTML += `<option value="${user.id}">${user.username}</option>`;
+                            d.innerHTML += `<option value="${user.id}">${user.name || user.username}</option>`;
                         });
                     });
                 } else {
@@ -217,11 +218,12 @@
                 }
             })
             .catch(err => {
+                console.error(err);
                 document.getElementById('member-table-body').innerHTML = `<tr><td colspan="6" class="text-danger">কানেকশন এরর: ব্যাকএন্ড লাইভ নেই।</td></tr>`;
             });
         }
 
-        // টাকা জমা দিলে লাইভ ডাটাবেজ আপডেট করার ডেমো সাবমিট লজিক
+        // টাকা জমা দিলে লাইভ ডাটাবেজ আপডেট এবং হোয়াটসঅ্যাপ মেসেজ পাঠানোর ফাংশন
         function submitPayment(e) {
             e.preventDefault();
             const userId = document.getElementById('deposit-user').value;
@@ -229,16 +231,51 @@
             const month = document.getElementById('dep-month').value;
             const year = document.getElementById('dep-year').value;
 
-            alert(`সফলভাবে সদস্য আইডি: ${userId}-এর অ্যাকাউন্টে ${month} ${year}-এর জন্য ${amount} টাকা জমা হয়েছে!`);
-            // এখানে তোর পেমেন্ট সাবমিট করার আসল fetch('/admin-submit-payment') কল হবে।
-            loadAdminData(); // জমা হওয়ার পর টেবিল রিলোড হবে
+            // ১. সিলেক্ট করা ইউজার খুঁজে বের করা
+            const selectedUser = allUserData.find(u => u.id == userId);
+            
+            if (!selectedUser) {
+                alert("অনুগ্রহ করে একজন সঠিক সদস্য সিলেক্ট করুন!");
+                return;
+            }
+
+            const memberName = selectedUser.name || selectedUser.username;
+            let whatsappNumber = selectedUser.whatsapp || "";
+
+            // ২. হোয়াটসঅ্যাপ নম্বর ফরমেটিং
+            whatsappNumber = whatsappNumber.trim().replace(/[+ -]/g, "");
+            if (whatsappNumber.startsWith("01")) {
+                whatsappNumber = "88" + whatsappNumber;
+            }
+
+            // ৩. মেসেজ টেমপ্লেট তৈরি
+            const messageTemplate = `👋 আসসালামু আলাইকুম, *${memberName}* সাহেব।\n\n` +
+                                    `💰 *বন্ধুত্ব সঞ্চয় সমিতি*-তে আপনার পেমেন্ট সফলভাবে জমা হয়েছে।\n\n` +
+                                    `🗓️ *মাস:* ${month} ${year}\n` +
+                                    `💵 *জমার পরিমাণ:* ${amount} টাকা\n` +
+                                    `✅ *অবস্থা:* পরিশোধিত\n\n` +
+                                    `ধন্যবাদ, আমাদের সাথে থাকার জন্য। 🙏`;
+
+            const encodedMessage = encodeURIComponent(messageTemplate);
+
+            alert(`সফলভাবে ${memberName}-এর অ্যাকাউন্টে ${amount} টাকা এন্ট্রি হয়েছে! এবার হোয়াটসঅ্যাপ মেসেজ পাঠানো হচ্ছে...`);
+
+            // ৪. হোয়াটসঅ্যাপ ট্যাবে অটো-রিডাইরেক্ট করা
+            if (whatsappNumber && whatsappNumber !== "88--") {
+                const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+                window.open(whatsappUrl, '_blank');
+            } else {
+                alert("এই সদস্যের কোনো সঠিক হোয়াটসঅ্যাপ নম্বর পাওয়া যায়নি!");
+            }
+
+            loadAdminData(); // টেবিল রিফ্রেশ করা
         }
 
         function downloadCSV() {
             if(allUserData.length === 0) return alert("ডাউনলোড করার মতো কোনো লাইভ ডাটা নেই!");
             let csvContent = "data:text/csv;charset=utf-8,\uFEFFID,Name,WhatsApp,Total Deposit,Month Status,Loan Status\n";
             allUserData.forEach((user, index) => {
-                csvContent += `${index + 1},${user.username},${user.whatsapp || '--'},${user.totalDeposit || 0},${user.currentMonthStatus || 'বাকি'},${user.loanStatus || 'কোনো লোন'}\n`;
+                csvContent += `${index + 1},${user.name || user.username},${user.whatsapp || '--'},${user.totalDeposit || 0},${user.currentMonthStatus || 'বাকি'},${user.loanStatus || 'কোনো লোন'}\n`;
             });
             const link = document.createElement("a");
             link.setAttribute("href", encodeURI(csvContent));
