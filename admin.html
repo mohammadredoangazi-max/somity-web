@@ -15,10 +15,16 @@
 </head>
 <body>
 
-    <!-- 🔐 অ্যাডমিন লগইন ফর্ম (বানান সংশোধন ও ফরগেট পাসওয়ার্ড যুক্ত) -->
+    <!-- 🔐 অ্যাডমিন লগইন ফর্ম -->
     <div id="login-overlay">
         <div class="login-box card text-center">
             <h4 class="fw-bold mb-4">অ্যাডমিন লগইন</h4>
+            
+            <!-- ℹ️ ইন-অ্যাপ সুন্দর অ্যালার্ট বক্স (ব্রাউজার পপ-আপের পরিবর্তে এটি দেখাবে) -->
+            <div id="forgot-password-alert" class="alert alert-warning small text-start d-none mb-3" style="font-size: 13px;">
+                🔒 <strong>পাসওয়ার্ড পুনরুদ্ধার:</strong> অ্যাডমিন পাসওয়ার্ড ভুলে গেলে আপনার হোস্টিং/ডাটাবেজ প্যানেল থেকে রিসেট করতে হবে অথবা সোর্স কোডের ভ্যালু পরিবর্তন করতে হবে।
+            </div>
+
             <div class="mb-3 text-start">
                 <label class="form-label small fw-bold">ইউজারনেম</label>
                 <input type="text" id="admin-username" class="form-control" placeholder="admin">
@@ -28,7 +34,7 @@
                 <input type="password" id="admin-password" class="form-control" placeholder="••••••••">
             </div>
             <div class="text-end mb-4">
-                <a href="#" onclick="alert('🔒 অ্যাডমিন পাসওয়ার্ড ভুলে গেলে আপনার হোস্টিং/ডাটাবেজ প্যানেল থেকে রিসেট করতে হবে অথবা কোডের ভ্যালু পরিবর্তন করতে হবে।')" class="text-decoration-none small text-danger fw-bold">পাসওয়ার্ড ভুলে গেছেন?</a>
+                <a href="#" onclick="showForgotPasswordInfo(event)" class="text-decoration-none small text-danger fw-bold">পাসওয়ার্ড ভুলে গেছেন?</a>
             </div>
             <button onclick="checkAdminLogin()" class="btn btn-primary w-100 fw-bold py-2">লগইন করুন</button>
         </div>
@@ -52,7 +58,7 @@
             </div>
 
             <div class="row g-4 mb-4">
-                <!-- 💰 নতুন পেমেন্ট এন্ট্রি ফর্ম (১২ মাস ও ১০ বছর ড্রপডাউন) -->
+                <!-- 💰 নতুন পেমেন্ট এন্ট্রি ফর্ম -->
                 <div class="col-md-6">
                     <div class="card p-4">
                         <h5 class="mb-3 fw-bold">নতুন পেমেন্ট এন্ট্রি (টাকা জমা)</h5>
@@ -76,8 +82,7 @@
                                     <select class="form-select" id="dep-year">
                                         <option selected>২০২৬</option><option>২০২৭</option><option>২০২৮</option>
                                         <option>২০২৯</option><option>২০৩০</option><option>২০৩১</option>
-                                        <option>২০৩২</option><option>২০৩৩</option><option>২০৩৪</option>
-                                        <option>২০自动</option><option>২০৩৫</option>
+                                        <option>২০৩২</option><option>২০৩৩</option><option>২০৩৪</option><option>২০৩৫</option>
                                     </select>
                                 </div>
                             </div>
@@ -90,7 +95,7 @@
                     </div>
                 </div>
 
-                <!-- 🏦 লোন ইস্যু ফর্ম (L1 লোন অপশন) -->
+                <!-- 🏦 লোন ইস্যু ফর্ম -->
                 <div class="col-md-6">
                     <div class="card p-4">
                         <h5 class="mb-3 fw-bold">নতুন L1 লোন ইস্যু করুন</h5>
@@ -109,7 +114,7 @@
                 </div>
             </div>
 
-            <!-- ⏳ রিমাইন্ডার সেকশন (১৩ তারিখের তাগিদ) -->
+            <!-- ⏳ রিমাইন্ডার সেকশন -->
             <div class="card p-4 mb-4 text-center">
                 <h5 class="fw-bold text-danger mb-2">📢 ১৩ তারিখের মাসিক তাগিদ (রিমাইন্ডার)</h5>
                 <p class="text-muted small mb-3">ডাটাবেজের সকল মেম্বারদের কাছে এক ক্লিকে টাকা দেওয়ার রিমাইন্ডার মেসেজ পাঠানোর অপশন।</p>
@@ -134,6 +139,17 @@
 
     <script>
         let allUserData = [];
+
+        // পাসওয়ার্ড ভুলে যাওয়ার সুন্দর টগল মেসেজ
+        function showForgotPasswordInfo(e) {
+            e.preventDefault();
+            const alertBox = document.getElementById('forgot-password-alert');
+            if (alertBox.classList.contains('d-none')) {
+                alertBox.classList.remove('d-none');
+            } else {
+                alertBox.classList.add('d-none');
+            }
+        }
 
         // লগইন চেক ফাংশন
         function checkAdminLogin() {
