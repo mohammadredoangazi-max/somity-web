@@ -59,3 +59,204 @@
         }
         input[type=number] {
             -moz-appearance: textfield;
+        }
+        .btn-login {
+            background-color: #0d6efd;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            border: none;
+            width: 100%;
+            font-size: 16px;
+        }
+        .btn-login:hover { background-color: #0b5ed7; }
+        
+        /* ড্যাশবোর্ড মোড */
+        body.dashboard-mode { background-color: #f4f6f9 !important; display: block; padding: 0; margin: 0; }
+        .marquee-notice { background: #fff3cd; color: #856404; font-weight: bold; padding: 12px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #ffc107; }
+        .stat-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); height: 100%; }
+    </style>
+</head>
+<body class="auth-mode" id="main-body">
+
+    <div class="main-container" id="auth-container">
+        <div class="login-box">
+            
+            <div id="login-section">
+                <div class="text-center box-title">
+                    🔗 সদস্য লগইন
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">সদস্য আইডি / মোবাইল নম্বর</label>
+                    <input type="text" id="member-username-input" class="form-control" placeholder="যেমন: 017XXXXXXXX বা ইউজারনেম">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">অ্যাকাউন্ট পাসওয়ার্ড</label>
+                    <input type="password" id="member-pass-input" class="form-control" placeholder="আপনার পাসওয়ার্ড দিন">
+                </div>
+                <div class="text-end mb-4">
+                    <a href="#" onclick="showForgotForm()" class="text-decoration-none small text-danger fw-bold">পাসওয়ার্ড ভুলে গেছেন?</a>
+                </div>
+                <button onclick="handleSecureLogin()" class="btn-login mb-3">লগইন করুন</button>
+                
+                <div class="text-center mt-2">
+                    <span class="text-muted small">নতুন সদস্য?</span> 
+                    <a href="#" onclick="toggleAuthView('register')" class="text-decoration-none small text-primary fw-bold ms-1">এখানে নিবন্ধন করুন</a>
+                </div>
+            </div>
+
+            <div id="register-section" style="display: none;">
+                <div class="text-center box-title">
+                    📝 নতুন সদস্য নিবন্ধন
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">সম্পূর্ণ নাম</label>
+                    <input type="text" id="reg-name" class="form-control" placeholder="আপনার পুরো নাম লিখুন">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">ইউজারনেম (ছোট অক্ষরে)</label>
+                    <input type="text" id="reg-username" class="form-control" placeholder="যেমন: redoan">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">মোবাইল নম্বর</label>
+                    <input type="text" id="reg-phone" class="form-control" placeholder="যেমন: 017XXXXXXXX">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">পাসওয়ার্ড তৈরি করুন</label>
+                    <input type="password" id="reg-password" class="form-control" placeholder="একটি নতুন পাসওয়ার্ড দিন">
+                </div>
+                <button onclick="handleRegistration()" class="btn-login mb-3">নিবন্ধন সম্পন্ন করুন</button>
+                <div class="text-center mt-2">
+                    <span class="text-muted small">অ্যাকাউন্ট আছে?</span> 
+                    <a href="#" onclick="toggleAuthView('login')" class="text-decoration-none small text-primary fw-bold ms-1">লগইন করুন</a>
+                </div>
+            </div>
+
+            <div id="forgot-section" style="display: none;">
+                <div class="text-center box-title text-danger">🔑 পাসওয়ার্ড পুনরুদ্ধার</div>
+                <div class="mb-4">
+                    <label class="form-label">আপনার মোবাইল নম্বর</label>
+                    <input type="text" id="forgot-username" class="form-control" placeholder="যেমন: 017XXXXXXXX">
+                </div>
+                <button onclick="alert('অনুরোধ পাঠানো হয়েছে!')" class="btn btn-danger w-100 py-2 fw-bold rounded-3 mb-2">অনুরোধ পাঠান</button>
+                <div class="text-center mt-3">
+                    <a href="#" onclick="toggleAuthView('login')" class="text-decoration-none small text-primary fw-bold">ফিরে যান</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="dashboard-content" style="display: none;">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 py-3 mb-4 border-bottom shadow-sm">
+            <div class="container-fluid d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="m-0 fw-bold text-dark" id="welcome-name">স্বাগতম</h5>
+                    <small class="text-muted fw-bold">ইউজার: <span id="display-username">--</span></small>
+                </div>
+                <button class="btn btn-danger btn-sm fw-bold px-3" onclick="location.reload()">লগআউট</button>
+            </div>
+        </nav>
+        
+        <div class="container bg-transparent">
+            <div class="marquee-notice d-flex align-items-center">
+                <span class="badge bg-danger me-2 p-2">🚨 নোটিশ:</span>
+                <marquee id="live-notice-text" behavior="scroll" direction="left">কোনো নতুন নোটিশ নেই।</marquee>
+            </div>
+            <div class="row g-4">
+                <div class="col-12 col-md-4"><div class="stat-card" style="border-left: 5px solid #0d6efd;"><small class="text-muted fw-bold d-block mb-1">আমার মোট জমা</small><h2 class="fw-bold text-primary m-0" id="my-total-deposit">로드 হচ্ছে...</h2></div></div>
+                <div class="col-12 col-md-4"><div class="stat-card" style="border-left: 5px solid #198754;"><small class="text-muted fw-bold d-block mb-1">সমিতির মোট ফান্ড</small><h2 class="fw-bold text-success m-0" id="somity-total-fund">로드 হচ্ছে...</h2></div></div>
+                <div class="col-12 col-md-4"><div class="stat-card" style="border-left: 5px solid #dc3545;"><small class="text-muted fw-bold d-block mb-1">আমার লোন বাকি</small><h2 class="fw-bold text-danger m-0" id="my-loan-balance">로드 হচ্ছে...</h2></div></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleAuthView(view) {
+            document.getElementById('login-section').style.display = view === 'login' ? 'block' : 'none';
+            document.getElementById('register-section').style.display = view === 'register' ? 'block' : 'none';
+            document.getElementById('forgot-section').style.display = view === 'forgot' ? 'block' : 'none';
+        }
+
+        function showForgotForm() { toggleAuthView('forgot'); }
+
+        // লগইন করার ফুল অটোমেটিক ফাংশন
+        function handleSecureLogin() {
+            const userInput = document.getElementById('member-username-input').value.trim();
+            const passwordInput = document.getElementById('member-pass-input').value.trim();
+            
+            if(!userInput || !passwordInput) return alert("সব ঘর পূরণ করুন!");
+            
+            fetch('/functions/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: String(userInput), password: String(passwordInput) })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // ডাটাবেজে যে নাম এবং ইউজারনেম দিয়ে করা হয়েছে, সেটাই দেখাবে
+                    showDashboard(data.user.name, data.user.username);
+                } else {
+                    alert("❌ " + (data.error || "ভুল ইউজারনেম অথবা পাসওয়ার্ড!"));
+                }
+            })
+            .catch(() => {
+                alert("❌ সার্ভার রেসপন্স করছে না! অনুগ্রহ করে ডাটাবেজ কানেকশন চেক করুন।");
+            });
+        }
+
+        // ড্যাশবোর্ড দেখানোর ফাংশন (সব ডেটা ডাটাবেজ থেকে আসবে)
+        function showDashboard(name, username) {
+            document.getElementById('main-body').className = "dashboard-mode";
+            document.getElementById('auth-container').style.display = 'none';
+            document.getElementById('dashboard-content').style.display = 'block';
+            
+            document.getElementById('welcome-name').innerText = `স্বাগতম, ${name}`;
+            document.getElementById('display-username').innerText = username;
+            
+            fetch(`/functions/member-get-data?username=${encodeURIComponent(username)}`)
+            .then(r => r.json())
+            .then(memberData => {
+                if(memberData.success) {
+                    document.getElementById('my-total-deposit').innerText = (memberData.data.totalDeposit || 0) + " টাকা";
+                    document.getElementById('somity-total-fund').innerText = (memberData.data.totalFund || 0) + " টাকা";
+                    document.getElementById('my-loan-balance').innerText = (memberData.data.loanStatus || "০ টাকা");
+                } else {
+                    document.getElementById('my-total-deposit').innerText = "০ টাকা";
+                    document.getElementById('somity-total-fund').innerText = "০ টাকা";
+                    document.getElementById('my-loan-balance').innerText = "০ টাকা";
+                }
+            })
+            .catch(() => {
+                document.getElementById('my-total-deposit').innerText = "০ টাকা";
+                document.getElementById('somity-total-fund').innerText = "০ টাকা";
+                document.getElementById('my-loan-balance').innerText = "০ টাকা";
+            });
+        }
+
+        function handleRegistration() {
+            const name = document.getElementById('reg-name').value.trim();
+            const username = document.getElementById('reg-username').value.trim();
+            const phone = document.getElementById('reg-phone').value.trim();
+            const password = document.getElementById('reg-password').value;
+
+            if(!name || !username || !phone || !password) return alert("সব তথ্য দিন!");
+
+            fetch('/functions/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, username, phone, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    alert("✅ নিবন্ধন সফল! এবার লগইন করুন।");
+                    toggleAuthView('login');
+                } else { alert("❌ ব্যর্থ: " + data.error); }
+            });
+        }
+    </script>
+</body>
+</html>
