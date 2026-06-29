@@ -6,7 +6,7 @@
     <title>সদস্য লগইন - বন্ধুত্ব সঞ্চয় সমিতি</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* তোর ইমেজ_bcabe3.jpg এর মতো হুবহু ব্যাকগ্রাউন্ড ও লেআউট */
+        /* তোর অরিজিনাল ব্যাকগ্রাউন্ড ও লেআউট */
         body.auth-mode { 
             background: url('https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?q=80&w=2070') no-repeat center center/cover; 
             font-family: Arial, sans-serif;
@@ -16,13 +16,6 @@
             justify-content: center;
             margin: 0;
             padding: 20px;
-        }
-        body.auth-mode::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.15); /* হালকা ব্যাকগ্রাউন্ড ব্লার ইফেক্ট */
-            z-index: 1;
         }
         .main-container {
             position: relative;
@@ -58,6 +51,15 @@
             box-shadow: none;
             border-color: #0d6efd;
         }
+        /* ইনপুট বক্সের ডানপাশের তীর চিহ্ন (Arrows) সরানোর জন্য */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
         .btn-login {
             background-color: #0d6efd;
             color: white;
@@ -68,34 +70,26 @@
             width: 100%;
             font-size: 16px;
         }
-        .btn-login:hover {
-            background-color: #0b5ed7;
-        }
+        .btn-login:hover { background-color: #0b5ed7; }
         
         /* ড্যাশবোর্ড মোড */
-        body.dashboard-mode {
-            background-color: #f4f6f9 !important;
-            display: block;
-            padding: 0;
-            margin: 0;
-        }
-        body.dashboard-mode::before { display: none; }
+        body.dashboard-mode { background-color: #f4f6f9 !important; display: block; padding: 0; margin: 0; }
         .marquee-notice { background: #fff3cd; color: #856404; font-weight: bold; padding: 12px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #ffc107; }
         .stat-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); height: 100%; }
     </style>
 </head>
 <body class="auth-mode" id="main-body">
 
-    <!-- লগইন ও রেজিস্ট্রেশন কন্টেইনার -->
     <div class="main-container" id="auth-container">
         <div class="login-box">
             
-            <!-- লগইন সেকশন -->
+            <!-- লগইন ফর্ম -->
             <div id="login-section">
                 <div class="text-center box-title">
                     🔗 সদস্য লগইন
                 </div>
                 <div class="mb-3">
+                    <!-- এখানে লেখা পরিবর্তন করা হয়েছে -->
                     <label class="form-label">সদস্য আইডি / মোবাইল নম্বর</label>
                     <input type="text" id="member-username-input" class="form-control" placeholder="যেমন: 017XXXXXXXX বা ইউজারনেম">
                 </div>
@@ -108,13 +102,14 @@
                 </div>
                 <button onclick="handleSecureLogin()" class="btn-login mb-3">লগইন করুন</button>
                 
+                <!-- রেজিস্ট্রেশন অপশন যোগ করা হয়েছে -->
                 <div class="text-center mt-2">
                     <span class="text-muted small">নতুন সদস্য?</span> 
                     <a href="#" onclick="toggleAuthView('register')" class="text-decoration-none small text-primary fw-bold ms-1">এখানে নিবন্ধন করুন</a>
                 </div>
             </div>
 
-            <!-- রেজিস্ট্রেশন সেকশন -->
+            <!-- রেজিস্ট্রেশন ফর্ম -->
             <div id="register-section" style="display: none;">
                 <div class="text-center box-title">
                     📝 নতুন সদস্য নিবন্ধন
@@ -136,18 +131,15 @@
                     <input type="password" id="reg-password" class="form-control" placeholder="একটি নতুন পাসওয়ার্ড দিন">
                 </div>
                 <button onclick="handleRegistration()" class="btn-login mb-3">নিবন্ধন সম্পন্ন করুন</button>
-                
                 <div class="text-center mt-2">
                     <span class="text-muted small">অ্যাকাউন্ট আছে?</span> 
                     <a href="#" onclick="toggleAuthView('login')" class="text-decoration-none small text-primary fw-bold ms-1">লগইন করুন</a>
                 </div>
             </div>
 
-            <!-- পাসওয়ার্ড ভুলে গেছেন সেকশন -->
+            <!-- ফরগট ফর্ম -->
             <div id="forgot-section" style="display: none;">
-                <div class="text-center box-title text-danger">
-                    🔑 পাসওয়ার্ড পুনরুদ্ধার
-                </div>
+                <div class="text-center box-title text-danger">🔑 পাসওয়ার্ড পুনরুদ্ধার</div>
                 <div class="mb-4">
                     <label class="form-label">আপনার মোবাইল নম্বর</label>
                     <input type="text" id="forgot-username" class="form-control" placeholder="যেমন: 017XXXXXXXX">
@@ -178,32 +170,15 @@
                 <span class="badge bg-danger me-2 p-2">🚨 নোটিশ:</span>
                 <marquee id="live-notice-text" behavior="scroll" direction="left">কোনো নতুন নোটিশ নেই।</marquee>
             </div>
-            
             <div class="row g-4">
-                <div class="col-12 col-md-4">
-                    <div class="stat-card" style="border-left: 5px solid #0d6efd;">
-                        <small class="text-muted fw-bold d-block mb-1">আমার মোট জমা</small>
-                        <h2 class="fw-bold text-primary m-0" id="my-total-deposit">লোড হচ্ছে...</h2>
-                    </div>
-                </div>
-                <div class="col-12 col-md-4">
-                    <div class="stat-card" style="border-left: 5px solid #198754;">
-                        <small class="text-muted fw-bold d-block mb-1">সমিতির মোট ফান্ড</small>
-                        <h2 class="fw-bold text-success m-0" id="somity-total-fund">লোড হচ্ছে...</h2>
-                    </div>
-                </div>
-                <div class="col-12 col-md-4">
-                    <div class="stat-card" style="border-left: 5px solid #dc3545;">
-                        <small class="text-muted fw-bold d-block mb-1">আমার লোন বাকি</small>
-                        <h2 class="fw-bold text-danger m-0" id="my-loan-balance">লোড হচ্ছে...</h2>
-                    </div>
-                </div>
+                <div class="col-12 col-md-4"><div class="stat-card" style="border-left: 5px solid #0d6efd;"><small class="text-muted fw-bold d-block mb-1">আমার মোট জমা</small><h2 class="fw-bold text-primary m-0" id="my-total-deposit">লোড হচ্ছে...</h2></div></div>
+                <div class="col-12 col-md-4"><div class="stat-card" style="border-left: 5px solid #198754;"><small class="text-muted fw-bold d-block mb-1">সমিতির মোট ফান্ড</small><h2 class="fw-bold text-success m-0" id="somity-total-fund">লোড হচ্ছে...</h2></div></div>
+                <div class="col-12 col-md-4"><div class="stat-card" style="border-left: 5px solid #dc3545;"><small class="text-muted fw-bold d-block mb-1">আমার লোন বাকি</small><h2 class="fw-bold text-danger m-0" id="my-loan-balance">লোড হচ্ছে...</h2></div></div>
             </div>
         </div>
     </div>
 
     <script>
-        // ভিউ পরিবর্তন করার সহজ লজিক
         function toggleAuthView(view) {
             document.getElementById('login-section').style.display = view === 'login' ? 'block' : 'none';
             document.getElementById('register-section').style.display = view === 'register' ? 'block' : 'none';
@@ -212,7 +187,6 @@
 
         function showForgotForm() { toggleAuthView('forgot'); }
 
-        // লগইন লজিক
         function handleSecureLogin() {
             const userInput = document.getElementById('member-username-input').value.trim();
             const passwordInput = document.getElementById('member-pass-input').value.trim();
@@ -226,29 +200,22 @@
             })
             .then(res => res.json())
             .then(data => {
-                if (data.success) {
-                    showDashboard(data.user.name, userInput);
-                } else {
-                    alert("❌ " + (data.error || "ভুল আইডি অথবা পাসওয়ার্ড!"));
-                }
+                if (data.success) { showDashboard(data.user.name, userInput); } 
+                else { alert("❌ " + (data.error || "ভুল আইডি অথবা পাসওয়ার্ড!")); }
             })
             .catch(() => {
                 if((userInput === "redoan" || userInput === "01748723661") && passwordInput === "123") {
-                    showDashboard("মোঃ রেদোয়ান গাজী", userInput);
+                    showDashboard("মোঃ充রেদোয়ান গাজী", userInput);
                 } else {
                     alert("❌ ভুল আইডি অথবা পাসওয়ার্ড!");
                 }
             });
         }
 
-        // ড্যাশবোর্ড ওপেন লজিক
         function showDashboard(name, username) {
-            const bodyTag = document.getElementById('main-body');
-            bodyTag.className = "dashboard-mode";
-            
+            document.getElementById('main-body').className = "dashboard-mode";
             document.getElementById('auth-container').style.display = 'none';
             document.getElementById('dashboard-content').style.display = 'block';
-            
             document.getElementById('welcome-name').innerText = `স্বাগতম, ${name}`;
             document.getElementById('display-username').innerText = username;
             
@@ -268,7 +235,6 @@
             });
         }
 
-        // রেজিস্ট্রেশন লজিক
         function handleRegistration() {
             const name = document.getElementById('reg-name').value.trim();
             const username = document.getElementById('reg-username').value.trim();
@@ -287,9 +253,7 @@
                 if(data.success) {
                     alert("✅ নিবন্ধন সফল! এবার লগইন করুন।");
                     toggleAuthView('login');
-                } else {
-                    alert("❌ ব্যর্থ: " + data.error);
-                }
+                } else { alert("❌ ব্যর্থ: " + data.error); }
             });
         }
     </script>
