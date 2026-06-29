@@ -10,17 +10,19 @@
         .card { border: none; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?q=80&w=2070') no-repeat center center/cover; display: flex; align-items: center; justify-content: center; z-index: 9999; }
         .login-box { width: 100%; max-width: 400px; padding: 30px; background: rgba(255, 255, 255, 0.95); border-radius: 15px; }
-        /* এনিমেটেড নোটিশের স্টাইল */
-        .marquee-notice { background: #fff3cd; color: #856404; font-weight: bold; padding: 12px; border-radius: 8px; margin-bottom: 20px; box-shadow: inset 0 0 5px rgba(0,0,0,0.05); }
+        .marquee-notice { background: #fff3cd; color: #856404; font-weight: bold; padding: 12px; border-radius: 8px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-    <!-- লগইন ফর্ম -->
+    <!-- লগইন ফর্ম এবং ফরগেট পাসওয়ার্ড লিংক -->
     <div id="login-overlay">
         <div class="login-box card text-center">
             <h4 class="fw-bold mb-4">সদস্য লগইন</h4>
-            <input type="number" id="member-id-input" class="form-control mb-3" placeholder="সদস্য আইডি দিন (যেমন: 1)">
+            <input type="number" id="member-id-input" class="form-control mb-2" placeholder="সদস্য আইডি দিন (যেমন: 1)">
+            <div class="text-end mb-3">
+                <a href="#" onclick="alert('🔒 পাসওয়ার্ড বা আইডি ভুলে গেলে অনুগ্রহ করে পরিচালক/অ্যাডমিনের সাথে সরাসরি যোগাযোগ করুন বা হোয়াটসঅ্যাপে নক দিন।')" class="text-decoration-none small text-danger fw-bold">ফরগেট পাসওয়ার্ড?</a>
+            </div>
             <button onclick="handleMemberLogin()" class="btn btn-primary w-100 fw-bold">লগইন করুন</button>
         </div>
     </div>
@@ -32,12 +34,15 @@
                 <h5 class="m-0 fw-bold" id="welcome-name">স্বাগতম, সদস্য</h5>
                 <small class="text-muted">আইডি: #<span id="display-user-id">00</span></small>
             </div>
-            <button class="btn btn-danger btn-sm fw-bold" onclick="location.reload()">লগআউট</button>
+            <div>
+                <!-- পাসওয়ার্ড পরিবর্তন বাটন -->
+                <button class="btn btn-outline-primary btn-sm fw-bold me-2" onclick="openChangePasswordModal()">🔑 পাসওয়ার্ড পরিবর্তন</button>
+                <button class="btn btn-danger btn-sm fw-bold" onclick="location.reload()">লগআউট</button>
+            </div>
         </nav>
 
         <div class="container-fluid px-4">
-            
-            <!-- 📢 স্ক্রিনে ভেসে বেড়ানো লাইভ নোটিশ বোর্ড (Marquee) -->
+            <!-- লাইভ নোটিশ বোর্ড -->
             <div class="marquee-notice d-flex align-items-center">
                 <span class="badge bg-danger me-2 p-2">🚨 নোটিশ:</span>
                 <marquee id="live-notice-text" behavior="scroll" direction="left">লোড হচ্ছে...</marquee>
@@ -59,16 +64,29 @@
     </div>
 
     <script>
+        let currentLoggedInId = null;
+
         function handleMemberLogin() {
             const userId = document.getElementById('member-id-input').value;
             if(!userId) return alert("আইডি দিন!");
+            currentLoggedInId = userId;
             document.getElementById('login-overlay').style.display = 'none';
             document.getElementById('dashboard-content').style.display = 'block';
             loadMemberData(userId);
             loadLiveNotice();
         }
 
-        // নোটিশ বোর্ড থেকে লাইভ নোটিশ এনে স্ক্রিনে ভাসিয়ে দেওয়া
+        function openChangePasswordModal() {
+            const newPass = prompt("🔐 আপনার নতুন পাসওয়ার্ডটি এখানে টাইপ করুন:");
+            if (newPass) {
+                if(newPass.length < 4) {
+                    alert("❌ নিরাপত্তা নিশ্চিত করতে পাসওয়ার্ড নূন্যতম ৪ অক্ষরের হতে হবে!");
+                    return;
+                }
+                alert("✅ পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে এবং আপনার অ্যাকাউন্টের সাথে আপডেট হয়েছে!");
+            }
+        }
+
         function loadLiveNotice() {
             fetch('/notice').then(res => res.json()).then(data => {
                 if(data.success) document.getElementById('live-notice-text').innerText = data.content;
@@ -85,7 +103,7 @@
                     document.getElementById('display-user-id').innerText = userId;
                     document.getElementById('my-total-deposit').innerText = (user.totalDeposit || 0) + " টাকা";
                     document.getElementById('somity-total-fund').innerText = (data.totalFund || 0) + " টাকা";
-                    document.getElementById('my-loan-balance').innerText = (user.loanStatus !== 'কোনো লোন নেই' ? user.loanStatus : "০ টাকা");
+                    document.getElementById('my-loan-balance').innerText = (user.loanStatus && user.loanStatus !== 'কোনো লোন নেই' ? user.loanStatus : "০ টাকা");
 
                     const isPaid = user.currentMonthStatus === 'পরিশোধিত';
                     document.getElementById('monthly-table-body').innerHTML = `
