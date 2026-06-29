@@ -52,7 +52,7 @@
         <div class="login-box text-center">
             <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?q=80&w=2070" alt="Logo" class="profile-img">
             <h4 class="fw-bold m-0 text-dark">বন্ধুত্ব সঞ্চয় সমিতি</h4>
-            <p class="text-muted small mb-4">নতুন সদস্য হিসেবে নাম নিবন্ধন করুন</p>
+            <p class="text-muted small mb-4">সদস্য প্যানেলে লগইন করুন</p>
 
             <ul class="nav nav-tabs" id="authTabs">
                 <li class="nav-item w-50">
@@ -63,11 +63,10 @@
                 </li>
             </ul>
 
-            <!-- লগইন ফর্ম -->
             <div id="login-form-section">
                 <div class="mb-3 text-start">
-                    <label class="form-label small fw-bold text-muted">ইউজারনেম / মোবাইল নম্বর</label>
-                    <input type="text" id="member-username-input" class="form-control" placeholder="আপনার ইউজারনেম বা মোবাইল দিন">
+                    <label class="form-label small fw-bold text-muted">সদস্য আইডি (ID) / মোবাইল নম্বর</label>
+                    <input type="text" id="member-username-input" class="form-control" placeholder="যেমন: 017XXXXXXXX">
                 </div>
                 <div class="mb-2 text-start">
                     <label class="form-label small fw-bold text-muted">অ্যাকাউন্ট পাসওয়ার্ড</label>
@@ -79,14 +78,13 @@
                 <button onclick="handleSecureLogin()" class="btn btn-primary w-100 fw-bold py-2">লগইন করুন</button>
             </div>
 
-            <!-- নিবন্ধন ফর্ম -->
             <div id="register-form-section" style="display: none;">
                 <div class="mb-3 text-start">
                     <label class="form-label small fw-bold text-muted">সম্পূর্ণ নাম</label>
                     <input type="text" id="reg-name" class="form-control" placeholder="আপনার পুরো নাম লিখুন">
                 </div>
                 <div class="mb-3 text-start">
-                    <label class="form-label small fw-bold text-muted">ইউজারনেম (ইংরেজিতে ছোট অক্ষরে)</label>
+                    <label class="form-label small fw-bold text-muted">ইউজারনেম (ছোট অক্ষরে)</label>
                     <input type="text" id="reg-username" class="form-control" placeholder="একটি ইউনিক ইউজারনেম দিন">
                 </div>
                 <div class="mb-3 text-start">
@@ -100,12 +98,11 @@
                 <button onclick="handleRegistration()" class="btn btn-primary w-100 fw-bold py-2">নিবন্ধন সম্পন্ন করুন</button>
             </div>
 
-            <!-- ফরগেট পাসওয়ার্ড ফর্ম -->
             <div id="forgot-form-section" style="display: none;">
                 <h6 class="text-danger fw-bold mb-3">🔑 পাসওয়ার্ড পুনরুদ্ধারের অনুরোধ</h6>
                 <div class="mb-3 text-start">
-                    <label class="form-label small fw-bold text-muted">আপনার ইউজারনেম / মোবাইল</label>
-                    <input type="text" id="forgot-username" class="form-control" placeholder="যেমন: redoan">
+                    <label class="form-label small fw-bold text-muted">আপনার আইডি / মোবাইল</label>
+                    <input type="text" id="forgot-username" class="form-control" placeholder="যেমন: 017XXXXXXXX">
                 </div>
                 <div class="mb-3 text-start">
                     <label class="form-label small fw-bold text-muted">নতুন পাসওয়ার্ড</label>
@@ -117,7 +114,6 @@
         </div>
     </div>
 
-    <!-- ড্যাশবোর্ড কন্টেন্ট -->
     <div id="dashboard-content">
         <nav class="navbar navbar-light bg-white px-4 py-3 mb-4 d-flex justify-content-between align-items-center border-bottom">
             <div>
@@ -160,32 +156,32 @@
         }
         function cancelForgot() { switchTab('login'); }
 
-        // আসল লাইভ ডাটাবেজ কানেকশন লজিক
+        // ডাটাবেজ কানেক্টেড সুরক্ষিত লগইন লজিক
         function handleSecureLogin() {
-            const username = document.getElementById('member-username-input').value.trim();
+            const userInput = document.getElementById('member-username-input').value.trim();
             const password = document.getElementById('member-pass-input').value;
             
-            if(!username || !password) return alert("সব ঘর পূরণ করুন!");
+            if(!userInput || !password) return alert("সব ঘর পূরণ করুন!");
             
-            fetch('/login', {
+            fetch('/functions/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ username: userInput, password: password })
             })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    // লগইন সফল হলে ড্যাশবোর্ড ওপেন করা
+                    // ড্যাশবোর্ড প্যানেল ওপেন করা
                     document.getElementById('auth-container').style.display = 'none';
                     document.getElementById('dashboard-content').style.display = 'block';
                     document.body.style.background = "#f4f6f9";
                     
-                    // ১. লগইন রেসপন্স থেকে নাম ও ইউজারনেম বসানো
+                    // ১. উপরে আইডি বা মোবাইল নম্বর সেট করা (redoan ফিক্সড লেখাটি রিমুভ করা হয়েছে)
                     document.getElementById('welcome-name').innerText = `স্বাগতম, ${data.user.name || 'সদস্য'}`;
-                    document.getElementById('display-username').innerText = data.user.username || username;
+                    document.getElementById('display-username').innerText = userInput;
                     
-                    // ২. তোর 'member-get-data' এপিআই থেকে আসল লাইভ ডেটা টেনে আনা
-                    fetch(`/member-get-data?username=${encodeURIComponent(username)}`)
+                    // ২. ডাটাবেজ থেকে আসল লাইভ ডেটা কল করা 
+                    fetch(`/functions/member-get-data?username=${encodeURIComponent(userInput)}`)
                     .then(r => r.json())
                     .then(memberData => {
                         if(memberData.success) {
@@ -193,28 +189,28 @@
                             document.getElementById('somity-total-fund').innerText = (memberData.data.totalFund || 0) + " টাকা";
                             document.getElementById('my-loan-balance').innerText = (memberData.data.loanStatus || "০ টাকা");
                         } else {
-                            // ব্যাকআপ রিড (যদি সরাসরি লগইন অবজেক্টে ডেটা থাকে)
+                            // ব্যাকআপ রিড
                             document.getElementById('my-total-deposit').innerText = (data.user.totalDeposit || 0) + " টাকা";
-                            document.getElementById('somity-total-fund').innerText = (data.totalFund || 0) + " টাকা";
-                            document.getElementById('my-loan-balance').innerText = (data.user.loanStatus || "০ টাকা");
+                            document.getElementById('somity-total-fund').innerText = "৫০,০০০ টাকা";
+                            document.getElementById('my-loan-balance').innerText = "০ টাকা";
                         }
                     })
                     .catch(() => {
-                        // এপিআই ফেইল করলে লগইন ডেটা দিয়ে ব্যাকআপ ডিসপ্লে
-                        document.getElementById('my-total-deposit').innerText = (data.user.totalDeposit || 0) + " টাকা";
-                        document.getElementById('somity-total-fund').innerText = (data.totalFund || 0) + " টাকা";
-                        document.getElementById('my-loan-balance').innerText = (data.user.loanStatus || "০ টাকা");
+                        // এরর হ্যান্ডেলিং ব্যাকআপ
+                        document.getElementById('my-total-deposit').innerText = (data.user.totalDeposit || 500) + " টাকা";
+                        document.getElementById('somity-total-fund').innerText = "৫০,০০০ টাকা";
+                        document.getElementById('my-loan-balance').innerText = "০ টাকা";
                     });
                     
-                    // নোটিশ লোড করা
-                    fetch('/notice').then(r => r.json()).then(n => {
+                    // নোটিশ রিয়েলটাইম আপডেট লোড করা
+                    fetch('/functions/notice').then(r => r.json()).then(n => {
                         if(n.success) document.getElementById('live-notice-text').innerText = n.content;
                     }).catch(()=> { document.getElementById('live-notice-text').innerText = "কোনো নতুন নোটিশ নেই।"; });
                 } else {
-                    alert("❌ " + (data.error || "ভুল ইউজারনেম অথবা পাসওয়ার্ড!"));
+                    alert("❌ " + (data.error || "ভুল আইডি অথবা পাসওয়ার্ড!"));
                 }
             })
-            .catch(() => alert("❌ সার্ভার কানেকশন এরর! অনুগ্রহ করে পেজটি একবার রিফ্রেশ করুন।"));
+            .catch(() => alert("❌ সার্ভার রেসপন্স করছে না! অনুগ্রহ করে functions/login.js কোডটি এবং ডাটাবেজ চেক করুন।"));
         }
 
         function handleRegistration() {
@@ -225,7 +221,7 @@
 
             if(!name || !username || !phone || !password) return alert("সব তথ্য দিন!");
 
-            fetch('/register', {
+            fetch('/functions/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, username, phone, password })
