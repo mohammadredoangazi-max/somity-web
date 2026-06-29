@@ -16,28 +16,46 @@
 </head>
 <body>
 
-    <!-- 🔐 সদস্য লগইন ফর্ম (আইডি তুলে ইউজারনেম করা হয়েছে) -->
+    <!-- 🔐 সদস্য লগইন ফর্ম (আইডি সম্পূর্ণ বাদ দিয়ে সিকিউর ইউজারনেম করা হয়েছে) -->
     <div id="login-overlay">
         <div class="login-box card text-center">
             <h4 class="fw-bold mb-4">🔗 সদস্য লগইন</h4>
-            <div class="mb-3 text-start">
-                <label class="form-label small fw-bold text-muted">ইউজারনেম / মোবাইল নাম্বার</label>
-                <input type="text" id="member-username-input" class="form-control" placeholder="আপনার ইউজারনেম বা মোবাইল দিন">
+            
+            <div id="login-section">
+                <div class="mb-3 text-start">
+                    <label class="form-label small fw-bold text-muted">ইউজারনেম / মোবাইল নাম্বার</label>
+                    <input type="text" id="member-username-input" class="form-control" placeholder="আপনার ইউজারনেম বা মোবাইল দিন">
+                </div>
+                <div class="mb-2 text-start">
+                    <label class="form-label small fw-bold text-muted">অ্যাকাউন্ট পাসওয়ার্ড</label>
+                    <input type="password" id="member-pass-input" class="form-control" placeholder="আপনার পাসওয়ার্ড দিন">
+                </div>
+                <div class="text-end mb-4">
+                    <a href="#" onclick="showForgotForm()" class="text-decoration-none small text-danger fw-bold">পাসওয়ার্ড ভুলে গেছেন?</a>
+                </div>
+                <button onclick="handleSecureLogin()" class="btn btn-primary w-100 fw-bold py-2">লগইন করুন</button>
             </div>
-            <div class="mb-2 text-start">
-                <label class="form-label small fw-bold text-muted">অ্যাকাউন্ট পাসওয়ার্ড</label>
-                <input type="password" id="member-pass-input" class="form-control" placeholder="আপনার পাসওয়ার্ড দিন">
+
+            <!-- 🔑 পাসওয়ার্ড ভুলে গেলে সদস্য নিজেই এখান থেকে সরাসরি ফর্ম সাবমিট করবে -->
+            <div id="forgot-section" style="display: none;">
+                <h6 class="text-danger fw-bold mb-3">🔑 পাসওয়ার্ড পুনরুদ্ধারের অনুরোধ</h6>
+                <div class="mb-3 text-start">
+                    <label class="form-label small fw-bold text-muted">আপনার ইউজারনেম / নাম</label>
+                    <input type="text" id="forgot-username" class="form-control" placeholder="যেমন: redoan">
+                </div>
+                <div class="mb-3 text-start">
+                    <label class="form-label small fw-bold text-muted">নতুন যে পাসওয়ার্ডটি দিতে চান</label>
+                    <input type="password" id="forgot-new-pass" class="form-control" placeholder="নূন্যতম ৪ অক্ষরের পাসওয়ার্ড">
+                </div>
+                <button onclick="submitForgotRequest()" class="btn btn-danger w-100 fw-bold mb-2">অনুরোধ পাঠান</button>
+                <a href="#" onclick="showLoginForm()" class="text-decoration-none small text-primary fw-bold d-block mt-2">লগইন ফর্মে ফিরে যান</a>
             </div>
-            <div class="text-end mb-4">
-                <a href="#" onclick="handleForgotPassword()" class="text-decoration-none small text-danger fw-bold">পাসওয়ার্ড ভুলে গেছেন?</a>
-            </div>
-            <button onclick="handleSecureLogin()" class="btn btn-primary w-100 fw-bold py-2">লগইন করুন</button>
+
         </div>
     </div>
 
     <!-- 📊 মূল ড্যাশবোর্ড কন্টেন্ট -->
     <div id="dashboard-content" style="display: none;">
-        <!-- নেভিগেশন বার -->
         <nav class="navbar navbar-light bg-white px-4 py-3 mb-4 d-flex justify-content-between align-items-center border-bottom">
             <div>
                 <h5 class="m-0 fw-bold text-dark" id="welcome-name">স্বাগতম, সদস্য</h5>
@@ -102,109 +120,10 @@
     <script>
         let currentUsername = null;
 
-        // ১. সুরক্ষিত লগইন ফাংশন (পাসওয়ার্ড ডাটাবেজ ভেরিফিকেশনসহ)
-        function handleSecureLogin() {
-            const username = document.getElementById('member-username-input').value.trim();
-            const password = document.getElementById('member-pass-input').value;
-            
-            if(!username || !password) return alert("ইউজারনেম এবং পাসওয়ার্ড দুটিই সঠিকভাবে দিন!");
-            
-            const baseUrl = window.location.origin;
-            
-            // সিকিউর লগইন এপিআই কল (শুধু পাসওয়ার্ড মিললেই ডাটা সার্ভার থেকে আসবে)
-            fetch(`${baseUrl}/api-member-login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: username, password: password })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success && data.user) {
-                    currentUsername = username;
-                    const user = data.user;
-
-                    // স্ক্রিন পরিবর্তন
-                    document.getElementById('login-overlay').style.display = 'none';
-                    document.getElementById('dashboard-content').style.display = 'block';
-                    
-                    // ডেটা রেন্ডার
-                    document.getElementById('welcome-name').innerText = `স্বাগতম, ${user.name}`;
-                    document.getElementById('display-username').innerText = username;
-                    document.getElementById('my-total-deposit').innerText = (user.totalDeposit || 0) + " টাকা";
-                    document.getElementById('somity-total-fund').innerText = (data.totalFund || 0) + " টাকা";
-                    document.getElementById('my-loan-balance').innerText = (user.loanStatus || "০ টাকা");
-
-                    const isPaid = user.currentMonthStatus === 'পরিশোধিত';
-                    document.getElementById('monthly-table-body').innerHTML = `
-                        <tr>
-                            <td><strong>মার্চ ২০২৬</strong></td>
-                            <td class="${isPaid ? 'text-success fw-bold' : 'text-danger fw-bold'}">${isPaid ? user.totalDeposit : '০'} টাকা</td>
-                            <td>${isPaid ? 'আজ' : '--'}</td>
-                            <td><span class="badge ${isPaid ? 'bg-success' : 'bg-danger'}">${user.currentMonthStatus || 'বাকি'}</span></td>
-                        </tr>
-                    `;
-                    
-                    loadLiveNotice();
-                } else {
-                    alert("❌ ভুল ইউজারনেম অথবা পাসওয়ার্ড! আবার চেষ্টা করুন।");
-                }
-            })
-            .catch(err => {
-                alert("সার্ভার কানেকশন সমস্যা! অনুগ্রহ করে একটু পর চেষ্টা করুন।");
-            });
+        function showForgotForm() {
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('forgot-section').style.display = 'block';
         }
 
-        // ২. সরাসরি পাসওয়ার্ড রিসেট রিকোয়েস্ট পাঠানোর ফাংশন
-        function handleForgotPassword() {
-            const username = prompt("🔑 পাসওয়ার্ড রিসেট করতে আপনার ইউজারনেম বা মোবাইল নাম্বারটি লিখুন:");
-            if(!username) return;
-            
-            const proposedPass = prompt("🔐 আপনি নতুন যে পাসওয়ার্ডটি সেট করতে চান তা লিখুন (নূন্যতম ৪ অক্ষর):");
-            if(!proposedPass || proposedPass.length < 4) {
-                alert("❌ পাসওয়ার্ডটি অবশ্যই নূন্যতম ৪ অক্ষরের হতে হবে!");
-                return;
-            }
-
-            const baseUrl = window.location.origin;
-            
-            // অ্যাডমিন প্যানেলে রিকোয়েস্ট পাঠানো
-            fetch(`${baseUrl}/api-forgot-password`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: username, proposedPass: proposedPass })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.success) {
-                    alert("✅ আপনার নতুন পাসওয়ার্ড পরিবর্তনের অনুরোধটি ডিরেক্টরের কাছে পাঠানো হয়েছে! তিনি অ্যাপ্রুভ করলেই আপনার নতুন পাসওয়ার্ড সচল হবে।");
-                } else {
-                    alert("❌ অনুরোধ পাঠানো যায়নি। ইউজারনেমটি সঠিক কি না চেক করুন।");
-                }
-            })
-            .catch(() => alert("কানেকশন এরর!"));
-        }
-
-        // নোটিশ লোড
-        function loadLiveNotice() {
-            const baseUrl = window.location.origin; 
-            fetch(`${baseUrl}/notice`)
-                .then(res => res.json())
-                .then(data => {
-                    if(data.success && data.content) {
-                        document.getElementById('live-notice-text').innerText = data.content;
-                    }
-                });
-        }
-
-        // পাসওয়ার্ড চেঞ্জ ইন-ড্যাশবোর্ড
-        function openChangePasswordModal() {
-            const oldPass = prompt("🔑 ভেরিফিকেশনের জন্য আপনার বর্তমান পাসওয়ার্ডটি দিন:");
-            if(!oldPass) return;
-            const newPass = prompt("🔐 এবার আপনার নতুন পাসওয়ার্ডটি টাইপ করুন:");
-            if(newPass && newPass.length >= 4) {
-                alert("✅ পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে!");
-            }
-        }
-    </script>
-</body>
-</html>
+        function showLoginForm() {
+            document.getElementById('forgot-section').style.displayNormally I can help with things like this, but I don't seem to have access to that content. You can try again or ask me for something else.
