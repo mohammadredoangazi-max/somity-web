@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>সদস্য লগইন - বন্ধুত্ব সঞ্চয় সমিতি</title>
+    <title>সদস্য প্যানেল - বন্ধুত্ব সঞ্চয় সমিতি</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body.auth-mode { 
@@ -46,18 +46,7 @@
             border: 1px solid #cbd5e1;
             font-size: 15px;
         }
-        .form-control:focus {
-            box-shadow: none;
-            border-color: #0d6efd;
-        }
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
+        .form-control:focus { box-shadow: none; border-color: #0d6efd; }
         .btn-login {
             background-color: #0d6efd;
             color: white;
@@ -80,11 +69,9 @@
     <div class="main-container" id="auth-container">
         <div class="login-box">
             
-            <!-- লগইন ফর্ম -->
+            <!-- লগইন সেকশন -->
             <div id="login-section">
-                <div class="text-center box-title">
-                    🔗 সদস্য লগইন
-                </div>
+                <div class="text-center box-title">🔗 সদস্য লগইন</div>
                 <div class="mb-3">
                     <label class="form-label">সদস্য আইডি / মোবাইল নম্বর</label>
                     <input type="text" id="member-username-input" class="form-control" placeholder="যেমন: 017XXXXXXXX বা ইউজারনেম">
@@ -94,21 +81,18 @@
                     <input type="password" id="member-pass-input" class="form-control" placeholder="আপনার পাসওয়ার্ড দিন">
                 </div>
                 <div class="text-end mb-4">
-                    <a href="#" onclick="showForgotForm()" class="text-decoration-none small text-danger fw-bold">পাসওয়ার্ড ভুলে গেছেন?</a>
+                    <a href="#" onclick="toggleAuthView('forgot')" class="text-decoration-none small text-danger fw-bold">পাসওয়ার্ড ভুলে গেছেন?</a>
                 </div>
-                <button onclick="handleSecureLogin()" class="btn-login mb-3">লগইন করুন</button>
-                
+                <button onclick="handleRealLogin()" class="btn-login mb-3">লগইন করুন</button>
                 <div class="text-center mt-2">
                     <span class="text-muted small">নতুন সদস্য?</span> 
                     <a href="#" onclick="toggleAuthView('register')" class="text-decoration-none small text-primary fw-bold ms-1">এখানে নিবন্ধন করুন</a>
                 </div>
             </div>
 
-            <!-- রেজিস্ট্রেশন ফর্ম -->
+            <!-- রেজিস্ট্রেশন সেকশন -->
             <div id="register-section" style="display: none;">
-                <div class="text-center box-title">
-                    📝 নতুন সদস্য নিবন্ধন
-                </div>
+                <div class="text-center box-title">📝 নতুন সদস্য নিবন্ধন</div>
                 <div class="mb-3">
                     <label class="form-label">সম্পূর্ণ নাম</label>
                     <input type="text" id="reg-name" class="form-control" placeholder="আপনার পুরো নাম লিখুন">
@@ -125,21 +109,21 @@
                     <label class="form-label">পাসওয়ার্ড তৈরি করুন</label>
                     <input type="password" id="reg-password" class="form-control" placeholder="একটি নতুন পাসওয়ার্ড দিন">
                 </div>
-                <button onclick="handleRegistration()" class="btn-login mb-3">নিবন্ধন সম্পন্ন করুন</button>
+                <button onclick="handleRealRegistration()" class="btn-login mb-3">নিবন্ধন সম্পন্ন করুন</button>
                 <div class="text-center mt-2">
                     <span class="text-muted small">অ্যাকাউন্ট আছে?</span> 
                     <a href="#" onclick="toggleAuthView('login')" class="text-decoration-none small text-primary fw-bold ms-1">লগইন করুন</a>
                 </div>
             </div>
 
-            <!-- ফরগট ফর্ম -->
+            <!-- পাসওয়ার্ড পুনরুদ্ধার সেকশন -->
             <div id="forgot-section" style="display: none;">
                 <div class="text-center box-title text-danger">🔑 পাসওয়ার্ড পুনরুদ্ধার</div>
                 <div class="mb-4">
                     <label class="form-label">আপনার মোবাইল নম্বর</label>
                     <input type="text" id="forgot-username" class="form-control" placeholder="যেমন: 017XXXXXXXX">
                 </div>
-                <button onclick="alert('অনুরোধ পাঠানো হয়েছে!')" class="btn btn-danger w-100 py-2 fw-bold rounded-3 mb-2">অনুরোধ পাঠান</button>
+                <button onclick="handleRealForgot()" class="btn btn-danger w-100 py-2 fw-bold rounded-3 mb-2">অনুরোধ পাঠান</button>
                 <div class="text-center mt-3">
                     <a href="#" onclick="toggleAuthView('login')" class="text-decoration-none small text-primary fw-bold">ফিরে যান</a>
                 </div>
@@ -148,7 +132,7 @@
         </div>
     </div>
 
-    <!-- ড্যাশবোর্ড কন্টেন্ট -->
+    <!-- ড্যাশবোর্ড কন্টেন্ট (১০০% রিয়েল ডাটাবেজ নির্ভর) -->
     <div id="dashboard-content" style="display: none;">
         <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 py-3 mb-4 border-bottom shadow-sm">
             <div class="container-fluid d-flex justify-content-between align-items-center">
@@ -180,44 +164,36 @@
             document.getElementById('forgot-section').style.display = view === 'forgot' ? 'block' : 'none';
         }
 
-        function showForgotForm() { toggleAuthView('forgot'); }
-
-        // কোডিং দিয়ে সার্ভার এরর বাইপাস করার ট্রিক
-        function handleSecureLogin() {
-            const userInput = document.getElementById('member-username-input').value.trim();
-            const passwordInput = document.getElementById('member-pass-input').value.trim();
+        // রিয়েল লগইন ফাংশন
+        function handleRealLogin() {
+            const username = document.getElementById('member-username-input').value.trim();
+            const password = document.getElementById('member-pass-input').value.trim();
             
-            if(!userInput || !passwordInput) return alert("সব ঘর পূরণ করুন!");
+            if(!username || !password) return alert("সব ঘর পূরণ করুন!");
             
             fetch('/functions/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: String(userInput), password: String(passwordInput) })
+                body: JSON.stringify({ username, password })
             })
-            .then(res => res.json())
+            .then(res => {
+                if(!res.ok) throw new Error("সার্ভার থেকে ভুল রেসপন্স এসেছে বা ডাটাবেজ কানেক্টেড নেই।");
+                return res.json();
+            })
             .then(data => {
                 if (data.success) {
-                    showDashboard(data.user.name, data.user.username);
+                    showRealDashboard(data.user.name, data.user.username);
                 } else {
-                    // সার্ভার যদি ভুল বলে, কিন্তু ইনপুট যদি তোর সঠিক আইডি হয়, তবে কোড দিয়েই লগইন করিয়ে দেবে
-                    if((userInput === "redoan" || userInput === "01748723661") && passwordInput === "123") {
-                        showDashboard("মোঃ রেদোয়ান গাজী", userInput);
-                    } else {
-                        alert("❌ " + (data.error || "ভুল ইউজারনেম অথবা পাসওয়ার্ড!"));
-                    }
+                    alert("❌ " + (data.error || "ভুল আইডি অথবা পাসওয়ার্ড!"));
                 }
             })
-            .catch(() => {
-                // সার্ভার বা ডাটাবেজ এরর দিলেও এই ক্যাচ (catch) ব্লকের মাধ্যমে কোড সরাসরি তোকে লগইন করিয়ে দেবে!
-                if((userInput === "redoan" || userInput === "01748723661") && passwordInput === "123") {
-                    showDashboard("মোঃ রেদোয়ান গাজী", userInput);
-                } else {
-                    alert("❌ ভুল আইডি অথবা পাসওয়ার্ড!");
-                }
+            .catch(err => {
+                alert("❌ সার্ভার রেসপন্স করছে না! অনুগ্রহ করে ক্লাউডফ্লেয়ার ড্যাশবোর্ডে ডাটাবেজ কানেকশন বা D1 Binding চেক করুন।");
             });
         }
 
-        function showDashboard(name, username) {
+        // রিয়েল ড্যাশবোর্ড ডেটা লোড
+        function showRealDashboard(name, username) {
             document.getElementById('main-body').className = "dashboard-mode";
             document.getElementById('auth-container').style.display = 'none';
             document.getElementById('dashboard-content').style.display = 'block';
@@ -225,28 +201,33 @@
             document.getElementById('welcome-name').innerText = `স্বাগতম, ${name}`;
             document.getElementById('display-username').innerText = username;
             
+            // নোটিশ লোড করা
+            fetch('/functions/notice')
+            .then(r => r.json())
+            .then(d => { if(d.success && d.notice) document.getElementById('live-notice-text').innerText = d.notice; })
+            .catch(() => {});
+
+            // ডাটাবেজ থেকে রিয়েল ফান্ড ও জমার হিসাব আনা
             fetch(`/functions/member-get-data?username=${encodeURIComponent(username)}`)
             .then(r => r.json())
             .then(memberData => {
                 if(memberData.success) {
                     document.getElementById('my-total-deposit').innerText = (memberData.data.totalDeposit || 0) + " টাকা";
                     document.getElementById('somity-total-fund').innerText = (memberData.data.totalFund || 0) + " টাকা";
-                    document.getElementById('my-loan-balance').innerText = (memberData.data.loanStatus || "০ টাকা");
+                    document.getElementById('my-loan-balance').innerText = (memberData.data.loanStatus || "০") + " টাকা";
                 } else {
-                    document.getElementById('my-total-deposit').innerText = "৫০০ টাকা";
-                    document.getElementById('somity-total-fund').innerText = "৫০,০০০ টাকা";
-                    document.getElementById('my-loan-balance').innerText = "০ টাকা";
+                    alert("ডাটাবেজ থেকে ডেটা লোড করা যায়নি।");
                 }
             })
             .catch(() => {
-                // ডাটাবেজ অফ থাকলেও ড্যাশবোর্ডে ডেমো ডেটা সুন্দরভাবে দেখাবে
-                document.getElementById('my-total-deposit').innerText = "৫০০ টাকা";
-                document.getElementById('somity-total-fund').innerText = "৫০,০০০ টাকা";
-                document.getElementById('my-loan-balance').innerText = "০ টাকা";
+                document.getElementById('my-total-deposit').innerText = "ত্রুটি!";
+                document.getElementById('somity-total-fund').innerText = "ত্রুটি!";
+                document.getElementById('my-loan-balance').innerText = "ত্রুটি!";
             });
         }
 
-        function handleRegistration() {
+        // রিয়েল রেজিস্ট্রেশন ফাংশন
+        function handleRealRegistration() {
             const name = document.getElementById('reg-name').value.trim();
             const username = document.getElementById('reg-username').value.trim();
             const phone = document.getElementById('reg-phone').value.trim();
@@ -262,17 +243,33 @@
             .then(res => res.json())
             .then(data => {
                 if(data.success) {
-                    alert("✅ নিবন্ধন সফল! এবার লগইন করুন।");
+                    alert("✅ নিবন্ধন সফল হয়েছে! এবার লগইন করুন।");
                     toggleAuthView('login');
                 } else { 
-                    alert("✅ নিবন্ধন সম্পন্ন হয়েছে (টেস্ট মোড)!"); 
-                    toggleAuthView('login');
+                    alert("❌ নিবন্ধন ব্যর্থ: " + data.error); 
                 }
             })
             .catch(() => {
-                alert("✅ নিবন্ধন সম্পন্ন হয়েছে (টেস্ট মোড)!"); 
-                toggleAuthView('login');
+                alert("❌ সার্ভার এরর! ডাটাবেজে ডাটা সেভ করা যায়নি।");
             });
+        }
+
+        // রিয়েল ফরগট পাসওয়ার্ড
+        function handleRealForgot() {
+            const phone = document.getElementById('forgot-username').value.trim();
+            if(!phone) return alert("মোবাইল নম্বর দিন!");
+            
+            fetch('/functions/forgot-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) alert("✅ অনুরোধ পাঠানো হয়েছে!");
+                else alert("❌ " + data.error);
+            })
+            .catch(() => alert("❌ অনুরোধ পাঠানো যায়নি।"));
         }
     </script>
 </body>
