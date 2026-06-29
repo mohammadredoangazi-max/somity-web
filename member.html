@@ -20,7 +20,7 @@
             content: "";
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(13, 110, 253, 0.4); /* নীলচে ওভারলে ব্যাকগ্রাউন্ড */
+            background: rgba(13, 110, 253, 0.4); /* সেই আগের চেনা সুন্দর নীলচে ওভারলে */
             z-index: 1;
         }
         .main-container {
@@ -196,7 +196,7 @@
                     <table class="table text-center align-middle m-0">
                         <thead class="table-light">
                             <tr>
-                                <th>মাস</th>
+                                <th>稳াস</th>
                                 <th>টাকার পরিমাণ</th>
                                 <th>জমা দেওয়ার তারিখ</th>
                                 <th>অবস্থা (Status)</th>
@@ -213,7 +213,6 @@
     <script>
         let currentUsername = null;
 
-        // ট্যাব পরিবর্তনের ফাংশন (Login / Register)
         function switchTab(type) {
             if(type === 'login') {
                 document.getElementById('login-tab').classList.add('active');
@@ -230,19 +229,17 @@
             }
         }
 
-        // ফরগেট পাসওয়ার্ড ফর্ম অন করা
         function showForgotForm() {
             document.getElementById('login-form-section').style.display = 'none';
             document.getElementById('register-form-section').style.display = 'none';
             document.getElementById('forgot-form-section').style.display = 'block';
         }
 
-        // ফরগেট পাসওয়ার্ড বাতিল করা
         function cancelForgot() {
             switchTab('login');
         }
 
-        // ১. সিকিউর লগইন সিস্টেম ভেরিফিকেশন
+        // সিকিউর লগইন হ্যান্ডলার
         function handleSecureLogin() {
             const username = document.getElementById('member-username-input').value.trim();
             const password = document.getElementById('member-pass-input').value;
@@ -254,7 +251,7 @@
             fetch(`${baseUrl}/api-member-login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: username, password: password })
+                body: JSON.stringify({ username, password })
             })
             .then(res => res.json())
             .then(data => {
@@ -262,12 +259,10 @@
                     currentUsername = username;
                     const user = data.user;
 
-                    // স্ক্রিন পরিবর্তন করে ড্যাশবোর্ড দেখানো
                     document.getElementById('auth-container').style.display = 'none';
                     document.getElementById('dashboard-content').style.display = 'block';
-                    document.body.style.background = "#f4f6f9"; // ড্যাশবোর্ড ব্যাকগ্রাউন্ড ক্লিয়ার করা
+                    document.body.style.background = "#f4f6f9";
                     
-                    // মেম্বার ডেটা লোড
                     document.getElementById('welcome-name').innerText = `স্বাগতম, ${user.name}`;
                     document.getElementById('display-username').innerText = username;
                     document.getElementById('my-total-deposit').innerText = (user.totalDeposit || 0) + " টাকা";
@@ -283,56 +278,48 @@
                             <td><span class="badge ${isPaid ? 'bg-success' : 'bg-danger'}">${user.currentMonthStatus || 'বাকি'}</span></td>
                         </tr>
                     `;
-                    
                     loadLiveNotice();
                 } else {
-                    alert("❌ ভুল ইউজারনেম অথবা পাসওয়ার্ড! আবার চেষ্টা করুন।");
+                    alert("❌ ভুল ইউজারনেম অথবা পাসওয়ার্ড!");
                 }
             })
-            .catch(err => {
-                alert("সার্ভার কানেকশন সমস্যা! অনুগ্রহ করে একটু পর চেষ্টা করুন।");
-            });
+            .catch(() => alert("সার্ভার কানেকশন সমস্যা!"));
         }
 
-        // ২. মেম্বার নিজে থেকে নতুন পাসওয়ার্ড রিকোয়েস্ট সাবমিট করা
+        // ফরগেট পাসওয়ার্ড সাবমিট
         function submitForgotRequest() {
             const username = document.getElementById('forgot-username').value.trim();
             const proposedPass = document.getElementById('forgot-new-pass').value;
 
             if(!username || !proposedPass) return alert("সবগুলো ঘর পূরণ করুন!");
-            if(proposedPass.length < 4) return alert("❌ পাসওয়ার্ডটি অবশ্যই নূন্যতম ৪ অক্ষরের হতে হবে!");
+            if(proposedPass.length < 4) return alert("❌ পাসওয়ার্ড নূন্যতম ৪ অক্ষরের হতে হবে!");
 
-            const baseUrl = window.location.origin;
-            
-            fetch(`${baseUrl}/api-forgot-password`, {
+            fetch(`${window.location.origin}/api-forgot-password`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: username, proposedPass: proposedPass })
+                body: JSON.stringify({ username, proposedPass })
             })
             .then(res => res.json())
             .then(data => {
                 if(data.success) {
-                    alert("✅ পাসওয়ার্ড পরিবর্তনের অনুরোধটি ডিরেক্টরের কাছে পাঠানো হয়েছে! এডমিন প্যানেল থেকে অ্যাপ্রুভ করলেই আপনার নতুন পাসওয়ার্ড চালু হবে।");
+                    alert("✅ অনুরোধ এডমিনের কাছে পাঠানো হয়েছে! তিনি অ্যাপ্রুভ করলেই আপনার নতুন পাসওয়ার্ড চালু হবে।");
                     switchTab('login');
                 } else {
-                    alert("❌ অনুরোধ পাঠানো যায়নি। ইউজারনেমটি সঠিক কি না চেক করুন।");
+                    alert("❌ অনুরোধ পাঠানো যায়নি।");
                 }
-            })
-            .catch(() => alert("কানেকশন এরর!"));
+            });
         }
 
-        // ৩. নতুন সদস্য নিবন্ধন (Registration Request)
+        // নতুন সদস্য নিবন্ধন
         function handleRegistration() {
             const name = document.getElementById('reg-name').value.trim();
             const username = document.getElementById('reg-username').value.trim();
             const phone = document.getElementById('reg-phone').value.trim();
             const password = document.getElementById('reg-password').value;
 
-            if(!name || !username || !phone || !password) return alert("সবগুলো তথ্য সঠিকভাবে দিন!");
+            if(!name || !username || !phone || !password) return alert("সব তথ্য সঠিকভাবে দিন!");
 
-            const baseUrl = window.location.origin;
-
-            fetch(`${baseUrl}/api-member-register`, {
+            fetch(`${window.location.origin}/api-member-register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, username, phone, password })
@@ -340,34 +327,22 @@
             .then(res => res.json())
             .then(data => {
                 if(data.success) {
-                    alert("✅ আপনার নিবন্ধন সম্পন্ন হয়েছে! ডিরেক্টর আপনার আইডি অ্যাক্টিভেট করার পর আপনি লগইন করতে পারবেন।");
+                    alert("✅ নিবন্ধন সফল হয়েছে! এডমিন আইডি চালু করার পর লগইন করতে পারবেন।");
                     switchTab('login');
                 } else {
-                    alert("❌ নিবন্ধন করা যায়নি: " + data.error);
+                    alert("❌ নিবন্ধন ব্যর্থ: " + data.error);
                 }
             });
         }
 
-        // লাইভ নোটিশ লোড
         function loadLiveNotice() {
-            const baseUrl = window.location.origin; 
-            fetch(`${baseUrl}/notice`)
+            fetch(`${window.location.origin}/notice`)
                 .then(res => res.json())
                 .then(data => {
                     if(data.success && data.content) {
                         document.getElementById('live-notice-text').innerText = data.content;
                     }
                 });
-        }
-
-        // ড্যাশবোর্ডের ভেতর থেকে পাসওয়ার্ড পরিবর্তন
-        function openChangePasswordModal() {
-            const oldPass = prompt("🔑 ভেরিফিকেশনের জন্য আপনার বর্তমান পাসওয়ার্ডটি দিন:");
-            if(!oldPass) return;
-            const newPass = prompt("🔐 এবার আপনার নতুন পাসওয়ার্ডটি টাইপ করুন:");
-            if(newPass && newPass.length >= 4) {
-                alert("✅ পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে!");
-            }
         }
     </script>
 </body>
