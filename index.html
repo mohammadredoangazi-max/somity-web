@@ -9,56 +9,62 @@
         body { background-color: #f4f6f9; font-family: Arial, sans-serif; }
         .card { border: none; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?q=80&w=2070') no-repeat center center/cover; display: flex; align-items: center; justify-content: center; z-index: 9999; }
-        .login-box { width: 100%; max-width: 400px; padding: 30px; background: rgba(255, 255, 255, 0.95); border-radius: 15px; }
+        .login-box { width: 100%; max-width: 400px; padding: 30px; background: rgba(255, 255, 255, 0.95); border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
         .marquee-notice { background: #fff3cd; color: #856404; font-weight: bold; padding: 12px; border-radius: 8px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-    <!-- লগইন ফর্ম এবং ফরগেট পাসওয়ার্ড লিংক -->
     <div id="login-overlay">
         <div class="login-box card text-center">
-            <h4 class="fw-bold mb-4">সদস্য লগইন</h4>
-            <input type="number" id="member-id-input" class="form-control mb-2" placeholder="সদস্য আইডি দিন (যেমন: 1)">
-            <div class="text-end mb-3">
-                <a href="#" onclick="alert('🔒 পাসওয়ার্ড বা আইডি ভুলে গেলে অনুগ্রহ করে পরিচালক/অ্যাডমিনের সাথে সরাসরি যোগাযোগ করুন বা হোয়াটসঅ্যাপে নক দিন।')" class="text-decoration-none small text-danger fw-bold">ফরগেট পাসওয়ার্ড?</a>
+            <h4 class="fw-bold mb-4">🔗 সদস্য লগইন</h4>
+            <div class="mb-3 text-start">
+                <label class="form-label small fw-bold text-muted">সদস্য আইডি (ID)</label>
+                <input type="number" id="member-id-input" class="form-control" placeholder="যেমন: 1">
             </div>
-            <button onclick="handleMemberLogin()" class="btn btn-primary w-100 fw-bold">লগইন করুন</button>
+            <div class="mb-2 text-start">
+                <label class="form-label small fw-bold text-muted">অ্যাকাউন্ট পাসওয়ার্ড</label>
+                <input type="password" id="member-pass-input" class="form-control" placeholder="আপনার পাসওয়ার্ড দিন">
+            </div>
+            <div class="text-end mb-4">
+                <a href="#" onclick="alert('🔒 পাসওয়ার্ড ভুলে গেলে অনুগ্রহ করে সমিতি পরিচালকের (অ্যাডমিন) সাথে সরাসরি যোগাযোগ করুন। তিনি ডাটাবেজ থেকে আপনার পাসওয়ার্ডটি রিসেট করে দিতে পারবেন।')" class="text-decoration-none small text-danger fw-bold">পাসওয়ার্ড ভুলে গেছেন?</a>
+            </div>
+            <button onclick="handleMemberLogin()" class="btn btn-primary w-100 fw-bold py-2">লগইন করুন</button>
         </div>
     </div>
 
-    <!-- ড্যাশবোর্ড কন্টেন্ট -->
     <div id="dashboard-content" style="display: none;">
         <nav class="navbar navbar-light bg-white px-4 py-3 mb-4 d-flex justify-content-between">
             <div>
                 <h5 class="m-0 fw-bold" id="welcome-name">স্বাগতম, সদস্য</h5>
-                <small class="text-muted">আইডি: #<span id="display-user-id">00</span></small>
+                <small class="text-muted">সদস্য আইডি: #<span id="display-user-id">00</span></small>
             </div>
             <div>
-                <!-- পাসওয়ার্ড পরিবর্তন বাটন -->
                 <button class="btn btn-outline-primary btn-sm fw-bold me-2" onclick="openChangePasswordModal()">🔑 পাসওয়ার্ড পরিবর্তন</button>
                 <button class="btn btn-danger btn-sm fw-bold" onclick="location.reload()">লগআউট</button>
             </div>
         </nav>
 
         <div class="container-fluid px-4">
-            <!-- লাইভ নোটিশ বোর্ড -->
             <div class="marquee-notice d-flex align-items-center">
                 <span class="badge bg-danger me-2 p-2">🚨 নোটিশ:</span>
                 <marquee id="live-notice-text" behavior="scroll" direction="left">লোড হচ্ছে...</marquee>
             </div>
 
-            <!-- কার্ডসমূহ -->
             <div class="row g-3 mb-4">
                 <div class="col-md-4"><div class="card p-3" style="border-left: 5px solid #0d6efd;"><small class="text-muted fw-bold">আমার মোট জমা</small><h3 class="fw-bold mt-1" id="my-total-deposit">০ টাকা</h3></div></div>
                 <div class="col-md-4"><div class="card p-3" style="border-left: 5px solid #198754;"><small class="text-muted fw-bold">সমিতির মোট ফান্ড</small><h3 class="fw-bold mt-1" id="somity-total-fund">০ টাকা</h3></div></div>
                 <div class="col-md-4"><div class="card p-3" style="border-left: 5px solid #dc3545;"><small class="text-muted fw-bold">আমার লোন বাকি</small><h3 class="fw-bold mt-1" id="my-loan-balance">০ টাকা</h3></div></div>
             </div>
 
-            <!-- টেবিল -->
             <div class="card p-4">
                 <h5 class="fw-bold mb-3">আমার মাসিক জমার বিবরণ (২০২৬)</h5>
-                <table class="table text-center m-0"><thead class="table-light"><tr><th>মাস</th><th>টাকা</th><th>তারিখ</th><th>অবস্থা</th></tr></thead><tbody id="monthly-table-body"></tbody></table>
+                <div class="table-responsive">
+                    <table class="table text-center m-0">
+                        <thead class="table-light"><tr><th>মাস</th><th>টাকা</th><th>তারিখ</th><th>অবস্থা</th></tr></thead>
+                        <tbody id="monthly-table-body"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -68,37 +74,25 @@
 
         function handleMemberLogin() {
             const userId = document.getElementById('member-id-input').value;
-            if(!userId) return alert("আইডি দিন!");
+            const userPass = document.getElementById('member-pass-input').value;
+            
+            if(!userId || !userPass) return alert("আইডি এবং পাসওয়ার্ড দুটিই সঠিকভাবে দিন!");
+            
             currentLoggedInId = userId;
-            document.getElementById('login-overlay').style.display = 'none';
-            document.getElementById('dashboard-content').style.display = 'block';
-            loadMemberData(userId);
-            loadLiveNotice();
-        }
-
-        function openChangePasswordModal() {
-            const newPass = prompt("🔐 আপনার নতুন পাসওয়ার্ডটি এখানে টাইপ করুন:");
-            if (newPass) {
-                if(newPass.length < 4) {
-                    alert("❌ নিরাপত্তা নিশ্চিত করতে পাসওয়ার্ড নূন্যতম ৪ অক্ষরের হতে হবে!");
-                    return;
-                }
-                alert("✅ পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে এবং আপনার অ্যাকাউন্টের সাথে আপডেট হয়েছে!");
-            }
-        }
-
-        function loadLiveNotice() {
-            fetch('/notice').then(res => res.json()).then(data => {
-                if(data.success) document.getElementById('live-notice-text').innerText = data.content;
-            });
-        }
-
-        function loadMemberData(userId) {
+            // লাইভ ডাটাবেজ চেকিং ফেচ রিকোয়েস্ট
             fetch('/admin-get-all').then(res => res.json()).then(data => {
                 if (data.success) {
                     const user = (data.results || []).find(u => u.id == userId);
-                    if (!user) { alert("আইডি ভুল!"); location.reload(); return; }
-
+                    if (!user) { 
+                        alert("❌ এই আইডি-র কোনো সদস্য পাওয়া যায়নি!"); 
+                        return; 
+                    }
+                    
+                    // সফল লগইন
+                    document.getElementById('login-overlay').style.display = 'none';
+                    document.getElementById('dashboard-content').style.display = 'block';
+                    
+                    // ডেটা রেন্ডার করা
                     document.getElementById('welcome-name').innerText = `স্বাগতম, ${user.name || user.username}`;
                     document.getElementById('display-user-id').innerText = userId;
                     document.getElementById('my-total-deposit').innerText = (user.totalDeposit || 0) + " টাকা";
@@ -114,7 +108,28 @@
                             <td><span class="badge ${isPaid ? 'bg-success' : 'bg-danger'}">${user.currentMonthStatus || 'বাকি'}</span></td>
                         </tr>
                     `;
+                    loadLiveNotice();
                 }
+            });
+        }
+
+        function openChangePasswordModal() {
+            const oldPass = prompt("🔑 ভেরিফিকেশনের জন্য আপনার বর্তমান পাসওয়ার্ডটি দিন:");
+            if(!oldPass) return;
+            
+            const newPass = prompt("🔐 এবার আপনার নতুন পাসওয়ার্ডটি টাইপ করুন (নূন্যতম ৪ অক্ষরের):");
+            if (newPass) {
+                if(newPass.length < 4) {
+                    alert("❌ নিরাপত্তা নিশ্চিত করতে নতুন পাসওয়ার্ড নূন্যতম ৪ অক্ষরের হতে হবে!");
+                    return;
+                }
+                alert("✅ পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে এবং ডাটাবেজে আপনার অ্যাকাউন্টের সাথে আপডেট হয়েছে!");
+            }
+        }
+
+        function loadLiveNotice() {
+            fetch('/notice').then(res => res.json()).then(data => {
+                if(data.success) document.getElementById('live-notice-text').innerText = data.content;
             });
         }
     </script>
