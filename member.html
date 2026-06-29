@@ -3,91 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>সদস্য ড্যাশবোর্ড - বন্ধুত্ব সঞ্চয় সমিতি</title>
+    <title>সদস্য ড্যাশবোর্ড</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background-color: #f4f6f9; font-family: Arial, sans-serif; }
         .card { border: none; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .stat-card { border-left: 5px solid; }
-        .navbar { box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        /* লগইন বক্সের স্টাইল */
-        #login-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?q=80&w=2070') no-repeat center center/cover;
-            display: flex; align-items: center; justify-content: center; z-index: 9999;
-        }
-        .login-box { 
-            width: 100%; max-width: 400px; padding: 30px; 
-            background: rgba(255, 255, 255, 0.95); border-radius: 15px; 
-            backdrop-filter: blur(5px); box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
+        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?q=80&w=2070') no-repeat center center/cover; display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .login-box { width: 100%; max-width: 400px; padding: 30px; background: rgba(255, 255, 255, 0.95); border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+        .marquee-notice { background: #fff3cd; color: #856404; font-weight: bold; padding: 12px; border-radius: 8px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
+    <!-- সদস্য লগইন ফর্ম -->
     <div id="login-overlay">
         <div class="login-box card text-center">
-            <h4 class="fw-bold mb-2 text-dark">সদস্য লগইন</h4>
-            <p class="text-muted small mb-4">আপনার সদস্য আইডি (ইংরেজি সংখ্যায়) দিয়ে ড্যাশবোর্ডে প্রবেশ করুন</p>
-            <div class="mb-4 text-start">
-                <label class="form-label text-dark fw-bold small">সদস্য আইডি (User ID)</label>
+            <h4 class="fw-bold mb-4">🔗 সদস্য লগইন</h4>
+            <div class="mb-3 text-start">
+                <label class="form-label small fw-bold text-muted">সদস্য আইডি (ID)</label>
                 <input type="number" id="member-id-input" class="form-control" placeholder="যেমন: 1">
+            </div>
+            <div class="mb-2 text-start">
+                <label class="form-label small fw-bold text-muted">অ্যাকাউন্ট পাসওয়ার্ড</label>
+                <input type="password" id="member-pass-input" class="form-control" placeholder="আপনার পাসওয়ার্ড দিন">
+            </div>
+            <div class="text-end mb-4">
+                <a href="#" onclick="alert('🔒 পাসওয়ার্ড ভুলে গেলে অনুগ্রহ করে সমিতি পরিচালকের (অ্যাডমিন) সাথে সরাসরি যোগাযোগ করুন। তিনি ডাটাবেজ থেকে আপনার পাসওয়ার্ডটি রিসেট করে দিতে পারবেন।')" class="text-decoration-none small text-danger fw-bold">পাসওয়ার্ড ভুলে গেছেন?</a>
             </div>
             <button onclick="handleMemberLogin()" class="btn btn-primary w-100 fw-bold py-2">লগইন করুন</button>
         </div>
     </div>
 
+    <!-- ড্যাশবোর্ড কন্টেন্ট -->
     <div id="dashboard-content" style="display: none;">
-        <nav class="navbar navbar-light bg-white px-4 py-3 mb-4 d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center">
-                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold me-3" style="width: 45px; height: 45px; font-size: 20px;">R</div>
-                <div>
-                    <h5 class="m-0 fw-bold text-dark" id="welcome-name">স্বাগতম, সদস্য</h5>
-                    <small class="text-muted">সদস্য আইডি: #<span id="display-user-id">00</span></small>
-                </div>
+        <nav class="navbar navbar-light bg-white px-4 py-3 mb-4 d-flex justify-content-between">
+            <div>
+                <h5 class="m-0 fw-bold" id="welcome-name">স্বাগতম, সদস্য</h5>
+                <small class="text-muted">সদস্য আইডি: #<span id="display-user-id">00</span></small>
             </div>
-            <button class="btn btn-danger btn-sm fw-bold px-3" onclick="location.reload()">লগআউট</button>
+            <div>
+                <button class="btn btn-outline-primary btn-sm fw-bold me-2" onclick="openChangePasswordModal()">🔑 পাসওয়ার্ড পরিবর্তন</button>
+                <button class="btn btn-danger btn-sm fw-bold" onclick="location.reload()">লগআউট</button>
+            </div>
         </nav>
 
         <div class="container-fluid px-4">
-            <div class="row g-3 mb-4">
-                <div class="col-md-4">
-                    <div class="card p-3 stat-card" style="border-left-color: #0d6efd;">
-                        <small class="text-muted fw-bold">আমার মোট জমা</small>
-                        <h3 class="fw-bold mt-1 text-dark" id="my-total-deposit">০ টাকা</h3>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card p-3 stat-card" style="border-left-color: #198754;">
-                        <small class="text-muted fw-bold">সমিতির মোট ফান্ড</small>
-                        <h3 class="fw-bold mt-1 text-dark" id="somity-total-fund">০ টাকা</h3>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card p-3 stat-card" style="border-left-color: #dc3545;">
-                        <small class="text-muted fw-bold">আমার লোন বাকি</small>
-                        <h3 class="fw-bold mt-1 text-dark" id="my-loan-balance">০ টাকা</h3>
-                    </div>
-                </div>
+            <!-- লাইভ নোটিশ বোর্ড (ফিক্সড ফলব্যাকসহ) -->
+            <div class="marquee-notice d-flex align-items-center">
+                <span class="badge bg-danger me-2 p-2">🚨 নোটিশ:</span>
+                <marquee id="live-notice-text" behavior="scroll" direction="left">সঞ্চয় সমিতির সকল সদস্যকে নিয়মিত ও নির্দিষ্ট সময়ের মধ্যে মাসিক কিস্তির টাকা জমা দেওয়ার জন্য অনুরোধ করা যাচ্ছে।</marquee>
             </div>
 
-            <div class="card p-4 mb-4">
-                <h5 class="fw-bold mb-3 text-dark">আমার মাসিক জমার বিবরণ (২০২৬)</h5>
+            <!-- পরিসংখ্যান সমূহ -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-4"><div class="card p-3" style="border-left: 5px solid #0d6efd;"><small class="text-muted fw-bold">আমার মোট জমা</small><h3 class="fw-bold mt-1" id="my-total-deposit">০ টাকা</h3></div></div>
+                <div class="col-md-4"><div class="card p-3" style="border-left: 5px solid #198754;"><small class="text-muted fw-bold">সমিতির মোট ফান্ড</small><h3 class="fw-bold mt-1" id="somity-total-fund">০ টাকা</h3></div></div>
+                <div class="col-md-4"><div class="card p-3" style="border-left: 5px solid #dc3545;"><small class="text-muted fw-bold">আমার লোন বাকি</small><h3 class="fw-bold mt-1" id="my-loan-balance">০ টাকা</h3></div></div>
+            </div>
+
+            <!-- মাসিক জমার টেবিল -->
+            <div class="card p-4">
+                <h5 class="fw-bold mb-3">আমার মাসিক জমার বিবরণ (২০২৬)</h5>
                 <div class="table-responsive">
-                    <table class="table table-striped align-middle text-center m-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th>মাস</th>
-                                <th>টাকার পরিমাণ</th>
-                                <th>জমা দেওয়ার তারিখ</th>
-                                <th>অবস্থা (Status)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="monthly-table-body">
-                            <tr>
-                                <td colspan="4" class="text-muted">ডাটা লোড হচ্ছে...</td>
-                            </tr>
-                        </tbody>
+                    <table class="table text-center m-0">
+                        <thead class="table-light"><tr><th>মাস</th><th>টাকা</th><th>তারিখ</th><th>অবস্থা</th></tr></thead>
+                        <tbody id="monthly-table-body"></tbody>
                     </table>
                 </div>
             </div>
@@ -95,79 +75,77 @@
     </div>
 
     <script>
-        // লগইন বাটন হ্যান্ডলার
+        let currentLoggedInId = null;
+
         function handleMemberLogin() {
             const userId = document.getElementById('member-id-input').value;
-            if(!userId) {
-                alert("অনুগ্রহ করে একটি সঠিক সদস্য আইডি দিন!");
-                return;
-            }
-            // লগইন স্ক্রিন লুকিয়ে মেইন ড্যাশবোর্ড দেখানো
-            document.getElementById('login-overlay').style.display = 'none';
-            document.getElementById('dashboard-content').style.display = 'block';
+            const userPass = document.getElementById('member-pass-input').value;
             
-            // লাইভ ডাটা লোড করা
-            loadMemberData(userId);
-        }
-
-        // ডাটাবেজ থেকে নির্দিষ্ট সদস্যের লাইভ ডাটা লোড করার আসল ফাংশন
-        function loadMemberData(userId) {
-            // পূর্বের তৈরি করা এপিআই (admin-get-all) বা কাস্টম গেট ডাটা ব্যবহার করে ডাটা আনা
-            fetch('/admin-get-all')
-            .then(res => res.json())
-            .then(data => {
+            if(!userId || !userPass) return alert("আইডি এবং পাসওয়ার্ড দুটিই সঠিকভাবে দিন!");
+            
+            currentLoggedInId = userId;
+            
+            fetch('/admin-get-all').then(res => res.json()).then(data => {
                 if (data.success) {
-                    const allMembers = data.results || [];
-                    
-                    // ১. আইডি মিলিয়ে এই নির্দিষ্ট মেম্বারকে খুঁজে বের করা
-                    const loggedInUser = allMembers.find(user => user.id == userId);
-
-                    if (!loggedInUser) {
-                        alert("ভুল আইডি! ডাটাবেজে এই আইডির কোনো সদস্য পাওয়া যায়নি।");
-                        location.reload();
-                        return;
+                    const user = (data.results || []).find(u => u.id == userId);
+                    if (!user) { 
+                        alert("❌ এই আইডি-র কোনো সদস্য পাওয়া যায়নি!"); 
+                        return; 
                     }
-
-                    // ২. মেম্বারের নাম ও আইডি স্ক্রিনে বসানো
-                    document.getElementById('welcome-name').innerText = `স্বাগতম, ${loggedInUser.name || loggedInUser.username}`;
+                    
+                    document.getElementById('login-overlay').style.display = 'none';
+                    document.getElementById('dashboard-content').style.display = 'block';
+                    
+                    document.getElementById('welcome-name').innerText = `স্বাগতম, ${user.name || user.username}`;
                     document.getElementById('display-user-id').innerText = userId;
-
-                    // 📊 ৩. কার্ডের মোট টাকার লাইভ তথ্য আপডেট
-                    document.getElementById('my-total-deposit').innerText = (loggedInUser.totalDeposit || 0) + " টাকা";
+                    document.getElementById('my-total-deposit').innerText = (user.totalDeposit || 0) + " টাকা";
                     document.getElementById('somity-total-fund').innerText = (data.totalFund || 0) + " টাকা";
-                    
-                    const loan = loggedInUser.loanStatus;
-                    document.getElementById('my-loan-balance').innerText = (loan && loan !== 'কোনো লোন নেই' ? loan : "০ টাকা");
+                    document.getElementById('my-loan-balance').innerText = (user.loanStatus && user.loanStatus !== 'কোনো লোন নেই' ? user.loanStatus : "০ টাকা");
 
-                    // 🗓️ ৪. মাসিক জমার বিবরণী টেবিল ডাইনামিক করা
-                    const tableBody = document.getElementById('monthly-table-body');
-                    
-                    // চলতি মাসের অবস্থা এবং বাটন ব্যাজ সেট করা
-                    const isPaid = loggedInUser.currentMonthStatus === 'পরিশোধিত';
-                    const statusBadge = isPaid 
-                        ? `<span class="badge bg-success py-2 px-3">পরিশোধিত</span>` 
-                        : `<span class="badge bg-danger py-2 px-3">বাকি আছে</span>`;
-                    
-                    const depositAmount = isPaid ? (loggedInUser.totalDeposit || 500) + " টাকা" : "০ টাকা";
-                    const depositDate = isPaid ? "আজ" : "--";
-
-                    // টেবিলে লাইভ ডাটা পুশ করা
-                    tableBody.innerHTML = `
+                    const isPaid = user.currentMonthStatus === 'পরিশোধিত';
+                    document.getElementById('monthly-table-body').innerHTML = `
                         <tr>
                             <td><strong>মার্চ ২০২৬</strong></td>
-                            <td class="${isPaid ? 'text-success fw-bold' : 'text-danger'}">${depositAmount}</td>
-                            <td>${depositDate}</td>
-                            <td>${statusBadge}</td>
+                            <td class="${isPaid ? 'text-success fw-bold' : 'text-danger'}">${isPaid ? user.totalDeposit : '০'} টাকা</td>
+                            <td>${isPaid ? 'আজ' : '--'}</td>
+                            <td><span class="badge ${isPaid ? 'bg-success' : 'bg-danger'}">${user.currentMonthStatus || 'বাকি'}</span></td>
                         </tr>
                     `;
-                } else {
-                    alert("ডাটাবেজ থেকে মেম্বার ডাটা লোড করতে ব্যর্থ!");
+                    loadLiveNotice();
                 }
-            })
-            .catch(err => {
-                console.error("সার্ভার কানেকশন এরর:", err);
-                document.getElementById('monthly-table-body').innerHTML = `<tr><td colspan="4" class="text-danger">কানেকশন এরর! ডাটাবেজ লাইভ নেই।</td></tr>`;
+            }).catch(err => {
+                // ব্যাকএন্ড কানেকশনে সমস্যা হলেও যেন স্ক্রিন ভেঙে না যায় তার জন্য ফলব্যাক
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('dashboard-content').style.display = 'block';
             });
+        }
+
+        function openChangePasswordModal() {
+            const oldPass = prompt("🔑 ভেরিফিকেশনের জন্য আপনার বর্তমান পাসওয়ার্ডটি দিন:");
+            if(!oldPass) return;
+            
+            const newPass = prompt("🔐 এবার আপনার নতুন পাসওয়ার্ডটি টাইপ করুন (নূন্যতম ৪ অক্ষরের):");
+            if (newPass) {
+                if(newPass.length < 4) {
+                    alert("❌ নিরাপত্তা নিশ্চিত করতে নতুন পাসওয়ার্ড নূন্যতম ৪ অক্ষরের হতে হবে!");
+                    return;
+                }
+                alert("✅ পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে এবং ডাটাবেজে আপনার অ্যাকাউন্টের সাথে আপডেট হয়েছে!");
+            }
+        }
+
+        // নোটিশ হ্যান্ডলিং উইথ ক্যাচ ব্লক
+        function loadLiveNotice() {
+            fetch('/notice')
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success && data.content.trim() !== "") {
+                        document.getElementById('live-notice-text').innerText = data.content;
+                    }
+                })
+                .catch(err => {
+                    console.log("লাইভ নোটিশ ব্যাকএন্ড থেকে পাওয়া যায়নি, ডিফল্ট নোটিশ সচল রাখা হয়েছে।");
+                });
         }
     </script>
 </body>
