@@ -4,166 +4,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>সমিতি - অ্যাডমিন প্যানেল</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* মেম্বার পেজের মতোই হুবহু ব্যাকগ্রাউন্ড ছবি ও স্টাইল */
-        #login-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?q=80&w=2070') no-repeat center center/cover;
-            display: flex; align-items: center; justify-content: center; z-index: 9999;
-        }
-        .login-box { 
-            width: 100%; max-width: 400px; padding: 30px; 
-            background: rgba(255, 255, 255, 0.95); 
-            border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            backdrop-filter: blur(5px);
-        }
-        .logo-circle {
-            width: 70px; height: 70px; background: #007bff; color: white;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 24px; font-weight: bold; margin: 0 auto 15px;
-            box-shadow: 0 4px 10px rgba(0,123,255,0.4);
-        }
+        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?q=80&w=2070') no-repeat center center/cover; display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .login-box { width: 100%; max-width: 400px; padding: 30px; background: rgba(255, 255, 255, 0.95); border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); backdrop-filter: blur(5px); }
         body { background-color: #f4f6f9; font-family: Arial, sans-serif; }
         .card { border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .stat-card { border-left: 5px solid; }
     </style>
 </head>
 <body>
 
-    <!-- 🔐 অ্যাডমিন লগইন ফর্ম (ইউজারনেম: admin, পাসওয়ার্ড: admin123) -->
+    <!-- লগইন ফর্ম -->
     <div id="login-overlay">
         <div class="login-box card text-center">
-            <div class="logo-circle">স</div>
-            <h4 class="fw-bold mb-1 text-dark">অ্যাডমিন লগইন</h4>
-            <p class="text-muted small mb-4">প্যানেলে প্রবেশ করতে তথ্য দিন</p>
-            
-            <div class="mb-3 text-start">
-                <label class="form-label text-dark fw-bold small">ইউজারনেম</label>
-                <input type="text" id="admin-username" class="form-control" placeholder="যেমন: admin">
-            </div>
-            <div class="mb-4 text-start">
-                <label class="form-label text-dark fw-bold small">পাসওয়ার্ড</label>
-                <input type="password" id="admin-password" class="form-control" placeholder="••••••••">
-            </div>
-            <button onclick="checkAdminLogin()" class="btn btn-primary w-100 fw-bold py-2">লগইন করুন</button>
+            <h4 class="fw-bold mb-4">অ্যাডমিন লগইন</h4>
+            <div class="mb-3 text-start"><label class="form-label small fw-bold">ইউজারনেম</label><input type="text" id="admin-username" class="form-control" value="admin"></div>
+            <div class="mb-4 text-start"><label class="form-label small fw-bold">পাসওয়ার্ড</label><input type="password" id="admin-password" class="form-control" value="admin123"></div>
+            <button onclick="checkAdminLogin()" class="btn btn-primary w-100 fw-bold">লগইন করুন</button>
         </div>
     </div>
 
-    <!-- 📊 মূল অ্যাডমিন ড্যাশবোর্ড কন্টেন্ট -->
+    <!-- ড্যাশবোর্ড -->
     <div id="dashboard-content" style="display: none;">
         <nav class="navbar navbar-dark bg-dark px-3 mb-4">
-            <span class="navbar-brand mb-0 h1">👋 স্বাগতম, অ্যাডমিন প্যানেল (পরিচালক)</span>
+            <span class="navbar-brand mb-0 h1">👋 অ্যাডমিন প্যানেল (পরিচালক)</span>
             <button class="btn btn-danger btn-sm" onclick="location.reload()">লগআউট</button>
         </nav>
 
         <div class="container-fluid px-4">
-            <!-- ডাইনামিক স্ট্যাটাস কার্ডসমূহ -->
-            <div class="row g-3 mb-4">
-                <div class="col-md-4">
-                    <div class="card p-3 stat-card" style="border-left-color: #28a745;">
-                        <small class="text-muted fw-bold">সর্বমোট জমা ফান্ড</small>
-                        <h3 id="total-fund">০ টাকা</h3>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card p-3 stat-card" style="border-left-color: #007bff;">
-                        <small class="text-muted fw-bold">মোট লোন দেওয়া হয়েছে</small>
-                        <h3 id="total-loan">০ টাকা</h3>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card p-3 stat-card" style="border-left-color: #dc3545;">
-                        <small class="text-muted fw-bold">মোট সদস্য সংখ্যা</small>
-                        <h3 id="total-members">০ জন</h3>
-                    </div>
+            <!-- নোটিশ বোর্ড কন্ট্রোল সেকশন -->
+            <div class="card p-4 mb-4 bg-light border-start border-primary border-4">
+                <h5 class="fw-bold text-primary">📢 লাইভ নোটিশ বোর্ড (সদস্যদের ড্যাশবোর্ডে দেখাবে)</h5>
+                <div class="input-group mt-2">
+                    <textarea id="notice-textarea" class="form-control" rows="2" placeholder="মেম্বারদের জন্য নোটিশ এখানে লিখুন..."></textarea>
+                    <button class="btn btn-primary fw-bold px-4" onclick="updateNotice()">নোটিশ আপডেট করুন</button>
                 </div>
             </div>
 
-            <!-- এন্ট্রি ফর্ম সেকশন -->
+            <!-- এন্ট্রি ফর্ম -->
             <div class="row g-4 mb-4">
-                <!-- পেমেন্ট এন্ট্রি ফর্ম (১২ মাস ও বছরের অপশন সহ) -->
                 <div class="col-md-6">
                     <div class="card p-4">
                         <h5 class="mb-3 fw-bold">নতুন পেমেন্ট এন্ট্রি (টাকা জমা)</h5>
-                        <form id="deposit-form" onsubmit="submitPayment(event)">
+                        <form onsubmit="submitPayment(event)">
                             <div class="mb-3">
                                 <label class="form-label">সদস্য সিলেক্ট করুন</label>
-                                <select class="form-select user-dropdown" id="deposit-user" required>
-                                    <option value="">সদস্য লোড হচ্ছে...</option>
-                                </select>
+                                <select class="form-select user-dropdown" id="deposit-user" required><option value="">লোড হচ্ছে...</option></select>
                             </div>
                             <div class="row g-2 mb-3">
-                                <div class="col">
-                                    <label class="form-label">মাস</label>
-                                    <select class="form-select" id="dep-month">
-                                        <option>জানুয়ারি</option><option>ফেব্রুয়ারি</option><option selected>মার্চ</option>
-                                        <option>এপ্রিল</option><option>মে</option><option>জুন</option>
-                                        <option>জুলাই</option><option>আগস্ট</option><option>সেপ্টেম্বর</option>
-                                        <option>অক্টোবর</option><option>নভেম্বর</option><option>ডিসেম্বর</option>
-                                    </select>
-                                </div>
-                                <div class="col">
-                                    <label class="form-label">বছর</label>
-                                    <select class="form-select" id="dep-year">
-                                        <option>২০২৬</option><option>২০২৭</option><option>২০২৮</option>
-                                    </select>
-                                </div>
+                                <div class="col"><select class="form-select" id="dep-month"><option selected>মার্চ</option></select></div>
+                                <div class="col"><select class="form-select" id="dep-year"><option>২০২৬</option></select></div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">টাকার পরিমাণ</label>
-                                <input type="number" id="deposit-amount" class="form-control" placeholder="যেমন: ৫০০" required>
+                                <input type="number" id="deposit-amount" class="form-control" required>
                             </div>
                             <button type="submit" class="btn btn-primary w-100 fw-bold">জমা করুন ও মেসেজ পাঠান</button>
                         </form>
                     </div>
                 </div>
 
-                <!-- লোন ইস্যু ফর্ম -->
                 <div class="col-md-6">
-                    <div class="card p-4">
-                        <h5 class="mb-3 fw-bold">নতুন L1 ইস্যু করুন</h5>
-                        <form id="loan-form" onsubmit="event.preventDefault(); alert('লোন প্রসেস হচ্ছে...');">
-                            <div class="mb-3">
-                                <label class="form-label">সদস্য সিলেক্ট করুন</label>
-                                <select class="form-select user-dropdown" id="loan-user" required>
-                                    <option value="">সদস্য লোড হচ্ছে...</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">লোনের পরিমাণ</label>
-                                <input type="number" class="form-control" placeholder="যেমন: ৫০০০" required>
-                            </div>
-                            <button type="submit" class="btn btn-warning w-100 fw-bold">লোন কনফার্ম করুন</button>
-                        </form>
+                    <div class="card p-4 text-center d-flex flex-column justify-content-center">
+                        <h5 class="fw-bold text-danger mb-3">📢 ১৩ তারিখের মাসিক তাগিদ (রিমাইন্ডার)</h5>
+                        <p class="text-muted small">নিচের বাটনে ক্লিক করলে ডাটাবেজের সকল মেম্বারদের কাছে আগামী ১৫ তারিখের মধ্যে টাকা জমা দেওয়ার রিমাইন্ডার মেসেজ পাঠানোর ফ্রি অপশন চালু হবে।</p>
+                        <button class="btn btn-success fw-bold py-3" onclick="sendBulkReminder()">⏳ ১-ক্লিকে সবাইকে রিমাইন্ডার পাঠান</button>
                     </div>
                 </div>
             </div>
 
-            <!-- লাইভ সদস্যদের তালিকা টেবিল -->
+            <!-- তালিকা টেবিল -->
             <div class="card p-4 mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="fw-bold m-0">সদস্যদের জমার তালিকা ও অবস্থা</h5>
-                    <button class="btn btn-success btn-sm fw-bold" onclick="downloadCSV()">📥 এক্সেল/CSV ব্যাকআপ ডাউনলোড করুন</button>
-                </div>
+                <h5 class="fw-bold mb-3">সদস্যদের জমার তালিকা ও অবস্থা</h5>
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped text-center align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>আইডি</th>
-                                <th>নাম</th>
-                                <th>হোয়াটসঅ্যাপ নম্বর</th>
-                                <th>মোট জমা</th>
-                                <th>চলতি মাসের অবস্থা</th>
-                                <th>লোন স্ট্যাটাস</th>
-                            </tr>
-                        </thead>
-                        <tbody id="member-table-body">
-                            <tr>
-                                <td colspan="6" class="text-muted">ডাটাবেজ থেকে রিয়েল ডাটা লোড হচ্ছে...</td>
-                            </tr>
-                        </tbody>
+                        <thead class="table-light"><tr><th>আইডি</th><th>নাম</th><th>হোয়াটসঅ্যাপ</th><th>মোট জমা</th><th>অবস্থা</th><th>অ্যাকশন</th></tr></thead>
+                        <tbody id="member-table-body"></tbody>
                     </table>
                 </div>
             </div>
@@ -180,31 +96,35 @@
                 document.getElementById('login-overlay').style.display = 'none';
                 document.getElementById('dashboard-content').style.display = 'block';
                 loadAdminData();
-            } else {
-                alert("ভুল ইউজারনেম বা পাসওয়ার্ড!");
-            }
+                loadCurrentNotice();
+            } else { alert("ভুল তথ্য!"); }
         }
 
-        // ডাটাবেজ থেকে আসল মেম্বারদের লাইভ ডাটা তুলে আনার ফাংশন
+        function loadCurrentNotice() {
+            fetch('/notice').then(res => res.json()).then(data => {
+                if(data.success) document.getElementById('notice-textarea').value = data.content;
+            });
+        }
+
+        function updateNotice() {
+            const text = document.getElementById('notice-textarea').value;
+            fetch('/notice', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ content: text })
+            }).then(res => res.json()).then(data => {
+                if(data.success) alert("✅ নোটিশ লাইভ আপডেট হয়েছে!");
+            });
+        }
+
         function loadAdminData() {
-            fetch('/admin-get-all') 
-            .then(res => res.json())
-            .then(data => {
-                const tableBody = document.getElementById('member-table-body');
-                const dropdowns = document.querySelectorAll('.user-dropdown');
-                
+            fetch('/admin-get-all').then(res => res.json()).then(data => {
                 if(data.success) {
                     allUserData = data.results || [];
-                    document.getElementById('total-fund').innerText = (data.totalFund || 0) + " টাকা";
-                    document.getElementById('total-members').innerText = allUserData.length + " জন";
-
+                    const tableBody = document.getElementById('member-table-body');
+                    const dropdown = document.getElementById('deposit-user');
                     tableBody.innerHTML = '';
-                    dropdowns.forEach(d => d.innerHTML = '<option value="">সদস্য বেছে নিন...</option>');
-
-                    if(allUserData.length === 0) {
-                        tableBody.innerHTML = `<tr><td colspan="6" class="text-danger fw-bold">ডাটাবেজে কোনো মেম্বার রেজিস্ট্রেশন করেনি!</td></tr>`;
-                        return;
-                    }
+                    dropdown.innerHTML = '<option value="">সদস্য বেছে নিন...</option>';
 
                     allUserData.forEach((user, index) => {
                         tableBody.innerHTML += `
@@ -214,95 +134,57 @@
                                 <td>${user.whatsapp || '--'}</td>
                                 <td class="text-success fw-bold">${user.totalDeposit || 0} টাকা</td>
                                 <td><span class="badge ${user.currentMonthStatus === 'পরিশোধিত' ? 'bg-success' : 'bg-danger'}">${user.currentMonthStatus || 'বাকি'}</span></td>
-                                <td class="text-danger fw-bold">${user.loanStatus || 'কোনো লোন নেই'}</td>
+                                <td><button class="btn btn-outline-danger btn-sm fw-bold" onclick="sendIndividualReminder('${user.id}')">⏳ রিমাইন্ডার</button></td>
                             </tr>
                         `;
-                        dropdowns.forEach(d => {
-                            d.innerHTML += `<option value="${user.id}">${user.name || user.username}</option>`;
-                        });
+                        dropdown.innerHTML += `<option value="${user.id}">${user.name || user.username}</option>`;
                     });
-                } else {
-                    tableBody.innerHTML = `<tr><td colspan="6" class="text-danger">ডাটা লোড ব্যর্থ: ${data.error}</td></tr>`;
                 }
-            })
-            .catch(err => {
-                console.error(err);
-                document.getElementById('member-table-body').innerHTML = `<tr><td colspan="6" class="text-danger">কানেকশন এরর: ব্যাকএন্ড লাইভ নেই।</td></tr>`;
             });
         }
 
-        // 🛠️ ডাটাবেজে টাকা সেভ করে তারপর হোয়াটসঅ্যাপ মেসেজ পাঠানোর ১০০% লাইভ ফাংশন
         function submitPayment(e) {
             e.preventDefault();
             const userId = document.getElementById('deposit-user').value;
             const amount = document.getElementById('deposit-amount').value;
-            const month = document.getElementById('dep-month').value;
-            const year = document.getElementById('dep-year').value;
-
             const selectedUser = allUserData.find(u => u.id == userId);
-            if (!selectedUser) {
-                alert("অনুগ্রহ করে একজন সঠিক সদস্য সিলেক্ট করুন!");
-                return;
-            }
-
-            const memberName = selectedUser.name || selectedUser.username;
-            let whatsappNumber = selectedUser.whatsapp || "";
-
-            // 🚀 ১. প্রথমে ব্যাকএন্ড API এর মাধ্যমে ক্লাউডফ্লেয়ার D1 ডাটাবেজে ডাটা আপডেট করা হচ্ছে
+            
             fetch('/admin-submit-payment', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userId: userId, amount: amount })
-            })
-            .then(res => res.json())
-            .then(data => {
+            }).then(res => res.json()).then(data => {
                 if (data.success) {
-                    alert(`✅ ডাটাবেজে সফলভাবে ${memberName}-এর অ্যাকাউন্টে ${amount} টাকা জমা হয়েছে! এবার হোয়াটসঅ্যাপ মেসেজ পাঠানো হচ্ছে...`);
-                    
-                    // 🔄 ডাটাবেজ আপডেট সফল হলে সাথে সাথে ড্যাশবোর্ড স্ক্রিন রিলোড হবে (০ টাকা পরিবর্তন হয়ে যাবে)
+                    alert("✅ ডাটাবেজে সেভ হয়েছে!");
                     loadAdminData();
-
-                    // 📞 ২. ডাটাবেজ সফল হওয়ার পর হোয়াটসঅ্যাপ মেসেজ প্রসেস করা হচ্ছে
-                    whatsappNumber = whatsappNumber.trim().replace(/[+ -]/g, "");
-                    if (whatsappNumber.startsWith("01")) {
-                        whatsappNumber = "88" + whatsappNumber;
-                    }
-
-                    const messageTemplate = `👋 আসসালামু আলাইকুম, *${memberName}* সাহেব।\n\n` +
-                                            `💰 *বন্ধুত্ব সঞ্চয় সমিতি*-তে আপনার পেমেন্ট সফলভাবে জমা হয়েছে।\n\n` +
-                                            `🗓️ *মাস:* ${month} ${year}\n` +
-                                            `💵 *জমার পরিমাণ:* ${amount} tobacco টাকা\n` +
-                                            `✅ *অবস্থা:*固定 পরিশোধিত\n\n` +
-                                            `ধন্যবাদ, আমাদের সাথে থাকার জন্য। 🙏`;
-
-                    const encodedMessage = encodeURIComponent(messageTemplate);
-
-                    if (whatsappNumber && whatsappNumber !== "88--") {
-                        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-                        window.open(whatsappUrl, '_blank');
-                    }
-                } else {
-                    alert("❌ ডাটাবেজে সেভ হতে পারেনি: " + data.error);
+                    openWhatsApp(selectedUser.name, selectedUser.whatsapp, amount, "মার্চ", "২০২৬");
                 }
-            })
-            .catch(err => {
-                console.error(err);
-                alert("❌ সার্ভার কানেকশন এরর! ডাটাবেজে টাকা সেভ হয়নি।");
             });
         }
 
-        function downloadCSV() {
-            if(allUserData.length === 0) return alert("ডাউনলোড করার মতো কোনো লাইভ ডাটা নেই!");
-            let csvContent = "data:text/csv;charset=utf-8,\uFEFFID,Name,WhatsApp,Total Deposit,Month Status,Loan Status\n";
-            allUserData.forEach((user, index) => {
-                csvContent += `${index + 1},${user.name || user.username},${user.whatsapp || '--'},${user.totalDeposit || 0},${user.currentMonthStatus || 'বাকি'},${user.loanStatus || 'কোনো লোন'}\n`;
+        function openWhatsApp(name, phone, amount, month, year) {
+            let num = phone.trim().replace(/[+ -]/g, "");
+            if (num.startsWith("01")) num = "88" + num;
+            const msg = `👋 আসসালামু আলাইকুম, *${name}* সাহেব।\n\n💰 *বন্ধুত্ব সঞ্চয় সমিতি*-তে আপনার পেমেন্ট সফল হয়েছে।\n🗓️ *মাস:* ${month} ${year}\n💵 *পরিমাণ:* ${amount} টাকা\n✅ *অবস্থা:* পরিশোধিত\n\nধন্যবাদ। 🙏`;
+            window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        // ১৩ তারিখের ১-ক্লিক বাল্ক রিমাইন্ডার ফাংশন (তোর ১ নং বুদ্ধি)
+        function sendBulkReminder() {
+            if(allUserData.length === 0) return alert("কোনো মেম্বার নেই!");
+            alert("একে একে সকল মেম্বারের হোয়াটসঅ্যাপ চ্যাট ওপেন হবে। আপনি শুধু সেন্ড চাপবেন।");
+            allUserData.forEach(user => {
+                sendIndividualReminder(user.id);
             });
-            const link = document.createElement("a");
-            link.setAttribute("href", encodeURI(csvContent));
-            link.setAttribute("download", "Somity_Live_Report.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+        }
+
+        function sendIndividualReminder(id) {
+            const user = allUserData.find(u => u.id == id);
+            let num = user.whatsapp.trim().replace(/[+ -]/g, "");
+            if (num.startsWith("01")) num = "88" + num;
+            
+            const msg = `👋 আসসালামু আলাইকুম, *${user.name || user.username}* সাহেব।\n\n📢 *বন্ধুত্ব সঞ্চয় সমিতি* থেকে আপনাকে জানানো যাচ্ছে যে, চলতি মাসের টাকা জমা দেওয়ার শেষ সময় আগামী *১৫ তারিখ*।\n💵 অনুগ্রহ করে সময়ের মধ্যে টাকা পরিশোধ করার জন্য অনুরোধ করা হলো।\n\n🌐 ভিজিট করুন: https://somity-web.pages.dev`;
+            window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, '_blank');
         }
     </script>
 </body>
