@@ -258,4 +258,61 @@
         }
     </script>
 </body>
-</html>
+</html>// লগইন করার ফাংশন
+function handleSecureLogin() {
+    const userInput = document.getElementById('member-username-input').value.trim();
+    const passwordInput = document.getElementById('member-pass-input').value.trim();
+    
+    if(!userInput || !passwordInput) return alert("সব ঘর পূরণ করুন!");
+    
+    // সরাসরি তোদের ক্লাউডফ্লেয়ার ডাটাবেজ এপিআই-তে রিকোয়েস্ট যাবে
+    fetch('/functions/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: String(userInput), password: String(passwordInput) })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            // ডাটাবেজে যে নাম এবং ইউজারনেম দিয়ে রেজিস্ট্রেশন করা হয়েছে, সেটাই স্ক্রিনে দেখাবে
+            showDashboard(data.user.name, data.user.username);
+        } else {
+            alert("❌ " + (data.error || "ভুল ইউজারনেম অথবা পাসওয়ার্ড!"));
+        }
+    })
+    .catch(() => {
+        alert("❌ সার্ভার রেসপন্স করছে না! অনুগ্রহ করে ডাটাবেজ কানেকশন চেক করুন।");
+    });
+}
+
+// ড্যাশবোর্ড দেখানোর ফাংশন (সব ডেটা ডাটাবেজ থেকে আসবে)
+function showDashboard(name, username) {
+    document.getElementById('main-body').className = "dashboard-mode";
+    document.getElementById('auth-container').style.display = 'none';
+    document.getElementById('dashboard-content').style.display = 'block';
+    
+    // অটোমেটিক নাম ও ইউজারনেম সেট হচ্ছে
+    document.getElementById('welcome-name').innerText = `স্বাগতম, ${name}`;
+    document.getElementById('display-username').innerText = username;
+    
+    // মেম্বারের জমার তথ্যও ডাটাবেজ থেকে টেনে আনা হচ্ছে
+    fetch(`/functions/member-get-data?username=${encodeURIComponent(username)}`)
+    .then(r => r.json())
+    .then(memberData => {
+        if(memberData.success) {
+            document.getElementById('my-total-deposit').innerText = (memberData.data.totalDeposit || 0) + " টাকা";
+            document.getElementById('somity-total-fund').innerText = (memberData.data.totalFund || 0) + " টাকা";
+            document.getElementById('my-loan-balance').innerText = (memberData.data.loanStatus || "০ টাকা");
+        } else {
+            document.getElementById('my-total-deposit').innerText = "০ টাকা";
+            document.getElementById('somity-total-fund').innerText = "০ টাকা";
+            document.getElementById('my-loan-balance').innerText = "০ টাকা";
+        }
+    })
+    .catch(() => {
+        // ডাটাবেজ ফেল করলে সব ০ দেখাবে, কোনো মুখস্থ ডেটা দেখাবে না
+        document.getElementById('my-total-deposit').innerText = "০ টাকা";
+        document.getElementById('somity-total-fund').innerText = "০ টাকা";
+        document.getElementById('my-loan-balance').innerText = "০ টাকা";
+    });
+}
