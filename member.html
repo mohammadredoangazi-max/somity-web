@@ -63,6 +63,7 @@
                 </li>
             </ul>
 
+            <!-- লগইন ফর্ম -->
             <div id="login-form-section">
                 <div class="mb-3 text-start">
                     <label class="form-label small fw-bold text-muted">ইউজারনেম / মোবাইল নম্বর</label>
@@ -78,6 +79,7 @@
                 <button onclick="handleSecureLogin()" class="btn btn-primary w-100 fw-bold py-2">লগইন করুন</button>
             </div>
 
+            <!-- নিবন্ধন ফর্ম -->
             <div id="register-form-section" style="display: none;">
                 <div class="mb-3 text-start">
                     <label class="form-label small fw-bold text-muted">সম্পূর্ণ নাম</label>
@@ -98,6 +100,7 @@
                 <button onclick="handleRegistration()" class="btn btn-primary w-100 fw-bold py-2">নিবন্ধন সম্পন্ন করুন</button>
             </div>
 
+            <!-- ফরগেট পাসওয়ার্ড ফর্ম -->
             <div id="forgot-form-section" style="display: none;">
                 <h6 class="text-danger fw-bold mb-3">🔑 পাসওয়ার্ড পুনরুদ্ধারের অনুরোধ</h6>
                 <div class="mb-3 text-start">
@@ -114,6 +117,7 @@
         </div>
     </div>
 
+    <!-- ড্যাশবোর্ড কন্টেন্ট -->
     <div id="dashboard-content">
         <nav class="navbar navbar-light bg-white px-4 py-3 mb-4 d-flex justify-content-between align-items-center border-bottom">
             <div>
@@ -128,9 +132,9 @@
                 <marquee id="live-notice-text" behavior="scroll" direction="left">লোডিং...</marquee>
             </div>
             <div class="row g-3 mb-4">
-                <div class="col-md-4"><div class="card p-3 bg-white" style="border-left: 5px solid #0d6efd;"><small class="text-muted">আমার মোট জমা</small><h3 class="fw-bold text-primary mt-1" id="my-total-deposit">০ টাকা</h3></div></div>
-                <div class="col-md-4"><div class="card p-3 bg-white" style="border-left: 5px solid #198754;"><small class="text-muted">সমিতির মোট ফান্ড</small><h3 class="fw-bold text-success mt-1" id="somity-total-fund">০ টাকা</h3></div></div>
-                <div class="col-md-4"><div class="card p-3 bg-white" style="border-left: 5px solid #dc3545;"><small class="text-muted">আমার লোন বাকি</small><h3 class="fw-bold text-danger mt-1" id="my-loan-balance">০ টাকা</h3></div></div>
+                <div class="col-md-4"><div class="card p-3 bg-white" style="border-left: 5px solid #0d6efd;"><small class="text-muted">আমার মোট জমা</small><h3 class="fw-bold text-primary mt-1" id="my-total-deposit">লোড হচ্ছে...</h3></div></div>
+                <div class="col-md-4"><div class="card p-3 bg-white" style="border-left: 5px solid #198754;"><small class="text-muted">সমিতির মোট ফান্ড</small><h3 class="fw-bold text-success mt-1" id="somity-total-fund">লোড হচ্ছে...</h3></div></div>
+                <div class="col-md-4"><div class="card p-3 bg-white" style="border-left: 5px solid #dc3545;"><small class="text-muted">আমার লোন বাকি</small><h3 class="fw-bold text-danger mt-1" id="my-loan-balance">লোড হচ্ছে...</h3></div></div>
             </div>
         </div>
     </div>
@@ -156,14 +160,13 @@
         }
         function cancelForgot() { switchTab('login'); }
 
-        // ক্লাউডফ্লেয়ার পেজেস ফোল্ডার আর্কিটেকচার অনুযায়ী ফিক্সড লিংক
+        // আসল লাইভ ডাটাবেজ কানেকশন লজিক
         function handleSecureLogin() {
             const username = document.getElementById('member-username-input').value.trim();
             const password = document.getElementById('member-pass-input').value;
             
             if(!username || !password) return alert("সব ঘর পূরণ করুন!");
             
-            // ক্লাউডফ্লেয়ার-এর রুট /login এ সরাসরি রিকোয়েস্ট পাঠানো হচ্ছে
             fetch('/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -172,16 +175,38 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
+                    // লগইন সফল হলে ড্যাশবোর্ড ওপেন করা
                     document.getElementById('auth-container').style.display = 'none';
                     document.getElementById('dashboard-content').style.display = 'block';
                     document.body.style.background = "#f4f6f9";
                     
-                    document.getElementById('welcome-name').innerText = `স্বাগতম, ${data.user.name}`;
-                    document.getElementById('display-username').innerText = username;
-                    document.getElementById('my-total-deposit').innerText = (data.user.totalDeposit || 0) + " টাকা";
-                    document.getElementById('somity-total-fund').innerText = "৫0,০০০ টাকা";
-                    document.getElementById('my-loan-balance').innerText = (data.user.loanStatus || "০ টাকা");
+                    // ১. লগইন রেসপন্স থেকে নাম ও ইউজারনেম বসানো
+                    document.getElementById('welcome-name').innerText = `স্বাগতম, ${data.user.name || 'সদস্য'}`;
+                    document.getElementById('display-username').innerText = data.user.username || username;
                     
+                    // ২. তোর 'member-get-data' এপিআই থেকে আসল লাইভ ডেটা টেনে আনা
+                    fetch(`/member-get-data?username=${encodeURIComponent(username)}`)
+                    .then(r => r.json())
+                    .then(memberData => {
+                        if(memberData.success) {
+                            document.getElementById('my-total-deposit').innerText = (memberData.data.totalDeposit || 0) + " টাকা";
+                            document.getElementById('somity-total-fund').innerText = (memberData.data.totalFund || 0) + " টাকা";
+                            document.getElementById('my-loan-balance').innerText = (memberData.data.loanStatus || "০ টাকা");
+                        } else {
+                            // ব্যাকআপ রিড (যদি সরাসরি লগইন অবজেক্টে ডেটা থাকে)
+                            document.getElementById('my-total-deposit').innerText = (data.user.totalDeposit || 0) + " টাকা";
+                            document.getElementById('somity-total-fund').innerText = (data.totalFund || 0) + " টাকা";
+                            document.getElementById('my-loan-balance').innerText = (data.user.loanStatus || "০ টাকা");
+                        }
+                    })
+                    .catch(() => {
+                        // এপিআই ফেইল করলে লগইন ডেটা দিয়ে ব্যাকআপ ডিসপ্লে
+                        document.getElementById('my-total-deposit').innerText = (data.user.totalDeposit || 0) + " টাকা";
+                        document.getElementById('somity-total-fund').innerText = (data.totalFund || 0) + " টাকা";
+                        document.getElementById('my-loan-balance').innerText = (data.user.loanStatus || "০ টাকা");
+                    });
+                    
+                    // নোটিশ লোড করা
                     fetch('/notice').then(r => r.json()).then(n => {
                         if(n.success) document.getElementById('live-notice-text').innerText = n.content;
                     }).catch(()=> { document.getElementById('live-notice-text').innerText = "কোনো নতুন নোটিশ নেই।"; });
