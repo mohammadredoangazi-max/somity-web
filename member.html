@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>সদস্য ড্যাশবোর্ড</title>
+    <title>সদস্য ড্যাশবোর্ড - বন্ধুত্ব সঞ্চয় সমিতি</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background-color: #f4f6f9; font-family: Arial, sans-serif; }
         .card { border: none; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?q=80&w=2070') no-repeat center center/cover; display: flex; align-items: center; justify-content: center; z-index: 9999; }
-        .login-box { width: 100%; max-width: 400px; padding: 30px; background: rgba(255, 255, 255, 0.95); border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
-        .marquee-notice { background: #fff3cd; color: #856404; font-weight: bold; padding: 12px; border-radius: 8px; margin-bottom: 20px; }
+        .login-box { width: 100%; max-width: 400px; padding: 30px; background: rgba(255, 255, 255, 0.95); border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); backdrop-filter: blur(5px); }
+        .marquee-notice { background: #fff3cd; color: #856404; font-weight: bold; padding: 12px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #ffc107; }
     </style>
 </head>
 <body>
@@ -34,10 +34,10 @@
     </div>
 
     <div id="dashboard-content" style="display: none;">
-        <nav class="navbar navbar-light bg-white px-4 py-3 mb-4 d-flex justify-content-between">
+        <nav class="navbar navbar-light bg-white px-4 py-3 mb-4 d-flex justify-content-between align-items-center border-bottom">
             <div>
-                <h5 class="m-0 fw-bold" id="welcome-name">স্বাগতম, সদস্য</h5>
-                <small class="text-muted">সদস্য আইডি: #<span id="display-user-id">00</span></small>
+                <h5 class="m-0 fw-bold text-dark" id="welcome-name">স্বাগতম, সদস্য</h5>
+                <small class="text-muted fw-bold">সদস্য আইডি: #<span id="display-user-id">00</span></small>
             </div>
             <div>
                 <button class="btn btn-outline-primary btn-sm fw-bold me-2" onclick="openChangePasswordModal()">🔑 পাসওয়ার্ড পরিবর্তন</button>
@@ -52,17 +52,40 @@
             </div>
 
             <div class="row g-3 mb-4">
-                <div class="col-md-4"><div class="card p-3" style="border-left: 5px solid #0d6efd;"><small class="text-muted fw-bold">আমার মোট জমা</small><h3 class="fw-bold mt-1" id="my-total-deposit">০ টাকা</h3></div></div>
-                <div class="col-md-4"><div class="card p-3" style="border-left: 5px solid #198754;"><small class="text-muted fw-bold">সমিতির মোট ফান্ড</small><h3 class="fw-bold mt-1" id="somity-total-fund">০ টাকা</h3></div></div>
-                <div class="col-md-4"><div class="card p-3" style="border-left: 5px solid #dc3545;"><small class="text-muted fw-bold">আমার লোন বাকি</small><h3 class="fw-bold mt-1" id="my-loan-balance">০ টাকা</h3></div></div>
+                <div class="col-md-4">
+                    <div class="card p-3 bg-white" style="border-left: 5px solid #0d6efd;">
+                        <small class="text-muted fw-bold">আমার মোট জমা</small>
+                        <h3 class="fw-bold text-primary mt-1" id="my-total-deposit">০ টাকা</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-3 bg-white" style="border-left: 5px solid #198754;">
+                        <small class="text-muted fw-bold">সমিতির মোট ফান্ড</small>
+                        <h3 class="fw-bold text-success mt-1" id="somity-total-fund">০ টাকা</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-3 bg-white" style="border-left: 5px solid #dc3545;">
+                        <small class="text-muted fw-bold">আমার লোন বাকি</small>
+                        <h3 class="fw-bold text-danger mt-1" id="my-loan-balance">০ টাকা</h3>
+                    </div>
+                </div>
             </div>
 
-            <div class="card p-4">
-                <h5 class="fw-bold mb-3">আমার মাসিক জমার বিবরণ (২০২৬)</h5>
+            <div class="card p-4 bg-white mb-4">
+                <h5 class="fw-bold text-dark mb-3">আমার মাসিক জমার বিবরণ (২০২৬)</h5>
                 <div class="table-responsive">
-                    <table class="table text-center m-0">
-                        <thead class="table-light"><tr><th>মাস</th><th>টাকার পরিমাণ</th><th>জমা দেওয়ার তারিখ</th><th>অবস্থা (Status)</th></tr></thead>
-                        <tbody id="monthly-table-body"></tbody>
+                    <table class="table text-center align-middle m-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>মাস</th>
+                                <th>টাকার পরিমাণ</th>
+                                <th>জমা দেওয়ার তারিখ</th>
+                                <th>অবস্থা (Status)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="monthly-table-body">
+                            </tbody>
                     </table>
                 </div>
             </div>
@@ -72,6 +95,7 @@
     <script>
         let currentLoggedInId = null;
 
+        // সদস্য লগইন প্রসেস
         function handleMemberLogin() {
             const userId = document.getElementById('member-id-input').value;
             const userPass = document.getElementById('member-pass-input').value;
@@ -79,42 +103,70 @@
             if(!userId || !userPass) return alert("আইডি এবং পাসওয়ার্ড দুটিই সঠিকভাবে দিন!");
             
             currentLoggedInId = userId;
+            const baseUrl = window.location.origin;
             
-            fetch('/admin-get-all').then(res => res.json()).then(data => {
-                if (data.success) {
-                    const user = (data.results || []).find(u => u.id == userId);
-                    if (!user) { 
-                        alert("❌ এই আইডি-র কোনো সদস্য পাওয়া যায়নি!"); 
-                        return; 
-                    }
-                    
-                    document.getElementById('login-overlay').style.display = 'none';
-                    document.getElementById('dashboard-content').style.display = 'block';
-                    
-                    document.getElementById('welcome-name').innerText = `স্বাগতম, ${user.name || user.username}`;
-                    document.getElementById('display-user-id').innerText = userId;
-                    document.getElementById('my-total-deposit').innerText = (user.totalDeposit || 0) + " টাকা";
-                    document.getElementById('somity-total-fund').innerText = (data.totalFund || 0) + " টাকা";
-                    document.getElementById('my-loan-balance').innerText = (user.loanStatus && user.loanStatus !== 'কোনো লোন নেই' ? user.loanStatus : "০ টাকা");
+            fetch(`${baseUrl}/admin-get-all`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const user = (data.results || []).find(u => u.id == userId);
+                        if (!user) { 
+                            alert("❌ এই আইডি-র কোনো সদস্য পাওয়া যায়নি!"); 
+                            return; 
+                        }
+                        
+                        // লগইন স্ক্রিন হাইড ও ড্যাশবোর্ড শো করা
+                        document.getElementById('login-overlay').style.display = 'none';
+                        document.getElementById('dashboard-content').style.display = 'block';
+                        
+                        // ডাটা সেটআপ
+                        document.getElementById('welcome-name').innerText = `স্বাগতম, ${user.name || user.username}`;
+                        document.getElementById('display-user-id').innerText = userId;
+                        document.getElementById('my-total-deposit').innerText = (user.totalDeposit || 0) + " টাকা";
+                        document.getElementById('somity-total-fund').innerText = (data.totalFund || 0) + " টাকা";
+                        document.getElementById('my-loan-balance').innerText = (user.loanStatus && user.loanStatus !== 'কোনো লোন নেই' ? user.loanStatus : "০ টাকা");
 
-                    const isPaid = user.currentMonthStatus === 'পরিশোধিত';
-                    document.getElementById('monthly-table-body').innerHTML = `
-                        <tr>
-                            <td><strong>মার্চ ২০২৬</strong></td>
-                            <td class="${isPaid ? 'text-success fw-bold' : 'text-danger'}">${isPaid ? user.totalDeposit : '০'} টাকা</td>
-                            <td>${isPaid ? 'আজ' : '--'}</td>
-                            <td><span class="badge ${isPaid ? 'bg-success' : 'bg-danger'}">${user.currentMonthStatus || 'বাকি'}</span></td>
-                        </tr>
-                    `;
-                    loadLiveNotice();
-                }
-            }).catch(err => {
-                // ব্যাকএন্ডে সমস্যা হলেও ড্যাশবোর্ড যেন ঠিকঠাক খোলে তার ব্যাকআপ
-                document.getElementById('login-overlay').style.display = 'none';
-                document.getElementById('dashboard-content').style.display = 'block';
-            });
+                        const isPaid = user.currentMonthStatus === 'পরিশোধিত';
+                        document.getElementById('monthly-table-body').innerHTML = `
+                            <tr>
+                                <td><strong>মার্চ ২০২৬</strong></td>
+                                <td class="${isPaid ? 'text-success fw-bold' : 'text-danger fw-bold'}">${isPaid ? user.totalDeposit : '০'} টাকা</td>
+                                <td>${isPaid ? 'আজ' : '--'}</td>
+                                <td><span class="badge ${isPaid ? 'bg-success' : 'bg-danger'}">${user.currentMonthStatus || 'বাকি'}</span></td>
+                            </tr>
+                        `;
+                        
+                        // লাইভ নোটিশ লোড করা
+                        loadLiveNotice();
+                    }
+                })
+                .catch(err => {
+                    console.error("লগইন এপিআই কানেকশনে সমস্যা হয়েছে:", err);
+                    alert("সার্ভার কানেকশন সমস্যা! অনুগ্রহ করে একটু পর চেষ্টা করুন।");
+                });
         }
 
+        // লাইভ নোটিশ লোড ও সিঙ্ক ফাংশন
+        function loadLiveNotice() {
+            const baseUrl = window.location.origin; 
+            
+            fetch(`${baseUrl}/notice`)
+                .then(res => {
+                    if (!res.ok) throw new Error('Network error');
+                    return res.json();
+                })
+                .then(data => {
+                    // অ্যাডমিন প্যানেল থেকে নতুন নোটিশ আসলে তা এখানে সেট হবে
+                    if(data.success && data.content && data.content.trim() !== "") {
+                        document.getElementById('live-notice-text').innerText = data.content;
+                    }
+                })
+                .catch(err => {
+                    console.log("লাইভ নোটিশ ব্যাকএন্ড থেকে লোড করা যায়নি, ডিফল্ট নোটিশটি চালু রয়েছে।");
+                });
+        }
+
+        // মেম্বার পাসওয়ার্ড চেঞ্জ অপশন
         function openChangePasswordModal() {
             const oldPass = prompt("🔑 ভেরিফিকেশনের জন্য আপনার বর্তমান পাসওয়ার্ডটি দিন:");
             if(!oldPass) return;
@@ -127,20 +179,6 @@
                 }
                 alert("✅ পাসওয়ার্ড সফলভাবে পরিবর্তিত হয়েছে এবং ডাটাবেজে আপনার অ্যাকাউন্টের সাথে আপডেট হয়েছে!");
             }
-        }
-
-        // নোটিশ হ্যান্ডলিং (লোড হচ্ছে সমস্যার স্থায়ী সমাধান)
-        function loadLiveNotice() {
-            fetch('/notice')
-                .then(res => res.json())
-                .then(data => {
-                    if(data.success && data.content.trim() !== "") {
-                        document.getElementById('live-notice-text').innerText = data.content;
-                    }
-                })
-                .catch(err => {
-                    console.log("লাইভ নোটিশ ব্যাকএন্ড থেকে পাওয়া যায়নি, ডিফল্ট নোটিশ সচল রাখা হয়েছে।");
-                });
         }
     </script>
 </body>
