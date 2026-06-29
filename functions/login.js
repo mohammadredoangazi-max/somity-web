@@ -10,8 +10,7 @@ export async function onRequestPost(context) {
       });
     }
 
-    // ক্লাউডফ্লেয়ার KV বা D1 ডাটাবেজ থেকে ইউজার চেক করা (তোর ডিরেক্টরি অনুযায়ী)
-    // যদি ডাটাবেজে ইউজার না থাকে, তার জন্য তোর দেওয়া টেস্ট লগইন সচল রাখা হলো:
+    // ব্যাকআপ টেস্ট ইউজার চেক (ডাটাবেজ কানেক্ট না থাকলেও যেন লগইন কাজ করে)
     if ((username === "redoan" || username === "01748723661") && password === "123") {
       return new Response(JSON.stringify({
         success: true,
@@ -19,14 +18,21 @@ export async function onRequestPost(context) {
       }), { status: 200, headers: { "Content-Type": "application/json" } });
     }
 
-    // ডাটাবেজ থেকে চেক করার লজিক
-    const userData = await env.DB.prepare("SELECT * FROM members WHERE username = ? OR phone = ?").bind(username, username).first();
-    
-    if (userData && userData.password === password) {
-      return new Response(JSON.stringify({
-        success: true,
-        user: { name: userData.name, username: userData.username }
-      }), { status: 200, headers: { "Content-Type": "application/json" } });
+    // ডাটাবেজ বাইন্ডিং চেক করা
+    if (env && env.DB) {
+      try {
+        const userData = await env.DB.prepare("SELECT * FROM members WHERE username = ? OR phone = ?").bind(username, username).first();
+        
+        if (userData && userData.password === password) {
+          return new Response(JSON.stringify({
+            success: true,
+            user: { name: userData.name, username: userData.username }
+          }), { status: 200, headers: { "Content-Type": "application/json" } });
+        }
+      } catch (dbError) {
+        // ডাটাবেজে টেবিল না থাকলে বা এরর হলে এই ব্লকে আসবে, কিন্তু লগইন আটকে থাকবে না যদি টেস্ট ইউজার মিলে যায়
+        console.error("Database Error:", dbError.message);
+      }
     }
 
     return new Response(JSON.stringify({ success: false, error: "ভুল ইউজারনেম অথবা পাসওয়ার্ড!" }), {
@@ -35,6 +41,10 @@ export async function onRequestPost(context) {
     });
 
   } catch (err) {
-    return new Response(JSON.stringify({ success: false, error: err.message }), { status: 500 });
+    // যেকোনো ক্র্যাশ এড়াতে সাধারণ সাকসেস রেসপন্স ব্যাকআপ
+    return new Response(JSON.stringify({ success: false, error: "সার্ভার ইন্টারনাল এরর: " + err.message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
   }
 }
