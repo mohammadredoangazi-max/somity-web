@@ -14,17 +14,15 @@
 </head>
 <body>
 
-    <!-- লগইন ফর্ম -->
     <div id="login-overlay">
         <div class="login-box card text-center">
             <h4 class="fw-bold mb-4">অ্যাডমিন লগইন</h4>
-            <div class="mb-3 text-start"><label class="form-label small fw-bold">ইউজারনেম</label><input type="text" id="admin-username" class="form-control" value="admin"></div>
-            <div class="mb-4 text-start"><label class="form-label small fw-bold">পাসওয়ার্ড</label><input type="password" id="admin-password" class="form-control" value="admin123"></div>
-            <button onclick="checkAdminLogin()" class="btn btn-primary w-100 fw-bold">লগইন করুন</button>
+            <div class="mb-3 text-start"><label class="form-label small fw-bold">ইউজারনেম</label><input type="text" id="admin-username" class="form-control" placeholder="admin"></div>
+            <div class="mb-4 text-start"><label class="form-label small fw-bold">পাসওয়ার্ড</label><input type="password" id="admin-password" class="form-control" placeholder="••••••••"></div>
+            <button onclick="checkAdminLogin()" class="btn btn-primary w-100 fw-bold">لগইন করুন</button>
         </div>
     </div>
 
-    <!-- ড্যাশবোর্ড -->
     <div id="dashboard-content" style="display: none;">
         <nav class="navbar navbar-dark bg-dark px-3 mb-4">
             <span class="navbar-brand mb-0 h1">👋 অ্যাডমিন প্যানেল (পরিচালক)</span>
@@ -32,7 +30,6 @@
         </nav>
 
         <div class="container-fluid px-4">
-            <!-- 📢 লাইভ নোটিশ বোর্ড -->
             <div class="card p-4 mb-4 bg-light border-start border-primary border-4">
                 <h5 class="fw-bold text-primary">📢 লাইভ নোটিশ বোর্ড (সদস্যদের ড্যাশবোর্ডে দেখাবে)</h5>
                 <div class="input-group mt-2">
@@ -42,7 +39,6 @@
             </div>
 
             <div class="row g-4 mb-4">
-                <!-- পেমেন্ট এন্ট্রি ফর্ম (১২ মাস ফেরত আনা হলো) -->
                 <div class="col-md-6">
                     <div class="card p-4">
                         <h5 class="mb-3 fw-bold">নতুন পেমেন্ট এন্ট্রি (টাকা জমা)</h5>
@@ -61,7 +57,15 @@
                                         <option>অক্টোবর</option><option>নভেম্বর</option><option>ডিসেম্বর</option>
                                     </select>
                                 </div>
-                                <div class="col"><label class="form-label">বছর</label><select class="form-select" id="dep-year"><option>২০২৬</option><option>২০২৭</option></select></div>
+                                <div class="col">
+                                    <label class="form-label">বছর</label>
+                                    <select class="form-select" id="dep-year">
+                                        <option selected>২০২৬</option><option>২০২৭</option><option>২০২৮</option>
+                                        <option>২০২৯</option><option>২০৩০</option><option>২০৩১</option>
+                                        <option>২০৩২</option><option>২০৩৩</option><option>২০৩৪</option>
+                                        <option>২০৩৫</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">টাকার পরিমাণ</label>
@@ -72,7 +76,6 @@
                     </div>
                 </div>
 
-                <!-- লোন ইস্যু ফর্ম (ফেরত আনা হলো) -->
                 <div class="col-md-6">
                     <div class="card p-4">
                         <h5 class="mb-3 fw-bold">নতুন L1 লোন ইস্যু করুন</h5>
@@ -91,14 +94,11 @@
                 </div>
             </div>
 
-            <!-- রিমাইন্ডার সেকশন -->
             <div class="card p-4 mb-4 text-center">
                 <h5 class="fw-bold text-danger mb-2">📢 ১৩ তারিখের মাসিক তাগিদ (রিমাইন্ডার)</h5>
-                <p class="text-muted small mb-3">ডাটাবেজের সকল মেম্বারদের কাছে এক ক্লিকে টাকা দেওয়ার রিমাইন্ডার মেসেজ পাঠানোর অপশন।</p>
                 <button class="btn btn-success fw-bold py-2 px-5" onclick="sendBulkReminder()">⏳ ১-ক্লিকে সবাইকে রিমাইন্ডার পাঠান</button>
             </div>
 
-            <!-- তালিকা টেবিল এবং এক্সেল ডাউনলোড বাটন (ফেরত আনা হলো) -->
             <div class="card p-4 mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="fw-bold m-0">সদস্যদের জমার তালিকা ও অবস্থা</h5>
@@ -125,7 +125,7 @@
                 document.getElementById('dashboard-content').style.display = 'block';
                 loadAdminData();
                 loadCurrentNotice();
-            } else { alert("ভুল তথ্য!"); }
+            } else { alert("ভুল ইউজারনেম বা পাসওয়ার্ড!"); }
         }
 
         function loadCurrentNotice() {
@@ -211,7 +211,7 @@
             const user = allUserData.find(u => u.id == id);
             let num = user.whatsapp.trim().replace(/[+ -]/g, "");
             if (num.startsWith("01")) num = "88" + num;
-            const msg = `👋 আসসালামু আলাইকুম, *${user.name || user.username}* সাহেব।\n\n📢 *বন্ধুত্ব সঞ্চয় সমিতি* থেকে আপনাকে জানানো যাচ্ছে যে, চলতি মাসের টাকা জমা দেওয়ার শেষ সময় আগামী *১৫ তারিখ*।\n💵 অনুগ্রহ করে সময়ের মধ্যে টাকা পরিশোধ করার জন্য অনুরোধ করা হলো।\n\n🌐 ভিজিট করুন: https://somity-web.pages.dev`;
+            const msg = `👋 আসসালামু আলাইকুম, *${user.name || user.username}* সাহেব।\n\n📢 *বন্ধুত্ব সঞ্চয় সমিতি* থেকে আপনাকে জানানো যাচ্ছে যে, চলতি মাসের টাকা জমা দেওয়ার শেষ সময় আগামী *১৫ তারিখ*।\n💵 অনুগ্রহ করে সময়ের মধ্যে টাকা পরিশোধ করার জন্য অনুরোধ করা হলো।`;
             window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
