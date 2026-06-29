@@ -63,7 +63,6 @@
                 </li>
             </ul>
 
-            <!-- লগইন ফর্ম -->
             <div id="login-form-section">
                 <div class="mb-3 text-start">
                     <label class="form-label small fw-bold text-muted">ইউজারনেম / মোবাইল নম্বর</label>
@@ -79,7 +78,6 @@
                 <button onclick="handleSecureLogin()" class="btn btn-primary w-100 fw-bold py-2">লগইন করুন</button>
             </div>
 
-            <!-- নিবন্ধন ফর্ম -->
             <div id="register-form-section" style="display: none;">
                 <div class="mb-3 text-start">
                     <label class="form-label small fw-bold text-muted">সম্পূর্ণ নাম</label>
@@ -100,7 +98,6 @@
                 <button onclick="handleRegistration()" class="btn btn-primary w-100 fw-bold py-2">নিবন্ধন সম্পন্ন করুন</button>
             </div>
 
-            <!-- ফরগেট পাসওয়ার্ড ফর্ম -->
             <div id="forgot-form-section" style="display: none;">
                 <h6 class="text-danger fw-bold mb-3">🔑 পাসওয়ার্ড পুনরুদ্ধারের অনুরোধ</h6>
                 <div class="mb-3 text-start">
@@ -117,7 +114,6 @@
         </div>
     </div>
 
-    <!-- ড্যাশবোর্ড কন্টেন্ট -->
     <div id="dashboard-content">
         <nav class="navbar navbar-light bg-white px-4 py-3 mb-4 d-flex justify-content-between align-items-center border-bottom">
             <div>
@@ -160,15 +156,15 @@
         }
         function cancelForgot() { switchTab('login'); }
 
-        // ফিক্সড ক্লাউডফ্লেয়ার ফাংশনস লগইন লিংক
+        // ক্লাউডফ্লেয়ার পেজেস ফোল্ডার আর্কিটেকচার অনুযায়ী ফিক্সড লিংক
         function handleSecureLogin() {
             const username = document.getElementById('member-username-input').value.trim();
             const password = document.getElementById('member-pass-input').value;
             
             if(!username || !password) return alert("সব ঘর পূরণ করুন!");
             
-            // ক্লাউডফ্লেয়ার ফাংশনস এর নিয়ম অনুযায়ী সরাসরি /functions/login এ কল করা হচ্ছে
-            fetch('/functions/login', {
+            // ক্লাউডফ্লেয়ার-এর রুট /login এ সরাসরি রিকোয়েস্ট পাঠানো হচ্ছে
+            fetch('/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
@@ -186,15 +182,14 @@
                     document.getElementById('somity-total-fund').innerText = "৫0,০০০ টাকা";
                     document.getElementById('my-loan-balance').innerText = (data.user.loanStatus || "০ টাকা");
                     
-                    // নোটিশ লোড
-                    fetch('/functions/notice').then(r => r.json()).then(n => {
+                    fetch('/notice').then(r => r.json()).then(n => {
                         if(n.success) document.getElementById('live-notice-text').innerText = n.content;
                     }).catch(()=> { document.getElementById('live-notice-text').innerText = "কোনো নতুন নোটিশ নেই।"; });
                 } else {
                     alert("❌ " + (data.error || "ভুল ইউজারনেম অথবা পাসওয়ার্ড!"));
                 }
             })
-            .catch(() => alert("❌ সার্ভার রেসপন্স করছে না। অনুগ্রহ করে functions/login.js কোডটি আপডেট করুন।"));
+            .catch(() => alert("❌ সার্ভার কানেকশন এরর! অনুগ্রহ করে পেজটি একবার রিফ্রেশ করুন।"));
         }
 
         function handleRegistration() {
@@ -205,7 +200,7 @@
 
             if(!name || !username || !phone || !password) return alert("সব তথ্য দিন!");
 
-            fetch('/functions/register', {
+            fetch('/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, username, phone, password })
