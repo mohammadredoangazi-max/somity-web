@@ -15,7 +15,6 @@
 </head>
 <body>
 
-    <!-- সদস্য লগইন ফর্ম -->
     <div id="login-overlay">
         <div class="login-box card text-center">
             <h4 class="fw-bold mb-4">🔗 সদস্য লগইন</h4>
@@ -34,7 +33,6 @@
         </div>
     </div>
 
-    <!-- ড্যাশবোর্ড কন্টেন্ট -->
     <div id="dashboard-content" style="display: none;">
         <nav class="navbar navbar-light bg-white px-4 py-3 mb-4 d-flex justify-content-between">
             <div>
@@ -48,25 +46,22 @@
         </nav>
 
         <div class="container-fluid px-4">
-            <!-- লাইভ নোটিশ বোর্ড (ফিক্সড ফলব্যাকসহ) -->
             <div class="marquee-notice d-flex align-items-center">
                 <span class="badge bg-danger me-2 p-2">🚨 নোটিশ:</span>
                 <marquee id="live-notice-text" behavior="scroll" direction="left">সঞ্চয় সমিতির সকল সদস্যকে নিয়মিত ও নির্দিষ্ট সময়ের মধ্যে মাসিক কিস্তির টাকা জমা দেওয়ার জন্য অনুরোধ করা যাচ্ছে।</marquee>
             </div>
 
-            <!-- পরিসংখ্যান সমূহ -->
             <div class="row g-3 mb-4">
                 <div class="col-md-4"><div class="card p-3" style="border-left: 5px solid #0d6efd;"><small class="text-muted fw-bold">আমার মোট জমা</small><h3 class="fw-bold mt-1" id="my-total-deposit">০ টাকা</h3></div></div>
                 <div class="col-md-4"><div class="card p-3" style="border-left: 5px solid #198754;"><small class="text-muted fw-bold">সমিতির মোট ফান্ড</small><h3 class="fw-bold mt-1" id="somity-total-fund">০ টাকা</h3></div></div>
                 <div class="col-md-4"><div class="card p-3" style="border-left: 5px solid #dc3545;"><small class="text-muted fw-bold">আমার লোন বাকি</small><h3 class="fw-bold mt-1" id="my-loan-balance">০ টাকা</h3></div></div>
             </div>
 
-            <!-- মাসিক জমার টেবিল -->
             <div class="card p-4">
                 <h5 class="fw-bold mb-3">আমার মাসিক জমার বিবরণ (২০২৬)</h5>
                 <div class="table-responsive">
                     <table class="table text-center m-0">
-                        <thead class="table-light"><tr><th>মাস</th><th>টাকা</th><th>তারিখ</th><th>অবস্থা</th></tr></thead>
+                        <thead class="table-light"><tr><th>মাস</th><th>টাকার পরিমাণ</th><th>জমা দেওয়ার তারিখ</th><th>অবস্থা (Status)</th></tr></thead>
                         <tbody id="monthly-table-body"></tbody>
                     </table>
                 </div>
@@ -114,7 +109,7 @@
                     loadLiveNotice();
                 }
             }).catch(err => {
-                // ব্যাকএন্ড কানেকশনে সমস্যা হলেও যেন স্ক্রিন ভেঙে না যায় তার জন্য ফলব্যাক
+                // ব্যাকএন্ডে সমস্যা হলেও ড্যাশবোর্ড যেন ঠিকঠাক খোলে তার ব্যাকআপ
                 document.getElementById('login-overlay').style.display = 'none';
                 document.getElementById('dashboard-content').style.display = 'block';
             });
@@ -134,7 +129,7 @@
             }
         }
 
-        // নোটিশ হ্যান্ডলিং উইথ ক্যাচ ব্লক
+        // নোটিশ হ্যান্ডলিং (লোড হচ্ছে সমস্যার স্থায়ী সমাধান)
         function loadLiveNotice() {
             fetch('/notice')
                 .then(res => res.json())
