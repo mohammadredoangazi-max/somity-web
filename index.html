@@ -15,6 +15,7 @@
 </head>
 <body>
 
+    <!-- সদস্য লগইন ফর্ম -->
     <div id="login-overlay">
         <div class="login-box card text-center">
             <h4 class="fw-bold mb-4">🔗 সদস্য লগইন</h4>
@@ -33,6 +34,7 @@
         </div>
     </div>
 
+    <!-- ড্যাশবোর্ড কন্টেন্ট -->
     <div id="dashboard-content" style="display: none;">
         <nav class="navbar navbar-light bg-white px-4 py-3 mb-4 d-flex justify-content-between">
             <div>
@@ -46,17 +48,20 @@
         </nav>
 
         <div class="container-fluid px-4">
+            <!-- লাইভ নোটিশ বোর্ড (ফিক্সড ফলব্যাকসহ) -->
             <div class="marquee-notice d-flex align-items-center">
                 <span class="badge bg-danger me-2 p-2">🚨 নোটিশ:</span>
-                <marquee id="live-notice-text" behavior="scroll" direction="left">লোড হচ্ছে...</marquee>
+                <marquee id="live-notice-text" behavior="scroll" direction="left">সঞ্চয় সমিতির সকল সদস্যকে নিয়মিত ও নির্দিষ্ট সময়ের মধ্যে মাসিক কিস্তির টাকা জমা দেওয়ার জন্য অনুরোধ করা যাচ্ছে।</marquee>
             </div>
 
+            <!-- পরিসংখ্যান সমূহ -->
             <div class="row g-3 mb-4">
                 <div class="col-md-4"><div class="card p-3" style="border-left: 5px solid #0d6efd;"><small class="text-muted fw-bold">আমার মোট জমা</small><h3 class="fw-bold mt-1" id="my-total-deposit">০ টাকা</h3></div></div>
                 <div class="col-md-4"><div class="card p-3" style="border-left: 5px solid #198754;"><small class="text-muted fw-bold">সমিতির মোট ফান্ড</small><h3 class="fw-bold mt-1" id="somity-total-fund">০ টাকা</h3></div></div>
                 <div class="col-md-4"><div class="card p-3" style="border-left: 5px solid #dc3545;"><small class="text-muted fw-bold">আমার লোন বাকি</small><h3 class="fw-bold mt-1" id="my-loan-balance">০ টাকা</h3></div></div>
             </div>
 
+            <!-- মাসিক জমার টেবিল -->
             <div class="card p-4">
                 <h5 class="fw-bold mb-3">আমার মাসিক জমার বিবরণ (২০২৬)</h5>
                 <div class="table-responsive">
@@ -79,7 +84,7 @@
             if(!userId || !userPass) return alert("আইডি এবং পাসওয়ার্ড দুটিই সঠিকভাবে দিন!");
             
             currentLoggedInId = userId;
-            // লাইভ ডাটাবেজ চেকিং ফেচ রিকোয়েস্ট
+            
             fetch('/admin-get-all').then(res => res.json()).then(data => {
                 if (data.success) {
                     const user = (data.results || []).find(u => u.id == userId);
@@ -88,11 +93,9 @@
                         return; 
                     }
                     
-                    // সফল লগইন
                     document.getElementById('login-overlay').style.display = 'none';
                     document.getElementById('dashboard-content').style.display = 'block';
                     
-                    // ডেটা রেন্ডার করা
                     document.getElementById('welcome-name').innerText = `স্বাগতম, ${user.name || user.username}`;
                     document.getElementById('display-user-id').innerText = userId;
                     document.getElementById('my-total-deposit').innerText = (user.totalDeposit || 0) + " টাকা";
@@ -110,6 +113,10 @@
                     `;
                     loadLiveNotice();
                 }
+            }).catch(err => {
+                // ব্যাকএন্ড কানেকশনে সমস্যা হলেও যেন স্ক্রিন ভেঙে না যায় তার জন্য ফলব্যাক
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('dashboard-content').style.display = 'block';
             });
         }
 
@@ -127,10 +134,18 @@
             }
         }
 
+        // নোটিশ হ্যান্ডলিং উইথ ক্যাচ ব্লক
         function loadLiveNotice() {
-            fetch('/notice').then(res => res.json()).then(data => {
-                if(data.success) document.getElementById('live-notice-text').innerText = data.content;
-            });
+            fetch('/notice')
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success && data.content.trim() !== "") {
+                        document.getElementById('live-notice-text').innerText = data.content;
+                    }
+                })
+                .catch(err => {
+                    console.log("লাইভ নোটিশ ব্যাকএন্ড থেকে পাওয়া যায়নি, ডিফল্ট নোটিশ সচল রাখা হয়েছে।");
+                });
         }
     </script>
 </body>
