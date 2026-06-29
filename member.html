@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sadasya Panel - Bondhuttho Somity</title>
+    <title>সদস্য লগইন - বন্ধুত্ব সঞ্চয় সমিতি</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* লগইন পেজের স্টাইল */
+        /* তোর ইমেজ_bcabe3.jpg এর মতো হুবহু ব্যাকগ্রাউন্ড ও লেআউট */
         body.auth-mode { 
             background: url('https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?q=80&w=2070') no-repeat center center/cover; 
             font-family: Arial, sans-serif;
@@ -21,27 +21,58 @@
             content: "";
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(13, 110, 253, 0.4);
+            background: rgba(255, 255, 255, 0.15); /* হালকা ব্যাকগ্রাউন্ড ব্লার ইফেক্ট */
             z-index: 1;
         }
         .main-container {
             position: relative;
             z-index: 2;
             width: 100%;
-            max-width: 450px;
+            max-width: 420px;
         }
         .login-box { 
-            padding: 30px; 
-            background: rgba(255, 255, 255, 0.95); 
-            border-radius: 15px; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2); 
-            backdrop-filter: blur(5px); 
+            padding: 35px 30px; 
+            background: #ffffff; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
         }
-        .profile-img { width: 80px; height: 80px; object-fit: cover; border-radius: 50%; margin-bottom: 15px; }
-        .nav-tabs .nav-link { border: none; color: #6c757d; font-weight: bold; width: 50%; background: none; }
-        .nav-tabs .nav-link.active { color: #0d6efd; border-bottom: 3px solid #0d6efd; }
+        .box-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 25px;
+        }
+        .form-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 8px;
+        }
+        .form-control {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            font-size: 15px;
+        }
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #0d6efd;
+        }
+        .btn-login {
+            background-color: #0d6efd;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            border: none;
+            width: 100%;
+            font-size: 16px;
+        }
+        .btn-login:hover {
+            background-color: #0b5ed7;
+        }
         
-        /* ড্যাশবোর্ডের ফুল স্ক্রিন স্টাইল (কাল সন্ধ্যার মেম্বার প্যানেল) */
+        /* ড্যাশবোর্ড মোড */
         body.dashboard-mode {
             background-color: #f4f6f9 !important;
             display: block;
@@ -49,75 +80,88 @@
             margin: 0;
         }
         body.dashboard-mode::before { display: none; }
-        
         .marquee-notice { background: #fff3cd; color: #856404; font-weight: bold; padding: 12px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #ffc107; }
         .stat-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); height: 100%; }
     </style>
 </head>
 <body class="auth-mode" id="main-body">
 
+    <!-- লগইন ও রেজিস্ট্রেশন কন্টেইনার -->
     <div class="main-container" id="auth-container">
-        <div class="login-box text-center">
-            <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?q=80&w=2070" alt="Logo" class="profile-img">
-            <h4 class="fw-bold m-0 text-dark">বন্ধুত্ব সঞ্চয় সমিতি</h4>
-            <p class="text-muted small mb-4">সদস্য প্যানেলে লগইন করুন</p>
-
-            <ul class="nav nav-tabs mb-4" id="authTabs">
-                <li class="nav-item w-50">
-                    <button class="nav-link active w-100" id="login-tab" onclick="switchTab('login')">লগইন</button>
-                </li>
-                <li class="nav-item w-50">
-                    <button class="nav-link w-100" id="register-tab" onclick="switchTab('register')">নিবন্ধন</button>
-                </li>
-            </ul>
-
-            <div id="login-form-section">
-                <div class="mb-3 text-start">
-                    <label class="form-label small fw-bold text-muted">সদস্য আইডি / মোবাইল নম্বর</label>
-                    <input type="text" id="member-username-input" class="form-control" placeholder="যেমন: 017XXXXXXXX">
+        <div class="login-box">
+            
+            <!-- লগইন সেকশন -->
+            <div id="login-section">
+                <div class="text-center box-title">
+                    🔗 সদস্য লগইন
                 </div>
-                <div class="mb-2 text-start">
-                    <label class="form-label small fw-bold text-muted">পাসওয়ার্ড</label>
-                    <input type="password" id="member-pass-input" class="form-control" placeholder="পাসওয়ার্ড দিন">
+                <div class="mb-3">
+                    <label class="form-label">সদস্য আইডি / মোবাইল নম্বর</label>
+                    <input type="text" id="member-username-input" class="form-control" placeholder="যেমন: 017XXXXXXXX বা ইউজারনেম">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">অ্যাকাউন্ট পাসওয়ার্ড</label>
+                    <input type="password" id="member-pass-input" class="form-control" placeholder="আপনার পাসওয়ার্ড দিন">
                 </div>
                 <div class="text-end mb-4">
                     <a href="#" onclick="showForgotForm()" class="text-decoration-none small text-danger fw-bold">পাসওয়ার্ড ভুলে গেছেন?</a>
                 </div>
-                <button onclick="handleSecureLogin()" class="btn btn-primary w-100 fw-bold py-2">লগইন করুন</button>
+                <button onclick="handleSecureLogin()" class="btn-login mb-3">লগইন করুন</button>
+                
+                <div class="text-center mt-2">
+                    <span class="text-muted small">নতুন সদস্য?</span> 
+                    <a href="#" onclick="toggleAuthView('register')" class="text-decoration-none small text-primary fw-bold ms-1">এখানে নিবন্ধন করুন</a>
+                </div>
             </div>
 
-            <div id="register-form-section" style="display: none;">
-                <div class="mb-3 text-start">
-                    <label class="form-label small fw-bold text-muted">সম্পূর্ণ নাম</label>
-                    <input type="text" id="reg-name" class="form-control" placeholder="আপনার পুরো নাম">
+            <!-- রেজিস্ট্রেশন সেকশন -->
+            <div id="register-section" style="display: none;">
+                <div class="text-center box-title">
+                    📝 নতুন সদস্য নিবন্ধন
                 </div>
-                <div class="mb-3 text-start">
-                    <label class="form-label small fw-bold text-muted">ইউজারনেম</label>
-                    <input type="text" id="reg-username" class="form-control" placeholder="ইউনিক ইউজারনেম">
+                <div class="mb-3">
+                    <label class="form-label">সম্পূর্ণ নাম</label>
+                    <input type="text" id="reg-name" class="form-control" placeholder="আপনার পুরো নাম লিখুন">
                 </div>
-                <div class="mb-3 text-start">
-                    <label class="form-label small fw-bold text-muted">মোবাইল নম্বর</label>
-                    <input type="text" id="reg-phone" class="form-control" placeholder="017XXXXXXXX">
+                <div class="mb-3">
+                    <label class="form-label">ইউজারনেম (ছোট অক্ষরে)</label>
+                    <input type="text" id="reg-username" class="form-control" placeholder="যেমন: redoan">
                 </div>
-                <div class="mb-4 text-start">
-                    <label class="form-label small fw-bold text-muted">পাসওয়ার্ড তৈরি করুন</label>
-                    <input type="password" id="reg-password" class="form-control" placeholder="পাসওয়ার্ড দিন">
+                <div class="mb-3">
+                    <label class="form-label">মোবাইল নম্বর</label>
+                    <input type="text" id="reg-phone" class="form-control" placeholder="যেমন: 017XXXXXXXX">
                 </div>
-                <button onclick="handleRegistration()" class="btn btn-primary w-100 fw-bold py-2">নিবন্ধন করুন</button>
+                <div class="mb-4">
+                    <label class="form-label">পাসওয়ার্ড তৈরি করুন</label>
+                    <input type="password" id="reg-password" class="form-control" placeholder="একটি নতুন পাসওয়ার্ড দিন">
+                </div>
+                <button onclick="handleRegistration()" class="btn-login mb-3">নিবন্ধন সম্পন্ন করুন</button>
+                
+                <div class="text-center mt-2">
+                    <span class="text-muted small">অ্যাকাউন্ট আছে?</span> 
+                    <a href="#" onclick="toggleAuthView('login')" class="text-decoration-none small text-primary fw-bold ms-1">লগইন করুন</a>
+                </div>
             </div>
 
-            <div id="forgot-form-section" style="display: none;">
-                <h6 class="text-danger fw-bold mb-3">🔑 পাসওয়ার্ড রিসেট</h6>
-                <div class="mb-3 text-start">
-                    <label class="form-label small fw-bold text-muted">মোবাইল নম্বর</label>
-                    <input type="text" id="forgot-username" class="form-control" placeholder="017XXXXXXXX">
+            <!-- পাসওয়ার্ড ভুলে গেছেন সেকশন -->
+            <div id="forgot-section" style="display: none;">
+                <div class="text-center box-title text-danger">
+                    🔑 পাসওয়ার্ড পুনরুদ্ধার
                 </div>
-                <button onclick="alert('অনুরোধ পাঠানো হয়েছে!')" class="btn btn-danger w-100 fw-bold">অনুরোধ পাঠান</button>
-                <a href="#" onclick="cancelForgot()" class="text-decoration-none small text-primary fw-bold d-block mt-2">ফিরে যান</a>
+                <div class="mb-4">
+                    <label class="form-label">আপনার মোবাইল নম্বর</label>
+                    <input type="text" id="forgot-username" class="form-control" placeholder="যেমন: 017XXXXXXXX">
+                </div>
+                <button onclick="alert('অনুরোধ পাঠানো হয়েছে!')" class="btn btn-danger w-100 py-2 fw-bold rounded-3 mb-2">অনুরোধ পাঠান</button>
+                <div class="text-center mt-3">
+                    <a href="#" onclick="toggleAuthView('login')" class="text-decoration-none small text-primary fw-bold">ফিরে যান</a>
+                </div>
             </div>
+
         </div>
     </div>
 
+    <!-- ড্যাশবোর্ড কন্টেন্ট -->
     <div id="dashboard-content" style="display: none;">
         <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 py-3 mb-4 border-bottom shadow-sm">
             <div class="container-fluid d-flex justify-content-between align-items-center">
@@ -159,28 +203,16 @@
     </div>
 
     <script>
-        function switchTab(type) {
-            if(type === 'login') {
-                document.getElementById('login-tab').classList.add('active');
-                document.getElementById('register-tab').classList.remove('active');
-                document.getElementById('login-form-section').style.display = 'block';
-                document.getElementById('register-form-section').style.display = 'none';
-            } else {
-                document.getElementById('register-tab').classList.add('active');
-                document.getElementById('login-tab').classList.remove('active');
-                document.getElementById('register-form-section').style.display = 'block';
-                document.getElementById('login-form-section').style.display = 'none';
-            }
-            document.getElementById('forgot-form-section').style.display = 'none';
+        // ভিউ পরিবর্তন করার সহজ লজিক
+        function toggleAuthView(view) {
+            document.getElementById('login-section').style.display = view === 'login' ? 'block' : 'none';
+            document.getElementById('register-section').style.display = view === 'register' ? 'block' : 'none';
+            document.getElementById('forgot-section').style.display = view === 'forgot' ? 'block' : 'none';
         }
 
-        function showForgotForm() {
-            document.getElementById('login-form-section').style.display = 'none';
-            document.getElementById('forgot-form-section').style.display = 'block';
-        }
+        function showForgotForm() { toggleAuthView('forgot'); }
 
-        function cancelForgot() { switchTab('login'); }
-
+        // লগইন লজিক
         function handleSecureLogin() {
             const userInput = document.getElementById('member-username-input').value.trim();
             const passwordInput = document.getElementById('member-pass-input').value.trim();
@@ -209,8 +241,8 @@
             });
         }
 
+        // ড্যাশবোর্ড ওপেন লজিক
         function showDashboard(name, username) {
-            // পুরো পেজকে ড্যাশবোর্ড মোডে নিয়ে যাওয়া (ফুল স্ক্রিন গ্রিড করার জন্য)
             const bodyTag = document.getElementById('main-body');
             bodyTag.className = "dashboard-mode";
             
@@ -236,6 +268,7 @@
             });
         }
 
+        // রেজিস্ট্রেশন লজিক
         function handleRegistration() {
             const name = document.getElementById('reg-name').value.trim();
             const username = document.getElementById('reg-username').value.trim();
@@ -252,8 +285,8 @@
             .then(res => res.json())
             .then(data => {
                 if(data.success) {
-                    alert("✅ নিবন্ধন সফল!");
-                    switchTab('login');
+                    alert("✅ নিবন্ধন সফল! এবার লগইন করুন।");
+                    toggleAuthView('login');
                 } else {
                     alert("❌ ব্যর্থ: " + data.error);
                 }
