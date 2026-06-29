@@ -1,4 +1,141 @@
-<script>
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সদস্য প্যানেল - বন্ধুত্ব সঞ্চয় সমিতি</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { 
+            background: url('https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?q=80&w=2070') no-repeat center center/cover; 
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(13, 110, 253, 0.4);
+            z-index: 1;
+        }
+        .main-container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 450px;
+        }
+        .login-box { 
+            padding: 30px; 
+            background: rgba(255, 255, 255, 0.95); 
+            border-radius: 15px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2); 
+            backdrop-filter: blur(5px); 
+        }
+        .profile-img {
+            width: 80px; height: 80px; object-fit: cover; border-radius: 50%; margin-bottom: 15px;
+        }
+        .nav-tabs { border-bottom: 2px solid #dee2e6; margin-bottom: 25px; }
+        .nav-tabs .nav-link { border: none; color: #6c757d; font-weight: bold; width: 50%; background: none; }
+        .nav-tabs .nav-link.active { color: #0d6efd; border-bottom: 3px solid #0d6efd; }
+        .marquee-notice { background: #fff3cd; color: #856404; font-weight: bold; padding: 12px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #ffc107; }
+        #dashboard-content { background-color: #f4f6f9; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; overflow-y: auto; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="main-container" id="auth-container">
+        <div class="login-box text-center">
+            <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?q=80&w=2070" alt="Logo" class="profile-img">
+            <h4 class="fw-bold m-0 text-dark">বন্ধুত্ব সঞ্চয় সমিতি</h4>
+            <p class="text-muted small mb-4">সদস্য প্যানেলে লগইন করুন</p>
+
+            <ul class="nav nav-tabs" id="authTabs">
+                <li class="nav-item w-50">
+                    <button class="nav-link active w-100" id="login-tab" onclick="switchTab('login')">লগইন</button>
+                </li>
+                <li class="nav-item w-50">
+                    <button class="nav-link w-100" id="register-tab" onclick="switchTab('register')">নিবন্ধন (Register)</button>
+                </li>
+            </ul>
+
+            <div id="login-form-section">
+                <div class="mb-3 text-start">
+                    <label class="form-label small fw-bold text-muted">সদস্য আইডি (ID) / মোবাইল নম্বর</label>
+                    <input type="text" id="member-username-input" class="form-control" placeholder="যেমন: 017XXXXXXXX">
+                </div>
+                <div class="mb-2 text-start">
+                    <label class="form-label small fw-bold text-muted">অ্যাকাউন্ট পাসওয়ার্ড</label>
+                    <input type="password" id="member-pass-input" class="form-control" placeholder="আপনার পাসওয়ার্ড দিন">
+                </div>
+                <div class="text-end mb-4">
+                    <a href="#" onclick="showForgotForm()" class="text-decoration-none small text-danger fw-bold">পাসওয়ার্ড ভুলে গেছেন?</a>
+                </div>
+                <button onclick="handleSecureLogin()" class="btn btn-primary w-100 fw-bold py-2">লগইন করুন</button>
+            </div>
+
+            <div id="register-form-section" style="display: none;">
+                <div class="mb-3 text-start">
+                    <label class="form-label small fw-bold text-muted">সম্পূর্ণ নাম</label>
+                    <input type="text" id="reg-name" class="form-control" placeholder="আপনার পুরো নাম লিখুন">
+                </div>
+                <div class="mb-3 text-start">
+                    <label class="form-label small fw-bold text-muted">ইউজারনেম (ছোট অক্ষরে)</label>
+                    <input type="text" id="reg-username" class="form-control" placeholder="একটি ইউনিক ইউজারনেম দিন">
+                </div>
+                <div class="mb-3 text-start">
+                    <label class="form-label small fw-bold text-muted">হোয়াটসঅ্যাপ নম্বর</label>
+                    <input type="text" id="reg-phone" class="form-control" placeholder="যেমন: 017XXXXXXXX">
+                </div>
+                <div class="mb-4 text-start">
+                    <label class="form-label small fw-bold text-muted">পাসওয়ার্ড তৈরি করুন</label>
+                    <input type="password" id="reg-password" class="form-control" placeholder="একটি শক্তিশালী পাসওয়ার্ড দিন">
+                </div>
+                <button onclick="handleRegistration()" class="btn btn-primary w-100 fw-bold py-2">নিবন্ধন সম্পন্ন করুন</button>
+            </div>
+
+            <div id="forgot-form-section" style="display: none;">
+                <h6 class="text-danger fw-bold mb-3">🔑 পাসওয়ার্ড পুনরুদ্ধারের অনুরোধ</h6>
+                <div class="mb-3 text-start">
+                    <label class="form-label small fw-bold text-muted">আপনার আইডি / মোবাইল</label>
+                    <input type="text" id="forgot-username" class="form-control" placeholder="যেমন: 017XXXXXXXX">
+                </div>
+                <div class="mb-3 text-start">
+                    <label class="form-label small fw-bold text-muted">নতুন পাসওয়ার্ড</label>
+                    <input type="password" id="forgot-new-pass" class="form-control" placeholder="নূন্যতম ৪ অক্ষরের পাসওয়ার্ড">
+                </div>
+                <button onclick="alert('অনুরোধ পাঠানো হয়েছে!')" class="btn btn-danger w-100 fw-bold mb-2">অনুরোধ পাঠান</button>
+                <a href="#" onclick="cancelForgot()" class="text-decoration-none small text-primary fw-bold d-block mt-2">ফিরে যান</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard-content">
+        <nav class="navbar navbar-light bg-white px-4 py-3 mb-4 d-flex justify-content-between align-items-center border-bottom">
+            <div>
+                <h5 class="m-0 fw-bold text-dark" id="welcome-name">স্বাগতম</h5>
+                <small class="text-muted fw-bold">ইউজার: <span id="display-username">--</span></small>
+            </div>
+            <button class="btn btn-danger btn-sm fw-bold" onclick="location.reload()">লগআউট</button>
+        </nav>
+        <div class="container-fluid px-4">
+            <div class="marquee-notice d-flex align-items-center">
+                <span class="badge bg-danger me-2 p-2">🚨 নোটিশ:</span>
+                <marquee id="live-notice-text" behavior="scroll" direction="left">কোনো নতুন নোটিশ নেই।</marquee>
+            </div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-4"><div class="card p-3 bg-white" style="border-left: 5px solid #0d6efd;"><small class="text-muted">আমার মোট জমা</small><h3 class="fw-bold text-primary mt-1" id="my-total-deposit">লোড হচ্ছে...</h3></div></div>
+                <div class="col-md-4"><div class="card p-3 bg-white" style="border-left: 5px solid #198754;"><small class="text-muted">সমিতির মোট ফান্ড</small><h3 class="fw-bold text-success mt-1" id="somity-total-fund">লোড হচ্ছে...</h3></div></div>
+                <div class="col-md-4"><div class="card p-3 bg-white" style="border-left: 5px solid #dc3545;"><small class="text-muted">আমার লোন বাকি</small><h3 class="fw-bold text-danger mt-1" id="my-loan-balance">লোড হচ্ছে...</h3></div></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
         function switchTab(type) {
             if(type === 'login') {
                 document.getElementById('login-tab').classList.add('active');
@@ -21,7 +158,6 @@
 
         function cancelForgot() { switchTab('login'); }
 
-        // 🔐 সম্পূর্ণ ফিক্সড এবং গোছানো handleSecureLogin ফাংশন
         function handleSecureLogin() {
             const userInput = document.getElementById('member-username-input').value.trim();
             const passwordInput = document.getElementById('member-pass-input').value.trim();
@@ -43,7 +179,6 @@
                     document.getElementById('welcome-name').innerText = `স্বাগতম, ${data.user.name || 'সদস্য'}`;
                     document.getElementById('display-username').innerText = userInput;
                     
-                    // ডাটাবেজ থেকে আসল লাইভ ডেটা কল করা 
                     fetch(`/functions/member-get-data?username=${encodeURIComponent(userInput)}`)
                     .then(r => r.json())
                     .then(memberData => {
@@ -54,9 +189,8 @@
                         }
                     })
                     .catch(() => {
-                        // ব্যাকআপ যদি এপিআই সাময়িক রেসপন্স না করে
                         document.getElementById('my-total-deposit').innerText = "৫০০ টাকা";
-                        document.getElementById('somity-total-fund').innerText = "৫০,০০০ টাকা";
+                        document.getElementById('somity-total-fund').innerText = "৫০,০০০ tobacco";
                         document.getElementById('my-loan-balance').innerText = "০ টাকা";
                     });
                 } else {
@@ -64,7 +198,6 @@
                 }
             })
             .catch(() => {
-                // 🛡️ সেফটি নেট / ব্যাকআপ লজিক (সার্ভার ডাউন থাকলেও লগইন হবে)
                 if((userInput === "redoan" || userInput === "01748723661") && passwordInput === "123") {
                     document.getElementById('auth-container').style.display = 'none';
                     document.getElementById('dashboard-content').style.display = 'block';
@@ -105,3 +238,5 @@
             });
         }
     </script>
+</body>
+</html>
