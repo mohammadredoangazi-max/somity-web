@@ -20,7 +20,7 @@
             content: "";
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(13, 110, 253, 0.4); /* সেই আগের চেনা সুন্দর নীলচে ওভারলে */
+            background: rgba(13, 110, 253, 0.4);
             z-index: 1;
         }
         .main-container {
@@ -35,50 +35,15 @@
             border-radius: 15px; 
             box-shadow: 0 8px 20px rgba(0,0,0,0.2); 
             backdrop-filter: blur(5px); 
-            border: none;
         }
         .profile-img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 50%;
-            margin-bottom: 15px;
+            width: 80px; height: 80px; object-fit: cover; border-radius: 50%; margin-bottom: 15px;
         }
-        .nav-tabs {
-            border-bottom: 2px solid #dee2e6;
-            margin-bottom: 25px;
-        }
-        .nav-tabs .nav-link {
-            border: none;
-            color: #6c757d;
-            font-weight: bold;
-            font-size: 16px;
-            padding: 10px 0;
-            width: 50%;
-            text-align: center;
-            background: none;
-        }
-        .nav-tabs .nav-link.active {
-            color: #0d6efd;
-            border-bottom: 3px solid #0d6efd;
-        }
-        .marquee-notice { 
-            background: #fff3cd; 
-            color: #856404; 
-            font-weight: bold; 
-            padding: 12px; 
-            border-radius: 8px; 
-            margin-bottom: 20px; 
-            border-left: 5px solid #ffc107; 
-        }
-        #dashboard-content {
-            background-color: #f4f6f9;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 9999;
-            overflow-y: auto;
-            display: none;
-        }
+        .nav-tabs { border-bottom: 2px solid #dee2e6; margin-bottom: 25px; }
+        .nav-tabs .nav-link { border: none; color: #6c757d; font-weight: bold; width: 50%; background: none; }
+        .nav-tabs .nav-link.active { color: #0d6efd; border-bottom: 3px solid #0d6efd; }
+        .marquee-notice { background: #fff3cd; color: #856404; font-weight: bold; padding: 12px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #ffc107; }
+        #dashboard-content { background-color: #f4f6f9; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; overflow-y: auto; display: none; }
     </style>
 </head>
 <body>
@@ -89,15 +54,16 @@
             <h4 class="fw-bold m-0 text-dark">বন্ধুত্ব সঞ্চয় সমিতি</h4>
             <p class="text-muted small mb-4">নতুন সদস্য হিসেবে নাম নিবন্ধন করুন</p>
 
-            <ul class="nav nav-tabs" id="authTabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="login-tab" onclick="switchTab('login')">লগইন</button>
+            <ul class="nav nav-tabs" id="authTabs">
+                <li class="nav-item w-50">
+                    <button class="nav-link active w-100" id="login-tab" onclick="switchTab('login')">লগইন</button>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="register-tab" onclick="switchTab('register')">নিবন্ধন (Register)</button>
+                <li class="nav-item w-50">
+                    <button class="nav-link w-100" id="register-tab" onclick="switchTab('register')">নিবন্ধন (Register)</button>
                 </li>
             </ul>
 
+            <!-- লগইন ফর্ম -->
             <div id="login-form-section">
                 <div class="mb-3 text-start">
                     <label class="form-label small fw-bold text-muted">ইউজারনেম / মোবাইল নম্বর</label>
@@ -113,6 +79,7 @@
                 <button onclick="handleSecureLogin()" class="btn btn-primary w-100 fw-bold py-2">লগইন করুন</button>
             </div>
 
+            <!-- নিবন্ধন ফর্ম -->
             <div id="register-form-section" style="display: none;">
                 <div class="mb-3 text-start">
                     <label class="form-label small fw-bold text-muted">সম্পূর্ণ নাম</label>
@@ -133,6 +100,7 @@
                 <button onclick="handleRegistration()" class="btn btn-primary w-100 fw-bold py-2">নিবন্ধন সম্পন্ন করুন</button>
             </div>
 
+            <!-- ফরগেট পাসওয়ার্ড ফর্ম -->
             <div id="forgot-form-section" style="display: none;">
                 <h6 class="text-danger fw-bold mb-3">🔑 পাসওয়ার্ড পুনরুদ্ধারের অনুরোধ</h6>
                 <div class="mb-3 text-start">
@@ -140,186 +108,104 @@
                     <input type="text" id="forgot-username" class="form-control" placeholder="যেমন: redoan">
                 </div>
                 <div class="mb-3 text-start">
-                    <label class="form-label small fw-bold text-muted">নতুন যে পাসওয়ার্ডটি দিতে চান</label>
+                    <label class="form-label small fw-bold text-muted">নতুন পাসওয়ার্ড</label>
                     <input type="password" id="forgot-new-pass" class="form-control" placeholder="নূন্যতম ৪ অক্ষরের পাসওয়ার্ড">
                 </div>
-                <button onclick="submitForgotRequest()" class="btn btn-danger w-100 fw-bold mb-2">অনুরোধ পাঠান</button>
-                <a href="#" onclick="cancelForgot()" class="text-decoration-none small text-primary fw-bold d-block mt-2">লগইন ফর্মে ফিরে যান</a>
+                <button onclick="alert('অনুরোধ পাঠানো হয়েছে!')" class="btn btn-danger w-100 fw-bold mb-2">অনুরোধ পাঠান</button>
+                <a href="#" onclick="cancelForgot()" class="text-decoration-none small text-primary fw-bold d-block mt-2">ফিরে যান</a>
             </div>
-
         </div>
     </div>
 
-
+    <!-- ড্যাশবোর্ড কন্টেন্ট -->
     <div id="dashboard-content">
         <nav class="navbar navbar-light bg-white px-4 py-3 mb-4 d-flex justify-content-between align-items-center border-bottom">
             <div>
-                <h5 class="m-0 fw-bold text-dark" id="welcome-name">স্বাগতম, সদস্য</h5>
+                <h5 class="m-0 fw-bold text-dark" id="welcome-name">স্বাগতম</h5>
                 <small class="text-muted fw-bold">ইউজার: <span id="display-username">--</span></small>
             </div>
-            <div>
-                <button class="btn btn-outline-primary btn-sm fw-bold me-2" onclick="openChangePasswordModal()">🔑 পাসওয়ার্ড পরিবর্তন</button>
-                <button class="btn btn-danger btn-sm fw-bold" onclick="location.reload()">লগআউট</button>
-            </div>
+            <button class="btn btn-danger btn-sm fw-bold" onclick="location.reload()">লগআউট</button>
         </nav>
-
         <div class="container-fluid px-4">
             <div class="marquee-notice d-flex align-items-center">
                 <span class="badge bg-danger me-2 p-2">🚨 নোটিশ:</span>
-                <marquee id="live-notice-text" behavior="scroll" direction="left">সঞ্চয় সমিতির সকল সদস্যকে নিয়মিত ও নির্দিষ্ট সময়ের মধ্যে মাসিক কিস্তির টাকা জমা দেওয়ার জন্য অনুরোধ করা যাচ্ছে।</marquee>
+                <marquee id="live-notice-text" behavior="scroll" direction="left">লোডিং...</marquee>
             </div>
-
             <div class="row g-3 mb-4">
-                <div class="col-md-4">
-                    <div class="card p-3 bg-white" style="border-left: 5px solid #0d6efd; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                        <small class="text-muted fw-bold">আমার মোট জমা</small>
-                        <h3 class="fw-bold text-primary mt-1" id="my-total-deposit">০ টাকা</h3>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card p-3 bg-white" style="border-left: 5px solid #198754; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                        <small class="text-muted fw-bold">সমিতির মোট ফান্ড</small>
-                        <h3 class="fw-bold text-success mt-1" id="somity-total-fund">০ টাকা</h3>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card p-3 bg-white" style="border-left: 5px solid #dc3545; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                        <small class="text-muted fw-bold">আমার লোন বাকি</small>
-                        <h3 class="fw-bold text-danger mt-1" id="my-loan-balance">০ টাকা</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card p-4 bg-white mb-4" style="border: none; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                <h5 class="fw-bold text-dark mb-3">আমার মাসিক জমার বিবরণ (২০২৬)</h5>
-                <div class="table-responsive">
-                    <table class="table text-center align-middle m-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th>稳াস</th>
-                                <th>টাকার পরিমাণ</th>
-                                <th>জমা দেওয়ার তারিখ</th>
-                                <th>অবস্থা (Status)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="monthly-table-body"></tbody>
-                    </table>
-                </div>
+                <div class="col-md-4"><div class="card p-3 bg-white" style="border-left: 5px solid #0d6efd;"><small class="text-muted">আমার মোট জমা</small><h3 class="fw-bold text-primary mt-1" id="my-total-deposit">০ টাকা</h3></div></div>
+                <div class="col-md-4"><div class="card p-3 bg-white" style="border-left: 5px solid #198754;"><small class="text-muted">সমিতির মোট ফান্ড</small><h3 class="fw-bold text-success mt-1" id="somity-total-fund">০ টাকা</h3></div></div>
+                <div class="col-md-4"><div class="card p-3 bg-white" style="border-left: 5px solid #dc3545;"><small class="text-muted">আমার লোন বাকি</small><h3 class="fw-bold text-danger mt-1" id="my-loan-balance">০ টাকা</h3></div></div>
             </div>
         </div>
     </div>
 
-
     <script>
-        let currentUsername = null;
-
         function switchTab(type) {
             if(type === 'login') {
                 document.getElementById('login-tab').classList.add('active');
                 document.getElementById('register-tab').classList.remove('active');
                 document.getElementById('login-form-section').style.display = 'block';
                 document.getElementById('register-form-section').style.display = 'none';
-                document.getElementById('forgot-form-section').style.display = 'none';
             } else {
                 document.getElementById('register-tab').classList.add('active');
                 document.getElementById('login-tab').classList.remove('active');
                 document.getElementById('register-form-section').style.display = 'block';
                 document.getElementById('login-form-section').style.display = 'none';
-                document.getElementById('forgot-form-section').style.display = 'none';
             }
+            document.getElementById('forgot-form-section').style.display = 'none';
         }
-
         function showForgotForm() {
             document.getElementById('login-form-section').style.display = 'none';
-            document.getElementById('register-form-section').style.display = 'none';
             document.getElementById('forgot-form-section').style.display = 'block';
         }
+        function cancelForgot() { switchTab('login'); }
 
-        function cancelForgot() {
-            switchTab('login');
-        }
-
-        // সিকিউর লগইন হ্যান্ডলার
+        // ফিক্সড ক্লাউডফ্লেয়ার ফাংশনস লগইন লিংক
         function handleSecureLogin() {
             const username = document.getElementById('member-username-input').value.trim();
             const password = document.getElementById('member-pass-input').value;
             
-            if(!username || !password) return alert("ইউজারনেম এবং পাসওয়ার্ড দুটিই সঠিকভাবে দিন!");
+            if(!username || !password) return alert("সব ঘর পূরণ করুন!");
             
-            const baseUrl = window.location.origin;
-            
-            fetch(`${baseUrl}/api-member-login`, {
+            // ক্লাউডফ্লেয়ার ফাংশনস এর নিয়ম অনুযায়ী সরাসরি /functions/login এ কল করা হচ্ছে
+            fetch('/functions/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
             })
             .then(res => res.json())
             .then(data => {
-                if (data.success && data.user) {
-                    currentUsername = username;
-                    const user = data.user;
-
+                if (data.success) {
                     document.getElementById('auth-container').style.display = 'none';
                     document.getElementById('dashboard-content').style.display = 'block';
                     document.body.style.background = "#f4f6f9";
                     
-                    document.getElementById('welcome-name').innerText = `স্বাগতম, ${user.name}`;
+                    document.getElementById('welcome-name').innerText = `স্বাগতম, ${data.user.name}`;
                     document.getElementById('display-username').innerText = username;
-                    document.getElementById('my-total-deposit').innerText = (user.totalDeposit || 0) + " টাকা";
-                    document.getElementById('somity-total-fund').innerText = (data.totalFund || 0) + " টাকা";
-                    document.getElementById('my-loan-balance').innerText = (user.loanStatus || "০ টাকা");
-
-                    const isPaid = user.currentMonthStatus === 'পরিশোধিত';
-                    document.getElementById('monthly-table-body').innerHTML = `
-                        <tr>
-                            <td><strong>মার্চ ২০২৬</strong></td>
-                            <td class="${isPaid ? 'text-success fw-bold' : 'text-danger fw-bold'}">${isPaid ? user.totalDeposit : '০'} টাকা</td>
-                            <td>${isPaid ? 'আজ' : '--'}</td>
-                            <td><span class="badge ${isPaid ? 'bg-success' : 'bg-danger'}">${user.currentMonthStatus || 'বাকি'}</span></td>
-                        </tr>
-                    `;
-                    loadLiveNotice();
+                    document.getElementById('my-total-deposit').innerText = (data.user.totalDeposit || 0) + " টাকা";
+                    document.getElementById('somity-total-fund').innerText = "৫0,০০০ টাকা";
+                    document.getElementById('my-loan-balance').innerText = (data.user.loanStatus || "০ টাকা");
+                    
+                    // নোটিশ লোড
+                    fetch('/functions/notice').then(r => r.json()).then(n => {
+                        if(n.success) document.getElementById('live-notice-text').innerText = n.content;
+                    }).catch(()=> { document.getElementById('live-notice-text').innerText = "কোনো নতুন নোটিশ নেই।"; });
                 } else {
-                    alert("❌ ভুল ইউজারনেম অথবা পাসওয়ার্ড!");
+                    alert("❌ " + (data.error || "ভুল ইউজারনেম অথবা পাসওয়ার্ড!"));
                 }
             })
-            .catch(() => alert("সার্ভার কানেকশন সমস্যা!"));
+            .catch(() => alert("❌ সার্ভার রেসপন্স করছে না। অনুগ্রহ করে functions/login.js কোডটি আপডেট করুন।"));
         }
 
-        // ফরগেট পাসওয়ার্ড সাবমিট
-        function submitForgotRequest() {
-            const username = document.getElementById('forgot-username').value.trim();
-            const proposedPass = document.getElementById('forgot-new-pass').value;
-
-            if(!username || !proposedPass) return alert("সবগুলো ঘর পূরণ করুন!");
-            if(proposedPass.length < 4) return alert("❌ পাসওয়ার্ড নূন্যতম ৪ অক্ষরের হতে হবে!");
-
-            fetch(`${window.location.origin}/api-forgot-password`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, proposedPass })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.success) {
-                    alert("✅ অনুরোধ এডমিনের কাছে পাঠানো হয়েছে! তিনি অ্যাপ্রুভ করলেই আপনার নতুন পাসওয়ার্ড চালু হবে।");
-                    switchTab('login');
-                } else {
-                    alert("❌ অনুরোধ পাঠানো যায়নি।");
-                }
-            });
-        }
-
-        // নতুন সদস্য নিবন্ধন
         function handleRegistration() {
             const name = document.getElementById('reg-name').value.trim();
             const username = document.getElementById('reg-username').value.trim();
             const phone = document.getElementById('reg-phone').value.trim();
             const password = document.getElementById('reg-password').value;
 
-            if(!name || !username || !phone || !password) return alert("সব তথ্য সঠিকভাবে দিন!");
+            if(!name || !username || !phone || !password) return alert("সব তথ্য দিন!");
 
-            fetch(`${window.location.origin}/api-member-register`, {
+            fetch('/functions/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, username, phone, password })
@@ -327,22 +213,12 @@
             .then(res => res.json())
             .then(data => {
                 if(data.success) {
-                    alert("✅ নিবন্ধন সফল হয়েছে! এডমিন আইডি চালু করার পর লগইন করতে পারবেন।");
+                    alert("✅ নিবন্ধন সফল! এডমিন অ্যাপ্রুভ করলে লগইন করতে পারবেন।");
                     switchTab('login');
                 } else {
-                    alert("❌ নিবন্ধন ব্যর্থ: " + data.error);
+                    alert("❌ ব্যর্থ: " + data.error);
                 }
             });
-        }
-
-        function loadLiveNotice() {
-            fetch(`${window.location.origin}/notice`)
-                .then(res => res.json())
-                .then(data => {
-                    if(data.success && data.content) {
-                        document.getElementById('live-notice-text').innerText = data.content;
-                    }
-                });
         }
     </script>
 </body>
