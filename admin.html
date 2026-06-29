@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>সমিতি - অ্যাডমিন প্যানেল</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?q=80&w=2070') no-repeat center center/cover; display: flex; align-items: center; justify-content: center; z-index: 9999; }
@@ -14,15 +15,26 @@
 </head>
 <body>
 
+    <!-- 🔐 অ্যাডমিন লগইন ফর্ম (বানান সংশোধন ও ফরগেট পাসওয়ার্ড যুক্ত) -->
     <div id="login-overlay">
         <div class="login-box card text-center">
             <h4 class="fw-bold mb-4">অ্যাডমিন লগইন</h4>
-            <div class="mb-3 text-start"><label class="form-label small fw-bold">ইউজারনেম</label><input type="text" id="admin-username" class="form-control" placeholder="admin"></div>
-            <div class="mb-4 text-start"><label class="form-label small fw-bold">পাসওয়ার্ড</label><input type="password" id="admin-password" class="form-control" placeholder="••••••••"></div>
-            <button onclick="checkAdminLogin()" class="btn btn-primary w-100 fw-bold">لগইন করুন</button>
+            <div class="mb-3 text-start">
+                <label class="form-label small fw-bold">ইউজারনেম</label>
+                <input type="text" id="admin-username" class="form-control" placeholder="admin">
+            </div>
+            <div class="mb-2 text-start">
+                <label class="form-label small fw-bold">পাসওয়ার্ড</label>
+                <input type="password" id="admin-password" class="form-control" placeholder="••••••••">
+            </div>
+            <div class="text-end mb-4">
+                <a href="#" onclick="alert('🔒 অ্যাডমিন পাসওয়ার্ড ভুলে গেলে আপনার হোস্টিং/ডাটাবেজ প্যানেল থেকে রিসেট করতে হবে অথবা কোডের ভ্যালু পরিবর্তন করতে হবে।')" class="text-decoration-none small text-danger fw-bold">পাসওয়ার্ড ভুলে গেছেন?</a>
+            </div>
+            <button onclick="checkAdminLogin()" class="btn btn-primary w-100 fw-bold py-2">লগইন করুন</button>
         </div>
     </div>
 
+    <!-- 📊 মূল ড্যাশবোর্ড কন্টেন্ট -->
     <div id="dashboard-content" style="display: none;">
         <nav class="navbar navbar-dark bg-dark px-3 mb-4">
             <span class="navbar-brand mb-0 h1">👋 অ্যাডমিন প্যানেল (পরিচালক)</span>
@@ -30,6 +42,7 @@
         </nav>
 
         <div class="container-fluid px-4">
+            <!-- 📢 লাইভ নোটিশ বোর্ড -->
             <div class="card p-4 mb-4 bg-light border-start border-primary border-4">
                 <h5 class="fw-bold text-primary">📢 লাইভ নোটিশ বোর্ড (সদস্যদের ড্যাশবোর্ডে দেখাবে)</h5>
                 <div class="input-group mt-2">
@@ -39,6 +52,7 @@
             </div>
 
             <div class="row g-4 mb-4">
+                <!-- 💰 নতুন পেমেন্ট এন্ট্রি ফর্ম (১২ মাস ও ১০ বছর ড্রপডাউন) -->
                 <div class="col-md-6">
                     <div class="card p-4">
                         <h5 class="mb-3 fw-bold">নতুন পেমেন্ট এন্ট্রি (টাকা জমা)</h5>
@@ -63,7 +77,7 @@
                                         <option selected>২০২৬</option><option>২০২৭</option><option>২০২৮</option>
                                         <option>২০২৯</option><option>২০৩০</option><option>২০৩১</option>
                                         <option>২০৩২</option><option>২০৩৩</option><option>২০৩৪</option>
-                                        <option>২০৩৫</option>
+                                        <option>২০自动</option><option>২০৩৫</option>
                                     </select>
                                 </div>
                             </div>
@@ -76,6 +90,7 @@
                     </div>
                 </div>
 
+                <!-- 🏦 লোন ইস্যু ফর্ম (L1 লোন অপশন) -->
                 <div class="col-md-6">
                     <div class="card p-4">
                         <h5 class="mb-3 fw-bold">নতুন L1 লোন ইস্যু করুন</h5>
@@ -94,11 +109,14 @@
                 </div>
             </div>
 
+            <!-- ⏳ রিমাইন্ডার সেকশন (১৩ তারিখের তাগিদ) -->
             <div class="card p-4 mb-4 text-center">
                 <h5 class="fw-bold text-danger mb-2">📢 ১৩ তারিখের মাসিক তাগিদ (রিমাইন্ডার)</h5>
+                <p class="text-muted small mb-3">ডাটাবেজের সকল মেম্বারদের কাছে এক ক্লিকে টাকা দেওয়ার রিমাইন্ডার মেসেজ পাঠানোর অপশন।</p>
                 <button class="btn btn-success fw-bold py-2 px-5" onclick="sendBulkReminder()">⏳ ১-ক্লিকে সবাইকে রিমাইন্ডার পাঠান</button>
             </div>
 
+            <!-- 📋 তালিকা টেবিল এবং এক্সেল ডাউনলোড বাটন -->
             <div class="card p-4 mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="fw-bold m-0">সদস্যদের জমার তালিকা ও অবস্থা</h5>
@@ -117,6 +135,7 @@
     <script>
         let allUserData = [];
 
+        // লগইন চেক ফাংশন
         function checkAdminLogin() {
             const u = document.getElementById('admin-username').value;
             const p = document.getElementById('admin-password').value;
@@ -128,12 +147,14 @@
             } else { alert("ভুল ইউজারনেম বা পাসওয়ার্ড!"); }
         }
 
+        // লাইভ নোটিশ লোড
         function loadCurrentNotice() {
             fetch('/notice').then(res => res.json()).then(data => {
                 if(data.success) document.getElementById('notice-textarea').value = data.content;
             });
         }
 
+        // নোটিশ আপডেট
         function updateNotice() {
             const text = document.getElementById('notice-textarea').value;
             fetch('/notice', {
@@ -145,6 +166,7 @@
             });
         }
 
+        // সব মেম্বার ডাটাবেজ থেকে লোড করা
         function loadAdminData() {
             fetch('/admin-get-all').then(res => res.json()).then(data => {
                 if(data.success) {
@@ -173,6 +195,7 @@
             });
         }
 
+        // পেমেন্ট সাবমিট
         function submitPayment(e) {
             e.preventDefault();
             const userId = document.getElementById('deposit-user').value;
@@ -194,6 +217,7 @@
             });
         }
 
+        // হোয়াটসঅ্যাপে পেমেন্ট কনফার্মেশন পাঠানো
         function openWhatsApp(name, phone, amount, month, year) {
             let num = phone.trim().replace(/[+ -]/g, "");
             if (num.startsWith("01")) num = "88" + num;
@@ -201,20 +225,23 @@
             window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
+        // বাল্ক রিমাইন্ডার (সবাইকে একসাথে)
         function sendBulkReminder() {
             if(allUserData.length === 0) return alert("কোনো মেম্বার নেই!");
             alert("একে একে সকল মেম্বারের হোয়াটসঅ্যাপ চ্যাট ওপেন হবে।");
             allUserData.forEach(user => { sendIndividualReminder(user.id); });
         }
 
+        // সিঙ্গেল রিমাইন্ডার
         function sendIndividualReminder(id) {
             const user = allUserData.find(u => u.id == id);
             let num = user.whatsapp.trim().replace(/[+ -]/g, "");
             if (num.startsWith("01")) num = "88" + num;
-            const msg = `👋 আসসালামু আলাইকুম, *${user.name || user.username}* সাহেব।\n\n📢 *বন্ধুত্ব সঞ্চয় সমিতি* থেকে আপনাকে জানানো যাচ্ছে যে, চলতি মাসের টাকা জমা দেওয়ার শেষ সময় আগামী *১৫ তারিখ*।\n💵 অনুগ্রহ করে সময়ের মধ্যে টাকা পরিশোধ করার জন্য অনুরোধ করা হলো।`;
+            const msg = `👋 আসসালামু আলাইকুম, *${user.name || user.username}* সাহেব।\n\n📢 *বন্ধুত্ব সঞ্চয় সমিতি* থেকে আপনাকে জানানো যাচ্ছে যে, চলতি মাসের টাকা জমা দেওয়ার শেষ সময় আগামী *১৫ তারিখ*।\n💵 অনুগ্রহ করে সময়ের মধ্যে টাকা পরিশোধ করার জন্য অনুরোধ করা হলো।\n\n🌐 ভিজিট করুন: https://somity-web.pages.dev`;
             window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
+        // এক্সেল ব্যাকআপ ডাউনলোড
         function downloadCSV() {
             if(allUserData.length === 0) return alert("কোনো ডাটা নেই!");
             let csvContent = "data:text/csv;charset=utf-8,\uFEFFID,Name,WhatsApp,Total Deposit,Status\n";
