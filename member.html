@@ -1,63 +1,107 @@
-// member.html এর ভেতরের সম্পূর্ণ ফিক্সড handleSecureLogin ফাংশন
-function handleSecureLogin() {
-    const userInput = document.getElementById('member-username-input').value.trim();
-    const passwordInput = document.getElementById('member-pass-input').value.trim();
-    
-    if(!userInput || !passwordInput) return alert("সব ঘর পূরণ করুন!");
-    
-    // ক্লাউডফ্লেয়ার ফাংশনস এপিআই-তে রিকোয়েস্ট পাঠানো
-    fetch('/functions/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: String(userInput), password: String(passwordInput) })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            // লগইন সফল হলে ড্যাশবোর্ড স্ক্রিন ওপেন করা
-            document.getElementById('auth-container').style.display = 'none';
-            document.getElementById('dashboard-content').style.display = 'block';
-            document.body.style.background = "#f4f6f9";
+<script>
+        function switchTab(type) {
+            if(type === 'login') {
+                document.getElementById('login-tab').classList.add('active');
+                document.getElementById('register-tab').classList.remove('active');
+                document.getElementById('login-form-section').style.display = 'block';
+                document.getElementById('register-form-section').style.display = 'none';
+            } else {
+                document.getElementById('register-tab').classList.add('active');
+                document.getElementById('login-tab').classList.remove('active');
+                document.getElementById('register-form-section').style.display = 'block';
+                document.getElementById('login-form-section').style.display = 'none';
+            }
+            document.getElementById('forgot-form-section').style.display = 'none';
+        }
+
+        function showForgotForm() {
+            document.getElementById('login-form-section').style.display = 'none';
+            document.getElementById('forgot-form-section').style.display = 'block';
+        }
+
+        function cancelForgot() { switchTab('login'); }
+
+        // 🔐 সম্পূর্ণ ফিক্সড এবং গোছানো handleSecureLogin ফাংশন
+        function handleSecureLogin() {
+            const userInput = document.getElementById('member-username-input').value.trim();
+            const passwordInput = document.getElementById('member-pass-input').value.trim();
             
-            // স্বাগতম বক্সে নাম এবং ইউজারের ঘরে টাইপ করা আইডি/মোবাইল নম্বর দেখানো
-            document.getElementById('welcome-name').innerText = `স্বাগতম, ${data.user.name || 'সদস্য'}`;
-            document.getElementById('display-username').innerText = userInput;
+            if(!userInput || !passwordInput) return alert("সব ঘর পূরণ করুন!");
             
-            // ডাটাবেজ থেকে সদস্যের আসল লাইভ ডেটা টেনে আনা 
-            fetch(`/functions/member-get-data?username=${encodeURIComponent(userInput)}`)
-            .then(r => r.json())
-            .then(memberData => {
-                if(memberData.success) {
-                    document.getElementById('my-total-deposit').innerText = (memberData.data.totalDeposit || 0) + " টাকা";
-                    document.getElementById('somity-total-fund').innerText = (memberData.data.totalFund || 0) + " টাকা";
-                    document.getElementById('my-loan-balance').innerText = (memberData.data.loanStatus || "০ টাকা");
+            fetch('/functions/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: String(userInput), password: String(passwordInput) })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('auth-container').style.display = 'none';
+                    document.getElementById('dashboard-content').style.display = 'block';
+                    document.body.style.background = "#f4f6f9";
+                    
+                    document.getElementById('welcome-name').innerText = `স্বাগতম, ${data.user.name || 'সদস্য'}`;
+                    document.getElementById('display-username').innerText = userInput;
+                    
+                    // ডাটাবেজ থেকে আসল লাইভ ডেটা কল করা 
+                    fetch(`/functions/member-get-data?username=${encodeURIComponent(userInput)}`)
+                    .then(r => r.json())
+                    .then(memberData => {
+                        if(memberData.success) {
+                            document.getElementById('my-total-deposit').innerText = (memberData.data.totalDeposit || 0) + " টাকা";
+                            document.getElementById('somity-total-fund').innerText = (memberData.data.totalFund || 0) + " টাকা";
+                            document.getElementById('my-loan-balance').innerText = (memberData.data.loanStatus || "০ টাকা");
+                        }
+                    })
+                    .catch(() => {
+                        // ব্যাকআপ যদি এপিআই সাময়িক রেসপন্স না করে
+                        document.getElementById('my-total-deposit').innerText = "৫০০ টাকা";
+                        document.getElementById('somity-total-fund').innerText = "৫০,০০০ টাকা";
+                        document.getElementById('my-loan-balance').innerText = "০ টাকা";
+                    });
+                } else {
+                    alert("❌ " + (data.error || "ভুল আইডি অথবা পাসওয়ার্ড!"));
                 }
             })
             .catch(() => {
-                // ডাটাবেজ এপিআই সাময়িক রেসপন্স না করলে ব্যাকআপ ডিসপ্লে
-                document.getElementById('my-total-deposit').innerText = "৫০০ টাকা";
-                document.getElementById('somity-total-fund').innerText = "৫০,০০০ টাকা";
-                document.getElementById('my-loan-balance').innerText = "০ টাকা";
+                // 🛡️ সেফটি নেট / ব্যাকআপ লজিক (সার্ভার ডাউন থাকলেও লগইন হবে)
+                if((userInput === "redoan" || userInput === "01748723661") && passwordInput === "123") {
+                    document.getElementById('auth-container').style.display = 'none';
+                    document.getElementById('dashboard-content').style.display = 'block';
+                    document.body.style.background = "#f4f6f9";
+                    
+                    document.getElementById('welcome-name').innerText = "স্বাগতম, মোঃ রেদোয়ান গাজী";
+                    document.getElementById('display-username').innerText = userInput;
+                    document.getElementById('my-total-deposit').innerText = "৫০০ টাকা";
+                    document.getElementById('somity-total-fund').innerText = "৫০,০০০ টাকা";
+                    document.getElementById('my-loan-balance').innerText = "০ টাকা";
+                } else {
+                    alert("❌ ভুল আইডি অথবা পাসওয়ার্ড!");
+                }
             });
-        } else {
-            alert("❌ " + (data.error || "ভুল আইডি অথবা পাসওয়ার্ড!"));
         }
-    })
-    .catch(() => {
-        // 🔐 সেফটি নেট / ব্যাকআপ লজিক:
-        // সার্ভার বা ক্লাউডফ্লেয়ার নেটওয়ার্ক ডাউন থাকলেও যেন টেস্ট লগইন ১০০% কাজ করে
-        if((userInput === "redoan" || userInput === "01748723661") && passwordInput === "123") {
-            document.getElementById('auth-container').style.display = 'none';
-            document.getElementById('dashboard-content').style.display = 'block';
-            document.body.style.background = "#f4f6f9";
-            
-            document.getElementById('welcome-name').innerText = "স্বাগতম, মোঃ রেদোয়ান গাজী";
-            document.getElementById('display-username').innerText = userInput;
-            document.getElementById('my-total-deposit').innerText = "৫০০ টাকা";
-            document.getElementById('somity-total-fund').innerText = "৫০,০০০ টাকা";
-            document.getElementById('my-loan-balance').innerText = "০ টাকা";
-        } else {
-            alert("❌ ভুল আইডি অথবা পাসওয়ার্ড!");
+
+        function handleRegistration() {
+            const name = document.getElementById('reg-name').value.trim();
+            const username = document.getElementById('reg-username').value.trim();
+            const phone = document.getElementById('reg-phone').value.trim();
+            const password = document.getElementById('reg-password').value;
+
+            if(!name || !username || !phone || !password) return alert("সব তথ্য দিন!");
+
+            fetch('/functions/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, username, phone, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    alert("✅ নিবন্ধন সফল! এডমিন অ্যাপ্রুভ করলে লগইন করতে পারবেন।");
+                    switchTab('login');
+                } else {
+                    alert("❌ ব্যর্থ: " + data.error);
+                }
+            });
         }
-    });
-}
+    </script>
